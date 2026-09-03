@@ -1,0 +1,356 @@
+# File TỰ CHỨA hoàn chỉnh cho driver-service.yaml — không phụ thuộc file nào khác.
+# Sinh tự động từ nguồn hợp nhất, mọi $ref trong file này chỉ trỏ nội bộ (#/components/...).
+openapi: 3.0.3
+info:
+  title: Driver Service API
+  version: 1.0.0
+  description: Quản lý tài khoản, hồ sơ, phương tiện, trạng thái tài xế (FR-02, FR-11)
+servers:
+  - url: http://localhost:4002
+    description: Gọi trực tiếp service (bỏ qua Gateway)
+  - url: http://localhost:3000/api/v1
+    description: Qua API Gateway (local dev)
+tags:
+  - name: Driver
+    description: Driver Service — FR-02, FR-11
+security:
+  - bearerAuth: []
+paths:
+  /drivers/register:
+    post:
+      tags:
+        - Driver
+      summary: Tài xế tự đăng ký
+      x-fr: FR-02
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DriverRegisterRequest'
+      responses:
+        '201':
+          description: Đăng ký thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverAuthResponse'
+        '409':
+          $ref: '#/components/responses/ConflictError'
+  /drivers:
+    post:
+      tags:
+        - Driver
+      summary: Nhân viên vận hành tạo tài khoản tài xế
+      x-fr: FR-02
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DriverRegisterRequest'
+      responses:
+        '201':
+          description: Tạo thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverEnvelope'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+    get:
+      tags:
+        - Driver
+      summary: Danh sách tài xế theo trạng thái (service-to-service / Dispatch dùng)
+      x-fr: FR-06
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum:
+              - offline
+              - available
+              - busy
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverListEnvelope'
+  /drivers/login:
+    post:
+      tags:
+        - Driver
+      summary: Đăng nhập tài xế
+      x-fr: FR-02
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverAuthResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /drivers/me:
+    get:
+      tags:
+        - Driver
+      summary: Xem hồ sơ tài xế hiện tại
+      x-fr: FR-02
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverEnvelope'
+    put:
+      tags:
+        - Driver
+      summary: Cập nhật hồ sơ cá nhân
+      x-fr: FR-02
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DriverUpdateRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverEnvelope'
+  /drivers/me/vehicle:
+    put:
+      tags:
+        - Driver
+      summary: Cập nhật thông tin phương tiện
+      x-fr: FR-02
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Vehicle'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverEnvelope'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+  /drivers/me/status:
+    patch:
+      tags:
+        - Driver
+      summary: Chuyển trạng thái sẵn sàng nhận chuyến
+      x-fr: FR-11
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - status
+              properties:
+                status:
+                  type: string
+                  enum:
+                    - offline
+                    - available
+                    - busy
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverEnvelope'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+  /drivers/{id}:
+    get:
+      tags:
+        - Driver
+      summary: Tra cứu hồ sơ tài xế (nội bộ)
+      x-fr: FR-02
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverEnvelope'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Driver:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        fullName:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+          nullable: true
+        vehicle:
+          $ref: '#/components/schemas/Vehicle'
+        status:
+          type: string
+          enum:
+            - offline
+            - available
+            - busy
+        createdByStaff:
+          type: boolean
+    DriverAuthResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            token:
+              type: string
+            driver:
+              $ref: '#/components/schemas/Driver'
+    DriverEnvelope:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Driver'
+    DriverListEnvelope:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Driver'
+    DriverRegisterRequest:
+      allOf:
+        - $ref: '#/components/schemas/LoginRequest'
+        - type: object
+          required:
+            - fullName
+          properties:
+            fullName:
+              type: string
+            phone:
+              type: string
+            vehicle:
+              $ref: '#/components/schemas/Vehicle'
+    DriverUpdateRequest:
+      type: object
+      properties:
+        fullName:
+          type: string
+        phone:
+          type: string
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              example: VALIDATION_ERROR
+            message:
+              type: string
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+    Vehicle:
+      type: object
+      required:
+        - plate
+        - model
+        - type
+      properties:
+        plate:
+          type: string
+          example: 51H-123.45
+        model:
+          type: string
+          example: Toyota Vios
+        type:
+          type: string
+          enum:
+            - 4-seat
+            - 7-seat
+            - motorbike
+  responses:
+    ConflictError:
+      description: Xung đột dữ liệu (VD email đã tồn tại)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ForbiddenError:
+      description: Không có quyền thực hiện thao tác
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFoundError:
+      description: Không tìm thấy tài nguyên
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    UnauthorizedError:
+      description: Chưa xác thực hoặc token không hợp lệ
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: Dữ liệu đầu vào không hợp lệ
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    IdParam:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid

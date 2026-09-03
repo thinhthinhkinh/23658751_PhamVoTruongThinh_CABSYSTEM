@@ -1,0 +1,362 @@
+# File TỰ CHỨA hoàn chỉnh cho admin-service.yaml — không phụ thuộc file nào khác.
+# Sinh tự động từ nguồn hợp nhất, mọi $ref trong file này chỉ trỏ nội bộ (#/components/...).
+openapi: 3.0.3
+info:
+  title: Admin / Reporting Service API
+  version: 1.0.0
+  description: Quản trị & báo cáo, tổng hợp dữ liệu từ các service khác (FR-20..23)
+servers:
+  - url: http://localhost:4009
+    description: Gọi trực tiếp service (bỏ qua Gateway)
+  - url: http://localhost:3000/api/v1
+    description: Qua API Gateway (local dev)
+tags:
+  - name: Admin
+    description: Admin/Reporting Service — FR-20..FR-23
+security:
+  - bearerAuth: []
+paths:
+  /admin/trips:
+    get:
+      tags:
+        - Admin
+      summary: Xem các chuyến (lọc theo trạng thái, ví dụ đang diễn ra)
+      x-fr: FR-21
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Trip'
+  /admin/drivers/{id}/status:
+    get:
+      tags:
+        - Admin
+      summary: Kiểm tra trạng thái 1 tài xế
+      x-fr: FR-21
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+  /admin/trips/{id}/resolve:
+    post:
+      tags:
+        - Admin
+      summary: Xử lý chuyến gặp sự cố
+      x-fr: FR-21
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                resolutionNote:
+                  type: string
+      responses:
+        '200':
+          description: Đã xử lý
+  /admin/transactions:
+    get:
+      tags:
+        - Admin
+      summary: Tra cứu lịch sử giao dịch
+      x-fr: FR-21
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Payment'
+  /admin/customers:
+    get:
+      tags:
+        - Admin
+      summary: Danh sách khách hàng (quản trị)
+      x-fr: FR-20
+      responses:
+        '200':
+          description: OK
+  /admin/drivers:
+    get:
+      tags:
+        - Admin
+      summary: Danh sách tài xế (quản trị)
+      x-fr: FR-20
+      responses:
+        '200':
+          description: OK
+  /admin/vehicles:
+    get:
+      tags:
+        - Admin
+      summary: Danh sách phương tiện (quản trị)
+      x-fr: FR-20
+      responses:
+        '200':
+          description: OK
+  /admin/customers/{id}:
+    delete:
+      tags:
+        - Admin
+      summary: Khóa/xóa tài khoản khách hàng — thao tác nhạy cảm
+      x-fr: FR-22
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Đã xử lý
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+  /admin/reports/trips:
+    get:
+      tags:
+        - Admin
+      summary: Báo cáo số lượng chuyến
+      x-fr: FR-23
+      parameters:
+        - $ref: '#/components/parameters/FromToParams'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportValue'
+  /admin/reports/revenue:
+    get:
+      tags:
+        - Admin
+      summary: Báo cáo doanh thu
+      x-fr: FR-23
+      parameters:
+        - $ref: '#/components/parameters/FromToParams'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportValue'
+  /admin/reports/completion-rate:
+    get:
+      tags:
+        - Admin
+      summary: Tỷ lệ hoàn thành chuyến
+      x-fr: FR-23
+      parameters:
+        - $ref: '#/components/parameters/FromToParams'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportValue'
+  /admin/reports/cancellation-rate:
+    get:
+      tags:
+        - Admin
+      summary: Tỷ lệ hủy chuyến
+      x-fr: FR-23
+      parameters:
+        - $ref: '#/components/parameters/FromToParams'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportValue'
+  /admin/reports/driver-performance:
+    get:
+      tags:
+        - Admin
+      summary: Hiệu quả hoạt động của tài xế
+      x-fr: FR-23
+      parameters:
+        - $ref: '#/components/parameters/FromToParams'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DriverPerformance'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    DriverPerformance:
+      type: object
+      properties:
+        driverId:
+          type: string
+          format: uuid
+        totalTrips:
+          type: integer
+        completionRate:
+          type: number
+        averageRating:
+          type: number
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              example: VALIDATION_ERROR
+            message:
+              type: string
+    GeoPoint:
+      type: object
+      required:
+        - lat
+        - lng
+      properties:
+        lat:
+          type: number
+          format: double
+          example: 10.7769
+        lng:
+          type: number
+          format: double
+          example: 106.7009
+        address:
+          type: string
+    Payment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        tripId:
+          type: string
+          format: uuid
+        method:
+          type: string
+          enum:
+            - cash
+            - e-wallet
+            - card
+        amount:
+          type: number
+        status:
+          type: string
+          enum:
+            - pending
+            - success
+            - failed
+        providerRef:
+          type: string
+          nullable: true
+          description: Tham chiếu phía cổng thanh toán ngoài, không lưu số thẻ
+        createdAt:
+          type: string
+          format: date-time
+    ReportValue:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            from:
+              type: string
+              format: date
+            to:
+              type: string
+              format: date
+            value:
+              type: number
+    Trip:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        customerId:
+          type: string
+          format: uuid
+        driverId:
+          type: string
+          format: uuid
+          nullable: true
+        pickupLocation:
+          $ref: '#/components/schemas/GeoPoint'
+        dropoffLocation:
+          $ref: '#/components/schemas/GeoPoint'
+        vehicleType:
+          type: string
+        status:
+          $ref: '#/components/schemas/TripStatus'
+        fareAmount:
+          type: number
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    TripStatus:
+      type: string
+      enum:
+        - requested
+        - finding_driver
+        - no_driver_found
+        - driver_assigned
+        - arrived
+        - picked_up
+        - in_progress
+        - completed
+        - cancelled
+  responses:
+    ForbiddenError:
+      description: Không có quyền thực hiện thao tác
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    FromToParams:
+      name: from
+      in: query
+      schema:
+        type: string
+        format: date
+    IdParam:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid

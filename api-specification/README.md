@@ -1,73 +1,40 @@
-# CAB System — API Specification (multi-file)
+# CAB System — API Specification (mỗi service 1 file, tự chứa hoàn toàn)
 
-Đặc tả OpenAPI được **tách theo từng service** thay vì gộp 1 file duy nhất, để dễ mở rộng và sửa lỗi — mỗi service có 1 file path riêng, không đụng chạm lẫn nhau.
+Mỗi service có **đúng 1 file YAML duy nhất, đầy đủ toàn bộ cấu trúc OpenAPI 3.0.3** (openapi, info, servers, paths, components) — **không có `$ref` trỏ ra file khác**. Muốn xem/sửa/import API của service nào, chỉ cần đúng 1 file đó, không phụ thuộc file nào khác trong hay ngoài thư mục này.
 
-## Cấu trúc
+## Danh sách file
 
-```
-api-specification/
-├── openapi.yaml                        # File gốc — chỉ chứa info, servers, tags, và $ref trỏ đến từng path bên dưới
-├── paths/
-│   ├── customer-service.yaml           # FR-01
-│   ├── driver-service.yaml             # FR-02, FR-11
-│   ├── trip-service.yaml               # FR-03,04,05,13 + đánh giá tài xế (Rating)
-│   ├── dispatch-service.yaml           # FR-06..09, FR-12
-│   ├── location-service.yaml           # FR-10
-│   ├── pricing-service.yaml            # FR-14
-│   ├── payment-service.yaml            # FR-15, FR-16
-│   ├── notification-service.yaml       # FR-17..19
-│   └── admin-service.yaml              # FR-20..23
-├── components/
-│   ├── schemas/
-│   │   ├── common.yaml                 # Error, LoginRequest (dùng chung)
-│   │   ├── customer.yaml
-│   │   ├── driver.yaml
-│   │   ├── trip.yaml                   # gồm cả schema Rating
-│   │   ├── dispatch.yaml
-│   │   ├── location.yaml
-│   │   ├── pricing.yaml
-│   │   ├── payment.yaml
-│   │   ├── notification.yaml
-│   │   └── admin.yaml
-│   ├── responses/common.yaml           # 5 response tái sử dụng: ValidationError, UnauthorizedError...
-│   └── parameters/common.yaml          # IdParam, TripIdParam, FromToParams
-├── bundled/
-│   └── cab-system-openapi.yaml         # Bản GỘP tự động — dùng để import vào Swagger Catalog/Postman
-└── scripts/
-    └── bundle.js                       # Script gộp lại thành 1 file khi cần
-```
+| File | Số path | Ghi chú |
+|---|---|---|
+| `customer-service.yaml` | 4 | FR-01 |
+| `driver-service.yaml` | 7 | FR-02, FR-11 |
+| `trip-service.yaml` | 8 | FR-03,04,05,13 + đánh giá tài xế |
+| `dispatch-service.yaml` | 3 | FR-06..09, FR-12 |
+| `location-service.yaml` | 3 | FR-10 |
+| `pricing-service.yaml` | 2 | FR-14 |
+| `payment-service.yaml` | 5 | FR-15, FR-16 |
+| `notification-service.yaml` | 2 | FR-17..19 |
+| `admin-service.yaml` | 13 | FR-20..23 (tổng hợp dữ liệu từ service khác) |
 
-## Quy tắc sửa/mở rộng
+Tổng cộng 47 path — khớp 100% với bản gốc.
 
-- **Muốn sửa 1 endpoint của service nào → chỉ mở đúng file `paths/<service>.yaml` của service đó.** Không phải kéo tìm trong 1 file 900 dòng nữa.
-- **Muốn thêm schema mới** → thêm vào đúng file `components/schemas/<service>.yaml` tương ứng, rồi `$ref` tới nó bằng đường dẫn tương đối, ví dụ từ `paths/customer-service.yaml`:
-  ```yaml
-  schema:
-    $ref: '../components/schemas/customer.yaml#/TenSchemaMoi'
-  ```
-- **Muốn thêm 1 API mới cho service đã có** → thêm path key vào đúng file `paths/<service>.yaml`, rồi thêm 1 dòng `$ref` tương ứng trong `openapi.yaml` (mục `paths`), theo đúng mẫu các dòng đã có.
-- **File `openapi.yaml` gốc hầu như không cần sửa nữa** trừ khi thêm hẳn 1 API mới hoặc đổi `info`/`servers`.
+## Vì sao mỗi file có vẻ "trùng lặp" một số schema?
 
-## Khi nào cần "gộp lại thành 1 file"?
+Vì mỗi file **tự chứa hoàn toàn**, những schema dùng chung (ví dụ `Error`, `LoginRequest`, hay `Trip` xuất hiện cả trong `trip-service.yaml` lẫn `admin-service.yaml` vì Admin đọc dữ liệu Trip) sẽ được **lặp lại y hệt** ở mọi file cần đến nó, thay vì chỉ định nghĩa 1 lần rồi trỏ `$ref` chéo qua file khác. Đây là đánh đổi có chủ đích: đổi một chút trùng lặp lấy sự độc lập tuyệt đối — sửa file của service này không bao giờ ảnh hưởng service khác, và có thể giao 1 file cho 1 người/1 team phụ trách mà không cần đụng tới các file còn lại.
 
-Một số công cụ (Swagger Catalog online, Postman import, chấm điểm nếu yêu cầu nộp 1 file duy nhất) **không đọc được cấu trúc nhiều file** — chúng cần 1 file YAML duy nhất, không có `$ref` trỏ ra file ngoài. Lúc đó chạy:
+## Cách dùng
 
-```bash
-cd api-specification
-npm install --no-save @apidevtools/swagger-parser js-yaml
-node scripts/bundle.js
-```
+- **Sửa API của 1 service** → chỉ mở đúng file `<service>.yaml`, sửa trực tiếp `paths` hoặc `components.schemas` trong chính file đó.
+- **Import vào Swagger Catalog/Studio** → import trực tiếp từng file, không cần gộp gì thêm (khác với cách tách kiểu cha-con trước đó cần chạy script bundle).
+- **Thêm API mới cho 1 service đã có** → thêm path key vào đúng file, định nghĩa schema mới ngay trong `components.schemas` của chính file đó.
+- **Thêm 1 service hoàn toàn mới** → tạo file mới theo đúng khuôn 5 phần: `openapi`, `info`, `servers`, `paths`, `components` (xem bất kỳ file nào ở đây làm mẫu, `dispatch-service.yaml` là file ngắn nhất, dễ đọc nhất để tham khảo cấu trúc).
 
-Lệnh này đọc `openapi.yaml` + toàn bộ file con, gộp lại thành `bundled/cab-system-openapi.yaml` — **đây là file để upload lên Swagger Catalog**, không phải file gốc nhiều mảnh.
+## Servers khai báo trong mỗi file
 
-⚠️ **Luôn sửa ở các file nhỏ trong `paths/`, `components/`, rồi chạy lại `bundle.js`. Không sửa trực tiếp file trong `bundled/` vì nó sẽ bị ghi đè lần chạy sau.**
+Mỗi file có 2 server:
+- `http://localhost:<port riêng của service>` — gọi thẳng vào service đó, bỏ qua Gateway (hữu ích khi debug 1 service độc lập)
+- `http://localhost:3000/api/v1` — gọi qua API Gateway (đúng luồng thật khi hệ thống chạy đầy đủ)
 
-## Đã sửa 1 lỗi từ bản gốc
+## Đã kiểm tra trước khi bàn giao
 
-Trong lúc tách file, phát hiện 2 chỗ lỗi cú pháp YAML ở bản 1-file cũ (dấu phẩy trong mô tả tiếng Việt không được đặt trong dấu ngoặc kép, khiến YAML hiểu nhầm thành field lạ):
-- `POST /trips` → response `201`
-- `POST /dispatch/{tripId}/decline` → response `200`
-
-Cả 2 đã được sửa đúng trong bộ file mới này. **Bản bạn đã import vào Swagger Studio trước đó vẫn còn lỗi này** — nên import lại bằng file `bundled/cab-system-openapi.yaml` mới để thay thế.
-
-Toàn bộ 47 path / 36 schema / 23 FR đã được đối chiếu tự động khớp 100% với bản gốc trước khi bàn giao.
+Cả 9 file được validate **độc lập từng file** (không phải validate chung 1 lần) bằng `@apidevtools/swagger-parser`, đều pass chuẩn OpenAPI 3.0.3. Tổng path cộng lại đúng 47, khớp bản gốc — không thiếu, không thừa endpoint nào.

@@ -1,0 +1,106 @@
+# File TỰ CHỨA hoàn chỉnh cho pricing-service.yaml — không phụ thuộc file nào khác.
+# Sinh tự động từ nguồn hợp nhất, mọi $ref trong file này chỉ trỏ nội bộ (#/components/...).
+openapi: 3.0.3
+info:
+  title: Pricing Service API
+  version: 1.0.0
+  description: Tính cước chuyến đi (FR-14)
+servers:
+  - url: http://localhost:4006
+    description: Gọi trực tiếp service (bỏ qua Gateway)
+  - url: http://localhost:3000/api/v1
+    description: Qua API Gateway (local dev)
+tags:
+  - name: Pricing
+    description: Pricing Service — FR-14
+security:
+  - bearerAuth: []
+paths:
+  /pricing/calculate:
+    post:
+      tags:
+        - Pricing
+      summary: Tính cước cho 1 chuyến
+      x-fr: FR-14
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FareCalculateRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FareCalculateResponse'
+  /pricing/rules:
+    get:
+      tags:
+        - Pricing
+      summary: Xem cấu hình quy tắc tính giá hiện hành
+      x-fr: FR-14
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PricingRule'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    FareCalculateRequest:
+      type: object
+      required:
+        - vehicleType
+        - distanceKm
+        - durationMin
+      properties:
+        vehicleType:
+          type: string
+        distanceKm:
+          type: number
+        durationMin:
+          type: number
+    FareCalculateResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            amount:
+              type: number
+            currency:
+              type: string
+              example: VND
+            breakdown:
+              type: object
+              properties:
+                baseFare:
+                  type: number
+                perKm:
+                  type: number
+                perMinute:
+                  type: number
+    PricingRule:
+      type: object
+      properties:
+        vehicleType:
+          type: string
+        baseFare:
+          type: number
+        perKmRate:
+          type: number
+        perMinuteRate:
+          type: number

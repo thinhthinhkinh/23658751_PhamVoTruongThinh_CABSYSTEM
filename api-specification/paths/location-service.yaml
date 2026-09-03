@@ -1,0 +1,75 @@
+# File này được tách tự động từ cab-system-openapi.yaml gốc — KHÔNG chỉnh sửa file gốc nữa.
+/locations:
+  post:
+    tags:
+      - Location
+    summary: Tài xế gửi vị trí hiện tại
+    x-fr: FR-10
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/trip.yaml#/GeoPoint
+    responses:
+      '200':
+        description: Đã ghi nhận vị trí
+/locations/drivers/{id}:
+  get:
+    tags:
+      - Location
+    summary: Vị trí hiện tại của 1 tài xế
+    x-fr: FR-10
+    parameters:
+      - $ref: ../components/parameters/common.yaml#/IdParam
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  $ref: ../components/schemas/location.yaml#/DriverLocation
+      '404':
+        $ref: ../components/responses/common.yaml#/NotFoundError
+/locations/nearby-drivers:
+  get:
+    tags:
+      - Location
+    summary: Tìm tài xế gần 1 tọa độ (Dispatch Service gọi)
+    x-fr: FR-06
+    parameters:
+      - name: lat
+        in: query
+        required: true
+        schema:
+          type: number
+      - name: lng
+        in: query
+        required: true
+        schema:
+          type: number
+      - name: radiusKm
+        in: query
+        schema:
+          type: number
+          default: 5
+      - name: driverIds
+        in: query
+        description: danh sách id cách nhau bởi dấu phẩy
+        schema:
+          type: string
+    responses:
+      '200':
+        description: OK, sắp xếp theo khoảng cách tăng dần
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: ../components/schemas/location.yaml#/NearbyDriver

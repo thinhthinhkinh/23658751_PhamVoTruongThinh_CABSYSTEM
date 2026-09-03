@@ -1,0 +1,31 @@
+# File này được tách tự động từ cab-system-openapi.yaml gốc — KHÔNG chỉnh sửa file gốc nữa.
+ValidationError:
+  description: Dữ liệu đầu vào không hợp lệ
+  content:
+    application/json:
+      schema:
+        $ref: ../schemas/common.yaml#/Error
+UnauthorizedError:
+  description: Chưa xác thực hoặc token không hợp lệ
+  content:
+    application/json:
+      schema:
+        $ref: ../schemas/common.yaml#/Error
+ForbiddenError:
+  description: Không có quyền thực hiện thao tác
+  content:
+    application/json:
+      schema:
+        $ref: ../schemas/common.yaml#/Error
+NotFoundError:
+  description: Không tìm thấy tài nguyên
+  content:
+    application/json:
+      schema:
+        $ref: ../schemas/common.yaml#/Error
+ConflictError:
+  description: Xung đột dữ liệu (VD email đã tồn tại)
+  content:
+    application/json:
+      schema:
+        $ref: ../schemas/common.yaml#/Error

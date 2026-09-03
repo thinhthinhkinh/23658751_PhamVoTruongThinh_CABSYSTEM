@@ -1,0 +1,45 @@
+# File này được tách tự động từ cab-system-openapi.yaml gốc — KHÔNG chỉnh sửa file gốc nữa.
+/dispatch/{tripId}/accept:
+  post:
+    tags:
+      - Dispatch
+    summary: Tài xế chấp nhận chuyến được đề xuất
+    x-fr: FR-12
+    parameters:
+      - $ref: ../components/parameters/common.yaml#/TripIdParam
+    responses:
+      '200':
+        description: Đã nhận chuyến
+      '409':
+        description: Chuyến đã được tài xế khác nhận hoặc đã hết hạn
+/dispatch/{tripId}/decline:
+  post:
+    tags:
+      - Dispatch
+    summary: Tài xế từ chối chuyến — hệ thống tự tìm tài xế khác
+    x-fr: FR-08, FR-12
+    parameters:
+      - $ref: ../components/parameters/common.yaml#/TripIdParam
+    responses:
+      '200':
+        description: Đã ghi nhận từ chối, hệ thống tiếp tục tìm tài xế khác
+/dispatch/{tripId}/candidates:
+  get:
+    tags:
+      - Dispatch
+    summary: Danh sách tài xế được xét cho 1 chuyến (audit/debug)
+    x-fr: FR-06, FR-07
+    parameters:
+      - $ref: ../components/parameters/common.yaml#/TripIdParam
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: ../components/schemas/dispatch.yaml#/DispatchCandidate

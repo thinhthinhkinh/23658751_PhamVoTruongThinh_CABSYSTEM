@@ -1,0 +1,38 @@
+# File này được tách tự động từ cab-system-openapi.yaml gốc — KHÔNG chỉnh sửa file gốc nữa.
+/pricing/calculate:
+  post:
+    tags:
+      - Pricing
+    summary: Tính cước cho 1 chuyến
+    x-fr: FR-14
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/pricing.yaml#/FareCalculateRequest
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/pricing.yaml#/FareCalculateResponse
+/pricing/rules:
+  get:
+    tags:
+      - Pricing
+    summary: Xem cấu hình quy tắc tính giá hiện hành
+    x-fr: FR-14
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: ../components/schemas/pricing.yaml#/PricingRule

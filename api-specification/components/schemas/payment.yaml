@@ -1,0 +1,51 @@
+# File này được tách tự động từ cab-system-openapi.yaml gốc — KHÔNG chỉnh sửa file gốc nữa.
+PaymentCreateRequest:
+  type: object
+  required:
+    - tripId
+    - method
+  properties:
+    tripId:
+      type: string
+      format: uuid
+    method:
+      type: string
+      enum:
+        - cash
+        - e-wallet
+        - card
+Payment:
+  type: object
+  properties:
+    id:
+      type: string
+      format: uuid
+    tripId:
+      type: string
+      format: uuid
+    method:
+      type: string
+      enum:
+        - cash
+        - e-wallet
+        - card
+    amount:
+      type: number
+    status:
+      type: string
+      enum:
+        - pending
+        - success
+        - failed
+    providerRef:
+      type: string
+      nullable: true
+      description: Tham chiếu phía cổng thanh toán ngoài, không lưu số thẻ
+    createdAt:
+      type: string
+      format: date-time
+PaymentEnvelope:
+  type: object
+  properties:
+    data:
+      $ref: payment.yaml#/Payment

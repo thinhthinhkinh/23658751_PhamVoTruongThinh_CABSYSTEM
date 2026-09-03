@@ -1,0 +1,86 @@
+# File này được tách tự động từ cab-system-openapi.yaml gốc — KHÔNG chỉnh sửa file gốc nữa.
+Vehicle:
+  type: object
+  required:
+    - plate
+    - model
+    - type
+  properties:
+    plate:
+      type: string
+      example: 51H-123.45
+    model:
+      type: string
+      example: Toyota Vios
+    type:
+      type: string
+      enum:
+        - 4-seat
+        - 7-seat
+        - motorbike
+DriverRegisterRequest:
+  allOf:
+    - $ref: common.yaml#/LoginRequest
+    - type: object
+      required:
+        - fullName
+      properties:
+        fullName:
+          type: string
+        phone:
+          type: string
+        vehicle:
+          $ref: driver.yaml#/Vehicle
+DriverUpdateRequest:
+  type: object
+  properties:
+    fullName:
+      type: string
+    phone:
+      type: string
+Driver:
+  type: object
+  properties:
+    id:
+      type: string
+      format: uuid
+    fullName:
+      type: string
+    email:
+      type: string
+      format: email
+    phone:
+      type: string
+      nullable: true
+    vehicle:
+      $ref: driver.yaml#/Vehicle
+    status:
+      type: string
+      enum:
+        - offline
+        - available
+        - busy
+    createdByStaff:
+      type: boolean
+DriverEnvelope:
+  type: object
+  properties:
+    data:
+      $ref: driver.yaml#/Driver
+DriverListEnvelope:
+  type: object
+  properties:
+    data:
+      type: array
+      items:
+        $ref: driver.yaml#/Driver
+DriverAuthResponse:
+  type: object
+  properties:
+    data:
+      type: object
+      properties:
+        token:
+          type: string
+        driver:
+          $ref: driver.yaml#/Driver

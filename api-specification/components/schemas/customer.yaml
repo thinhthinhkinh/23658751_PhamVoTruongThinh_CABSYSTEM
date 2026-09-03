@@ -1,0 +1,54 @@
+# File này được tách tự động từ cab-system-openapi.yaml gốc — KHÔNG chỉnh sửa file gốc nữa.
+CustomerRegisterRequest:
+  allOf:
+    - $ref: common.yaml#/LoginRequest
+    - type: object
+      required:
+        - fullName
+      properties:
+        fullName:
+          type: string
+        phone:
+          type: string
+CustomerUpdateRequest:
+  type: object
+  properties:
+    fullName:
+      type: string
+    phone:
+      type: string
+Customer:
+  type: object
+  properties:
+    id:
+      type: string
+      format: uuid
+    fullName:
+      type: string
+    email:
+      type: string
+      format: email
+    phone:
+      type: string
+      nullable: true
+    createdAt:
+      type: string
+      format: date-time
+    updatedAt:
+      type: string
+      format: date-time
+CustomerEnvelope:
+  type: object
+  properties:
+    data:
+      $ref: customer.yaml#/Customer
+AuthResponse:
+  type: object
+  properties:
+    data:
+      type: object
+      properties:
+        token:
+          type: string
+        customer:
+          $ref: customer.yaml#/Customer

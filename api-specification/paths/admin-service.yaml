@@ -1,0 +1,192 @@
+# File này được tách tự động từ cab-system-openapi.yaml gốc — KHÔNG chỉnh sửa file gốc nữa.
+/admin/trips:
+  get:
+    tags:
+      - Admin
+    summary: Xem các chuyến (lọc theo trạng thái, ví dụ đang diễn ra)
+    x-fr: FR-21
+    parameters:
+      - name: status
+        in: query
+        schema:
+          type: string
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: ../components/schemas/trip.yaml#/Trip
+/admin/drivers/{id}/status:
+  get:
+    tags:
+      - Admin
+    summary: Kiểm tra trạng thái 1 tài xế
+    x-fr: FR-21
+    parameters:
+      - $ref: ../components/parameters/common.yaml#/IdParam
+    responses:
+      '200':
+        description: OK
+/admin/trips/{id}/resolve:
+  post:
+    tags:
+      - Admin
+    summary: Xử lý chuyến gặp sự cố
+    x-fr: FR-21
+    parameters:
+      - $ref: ../components/parameters/common.yaml#/IdParam
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              resolutionNote:
+                type: string
+    responses:
+      '200':
+        description: Đã xử lý
+/admin/transactions:
+  get:
+    tags:
+      - Admin
+    summary: Tra cứu lịch sử giao dịch
+    x-fr: FR-21
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: ../components/schemas/payment.yaml#/Payment
+/admin/customers:
+  get:
+    tags:
+      - Admin
+    summary: Danh sách khách hàng (quản trị)
+    x-fr: FR-20
+    responses:
+      '200':
+        description: OK
+/admin/drivers:
+  get:
+    tags:
+      - Admin
+    summary: Danh sách tài xế (quản trị)
+    x-fr: FR-20
+    responses:
+      '200':
+        description: OK
+/admin/vehicles:
+  get:
+    tags:
+      - Admin
+    summary: Danh sách phương tiện (quản trị)
+    x-fr: FR-20
+    responses:
+      '200':
+        description: OK
+/admin/customers/{id}:
+  delete:
+    tags:
+      - Admin
+    summary: Khóa/xóa tài khoản khách hàng — thao tác nhạy cảm
+    x-fr: FR-22
+    parameters:
+      - $ref: ../components/parameters/common.yaml#/IdParam
+    responses:
+      '200':
+        description: Đã xử lý
+      '403':
+        $ref: ../components/responses/common.yaml#/ForbiddenError
+/admin/reports/trips:
+  get:
+    tags:
+      - Admin
+    summary: Báo cáo số lượng chuyến
+    x-fr: FR-23
+    parameters:
+      - $ref: ../components/parameters/common.yaml#/FromToParams
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/admin.yaml#/ReportValue
+/admin/reports/revenue:
+  get:
+    tags:
+      - Admin
+    summary: Báo cáo doanh thu
+    x-fr: FR-23
+    parameters:
+      - $ref: ../components/parameters/common.yaml#/FromToParams
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/admin.yaml#/ReportValue
+/admin/reports/completion-rate:
+  get:
+    tags:
+      - Admin
+    summary: Tỷ lệ hoàn thành chuyến
+    x-fr: FR-23
+    parameters:
+      - $ref: ../components/parameters/common.yaml#/FromToParams
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/admin.yaml#/ReportValue
+/admin/reports/cancellation-rate:
+  get:
+    tags:
+      - Admin
+    summary: Tỷ lệ hủy chuyến
+    x-fr: FR-23
+    parameters:
+      - $ref: ../components/parameters/common.yaml#/FromToParams
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/admin.yaml#/ReportValue
+/admin/reports/driver-performance:
+  get:
+    tags:
+      - Admin
+    summary: Hiệu quả hoạt động của tài xế
+    x-fr: FR-23
+    parameters:
+      - $ref: ../components/parameters/common.yaml#/FromToParams
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: ../components/schemas/admin.yaml#/DriverPerformance

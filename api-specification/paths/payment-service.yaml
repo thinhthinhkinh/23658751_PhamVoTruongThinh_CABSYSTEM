@@ -1,0 +1,98 @@
+# File này được tách tự động từ cab-system-openapi.yaml gốc — KHÔNG chỉnh sửa file gốc nữa.
+/payments:
+  post:
+    tags:
+      - Payment
+    summary: Khởi tạo thanh toán cho 1 chuyến
+    x-fr: FR-15
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/payment.yaml#/PaymentCreateRequest
+    responses:
+      '201':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/payment.yaml#/PaymentEnvelope
+/payments/{id}:
+  get:
+    tags:
+      - Payment
+    summary: Xem trạng thái giao dịch
+    x-fr: FR-15
+    parameters:
+      - $ref: ../components/parameters/common.yaml#/IdParam
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/payment.yaml#/PaymentEnvelope
+      '404':
+        $ref: ../components/responses/common.yaml#/NotFoundError
+/payments/{id}/retry:
+  post:
+    tags:
+      - Payment
+    summary: Xử lý lại khi giao dịch điện tử thất bại
+    x-fr: FR-16
+    parameters:
+      - $ref: ../components/parameters/common.yaml#/IdParam
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: ../components/schemas/payment.yaml#/PaymentEnvelope
+      '409':
+        description: Giao dịch không ở trạng thái có thể thử lại
+/payments/webhook:
+  post:
+    tags:
+      - Payment
+    summary: Callback kết quả từ cổng thanh toán ngoài
+    x-fr: FR-15, FR-16
+    security: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              paymentId:
+                type: string
+              status:
+                type: string
+                enum:
+                  - success
+                  - failed
+              providerRef:
+                type: string
+    responses:
+      '200':
+        description: Đã xử lý callback
+/customers/me/payments:
+  get:
+    tags:
+      - Payment
+    summary: Lịch sử thanh toán của khách hàng
+    x-fr: FR-05
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: ../components/schemas/payment.yaml#/Payment

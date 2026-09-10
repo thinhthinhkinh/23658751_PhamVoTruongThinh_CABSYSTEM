@@ -1,0 +1,16 @@
+{
+  "name": "cab-system-testcases",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Test case tự động hóa cho CAB System — bắt đầu với 10 test scenario đầu tiên (Customer Service)",
+  "scripts": {
+    "test": "jest --runInBand"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "dependencies": {
+    "jsonwebtoken": "^9.0.2",
+    "dotenv": "^16.4.5"
+  }
+}

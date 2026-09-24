@@ -1,0 +1,17 @@
+{
+  "name": "api-gateway",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cổng vào duy nhất cho client (Customer app, Driver app, Admin dashboard)",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "http-proxy-middleware": "^2.0.6"
+  }
+}

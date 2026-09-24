@@ -1,0 +1,659 @@
+[
+  {
+    "tripId": "9cbbb337-7ad4-450b-8c08-d003f8e850b1",
+    "pickupLocation": {
+      "lat": 10.77,
+      "lng": 106.7
+    },
+    "vehicleType": "4-seat",
+    "candidates": [
+      {
+        "driverId": "1fe2fa99-237f-4bbc-a2be-6eeeb0d9474f",
+        "distanceKm": 0.11119492664469463,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:05.775Z"
+      },
+      {
+        "driverId": "ff8e43fb-ce1c-422d-923c-cf422a3d2d83",
+        "distanceKm": 2.2238985328911274,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:08.794Z"
+      }
+    ],
+    "status": "no_driver_found",
+    "assignedDriverId": null,
+    "createdAt": "2026-09-24T09:03:05.765Z",
+    "updatedAt": "2026-09-24T09:03:11.821Z"
+  },
+  {
+    "tripId": "e14353b9-d3c5-4617-9830-da5485586da3",
+    "pickupLocation": {
+      "lat": 21.77,
+      "lng": 106.7
+    },
+    "vehicleType": "4-seat",
+    "candidates": [
+      {
+        "driverId": "fee2ab0c-1aa3-444a-89d5-7e7dfc48813e",
+        "distanceKm": 0.11119492664469463,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:07.213Z"
+      },
+      {
+        "driverId": "e64aa597-7993-46af-964c-1be311741a58",
+        "distanceKm": 2.2238985328911274,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:10.249Z"
+      }
+    ],
+    "status": "no_driver_found",
+    "assignedDriverId": null,
+    "createdAt": "2026-09-24T09:03:07.202Z",
+    "updatedAt": "2026-09-24T09:03:13.274Z"
+  },
+  {
+    "tripId": "4ff0a4b1-8847-45a0-8290-3d7bbe9d4914",
+    "pickupLocation": {
+      "lat": 22.77,
+      "lng": 106.7
+    },
+    "vehicleType": "4-seat",
+    "candidates": [
+      {
+        "driverId": "120bd3f8-8cb1-4f74-86b2-6b2f010b1cb3",
+        "distanceKm": 0.11119492664469463,
+        "status": "declined",
+        "offeredAt": "2026-09-24T09:03:12.385Z"
+      },
+      {
+        "driverId": "00571b67-6969-4293-99d0-b167ae072cea",
+        "distanceKm": 2.2238985328911274,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:13.393Z"
+      }
+    ],
+    "status": "no_driver_found",
+    "assignedDriverId": null,
+    "createdAt": "2026-09-24T09:03:12.377Z",
+    "updatedAt": "2026-09-24T09:03:16.414Z"
+  },
+  {
+    "tripId": "441dc435-be41-41b4-8148-63cd31acfb49",
+    "pickupLocation": {
+      "lat": 24.77,
+      "lng": 106.7
+    },
+    "vehicleType": "4-seat",
+    "candidates": [
+      {
+        "driverId": "7ce4ca62-d860-4ba2-aede-ac7942a328a6",
+        "distanceKm": 0.11119492664469463,
+        "status": "accepted",
+        "offeredAt": "2026-09-24T09:03:14.374Z"
+      }
+    ],
+    "status": "assigned",
+    "assignedDriverId": "7ce4ca62-d860-4ba2-aede-ac7942a328a6",
+    "createdAt": "2026-09-24T09:03:14.367Z",
+    "updatedAt": "2026-09-24T09:03:15.349Z"
+  },
+  {
+    "tripId": "f43c7f44-870a-48a6-a097-ee1d6a3473cd",
+    "pickupLocation": {
+      "lat": 10.77,
+      "lng": 106.7
+    },
+    "vehicleType": "4-seat",
+    "candidates": [
+      {
+        "driverId": "1fe2fa99-237f-4bbc-a2be-6eeeb0d9474f",
+        "distanceKm": 0.11119492664469463,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:15.975Z"
+      },
+      {
+        "driverId": "ff8e43fb-ce1c-422d-923c-cf422a3d2d83",
+        "distanceKm": 2.2238985328911274,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:18.998Z"
+      }
+    ],
+    "status": "no_driver_found",
+    "assignedDriverId": null,
+    "createdAt": "2026-09-24T09:03:15.968Z",
+    "updatedAt": "2026-09-24T09:03:22.017Z"
+  },
+  {
+    "tripId": "0610abc1-22f0-4296-b2e7-4450320412d8",
+    "pickupLocation": {
+      "lat": 10.77,
+      "lng": 106.7
+    },
+    "vehicleType": "4-seat",
+    "candidates": [
+      {
+        "driverId": "1fe2fa99-237f-4bbc-a2be-6eeeb0d9474f",
+        "distanceKm": 0.11119492664469463,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:16.045Z"
+      },
+      {
+        "driverId": "ff8e43fb-ce1c-422d-923c-cf422a3d2d83",
+        "distanceKm": 2.2238985328911274,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:19.061Z"
+      }
+    ],
+    "status": "no_driver_found",
+    "assignedDriverId": null,
+    "createdAt": "2026-09-24T09:03:16.036Z",
+    "updatedAt": "2026-09-24T09:03:22.082Z"
+  },
+  {
+    "tripId": "527d1b27-b251-4742-8546-ba5eb05bc983",
+    "pickupLocation": {
+      "lat": -10,
+      "lng": -70
+    },
+    "vehicleType": "4-seat",
+    "candidates": [],
+    "status": "no_driver_found",
+    "assignedDriverId": null,
+    "createdAt": "2026-09-24T09:03:16.150Z",
+    "updatedAt": "2026-09-24T09:03:16.157Z"
+  },
+  {
+    "tripId": "ac6a0005-01ee-410e-b4b3-7042776324b8",
+    "pickupLocation": {
+      "lat": 23.77,
+      "lng": 106.7
+    },
+    "vehicleType": "4-seat",
+    "candidates": [
+      {
+        "driverId": "c852f32d-68ea-4b05-865c-b1b347cf5eb7",
+        "distanceKm": 0.11119492664469463,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:17.571Z"
+      },
+      {
+        "driverId": "3656a252-7f88-4802-9a1e-2de5eaae0d07",
+        "distanceKm": 8.895594131564902,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:20.601Z"
+      }
+    ],
+    "status": "no_driver_found",
+    "assignedDriverId": null,
+    "createdAt": "2026-09-24T09:03:17.565Z",
+    "updatedAt": "2026-09-24T09:03:23.631Z"
+  },
+  {
+    "tripId": "513aee0a-6d7b-47e6-8fb9-4b7887dc9e6c",
+    "pickupLocation": {
+      "lat": 10.77,
+      "lng": 106.7
+    },
+    "vehicleType": "4-seat",
+    "candidates": [
+      {
+        "driverId": "1fe2fa99-237f-4bbc-a2be-6eeeb0d9474f",
+        "distanceKm": 0.11119492664469463,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:18.640Z"
+      },
+      {
+        "driverId": "ff8e43fb-ce1c-422d-923c-cf422a3d2d83",
+        "distanceKm": 2.2238985328911274,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:21.661Z"
+      }
+    ],
+    "status": "no_driver_found",
+    "assignedDriverId": null,
+    "createdAt": "2026-09-24T09:03:18.634Z",
+    "updatedAt": "2026-09-24T09:03:24.685Z"
+  },
+  {
+    "tripId": "5ae82361-fe6c-43a3-97dc-1675cc3de382",
+    "pickupLocation": {
+      "lat": 10.77,
+      "lng": 106.7
+    },
+    "vehicleType": "4-seat",
+    "candidates": [
+      {
+        "driverId": "1fe2fa99-237f-4bbc-a2be-6eeeb0d9474f",
+        "distanceKm": 0.11119492664469463,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:19.296Z"
+      },
+      {
+        "driverId": "ff8e43fb-ce1c-422d-923c-cf422a3d2d83",
+        "distanceKm": 2.2238985328911274,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:22.315Z"
+      }
+    ],
+    "status": "no_driver_found",
+    "assignedDriverId": null,
+    "createdAt": "2026-09-24T09:03:19.287Z",
+    "updatedAt": "2026-09-24T09:03:25.344Z"
+  },
+  {
+    "tripId": "bb84018c-2304-49d6-97a2-1bd71d1b5824",
+    "pickupLocation": {
+      "lat": 10.77,
+      "lng": 106.7
+    },
+    "vehicleType": "4-seat",
+    "candidates": [
+      {
+        "driverId": "1fe2fa99-237f-4bbc-a2be-6eeeb0d9474f",
+        "distanceKm": 0.11119492664469463,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:19.560Z"
+      },
+      {
+        "driverId": "ff8e43fb-ce1c-422d-923c-cf422a3d2d83",
+        "distanceKm": 2.2238985328911274,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:22.580Z"
+      }
+    ],
+    "status": "no_driver_found",
+    "assignedDriverId": null,
+    "createdAt": "2026-09-24T09:03:19.552Z",
+    "updatedAt": "2026-09-24T09:03:25.606Z"
+  },
+  {
+    "tripId": "096ace96-3ea3-45a3-9cb2-cba255e05960",
+    "pickupLocation": {
+      "lat": 10.77,
+      "lng": 106.7
+    },
+    "vehicleType": "4-seat",
+    "candidates": [
+      {
+        "driverId": "1fe2fa99-237f-4bbc-a2be-6eeeb0d9474f",
+        "distanceKm": 0.11119492664469463,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:19.776Z"
+      },
+      {
+        "driverId": "ff8e43fb-ce1c-422d-923c-cf422a3d2d83",
+        "distanceKm": 2.2238985328911274,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:22.800Z"
+      }
+    ],
+    "status": "no_driver_found",
+    "assignedDriverId": null,
+    "createdAt": "2026-09-24T09:03:19.766Z",
+    "updatedAt": "2026-09-24T09:03:25.829Z"
+  },
+  {
+    "tripId": "63d0961c-a64e-4186-a1cd-f12c61782245",
+    "pickupLocation": {
+      "lat": 10.77,
+      "lng": 106.7
+    },
+    "vehicleType": "4-seat",
+    "candidates": [
+      {
+        "driverId": "1fe2fa99-237f-4bbc-a2be-6eeeb0d9474f",
+        "distanceKm": 0.11119492664469463,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:19.995Z"
+      },
+      {
+        "driverId": "ff8e43fb-ce1c-422d-923c-cf422a3d2d83",
+        "distanceKm": 2.2238985328911274,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:23.018Z"
+      }
+    ],
+    "status": "no_driver_found",
+    "assignedDriverId": null,
+    "createdAt": "2026-09-24T09:03:19.984Z",
+    "updatedAt": "2026-09-24T09:03:26.043Z"
+  },
+  {
+    "tripId": "0b6d9c81-9a7d-4e0a-bd04-4ed3eae9fc99",
+    "pickupLocation": {
+      "lat": 10.7769,
+      "lng": 106.7009
+    },
+    "vehicleType": "4-seat",
+    "candidates": [
+      {
+        "driverId": "1fe2fa99-237f-4bbc-a2be-6eeeb0d9474f",
+        "distanceKm": 0.6633753160684971,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:20.200Z"
+      },
+      {
+        "driverId": "ff8e43fb-ce1c-422d-923c-cf422a3d2d83",
+        "distanceKm": 1.4599671372728924,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:23.207Z"
+      }
+    ],
+    "status": "no_driver_found",
+    "assignedDriverId": null,
+    "createdAt": "2026-09-24T09:03:20.184Z",
+    "updatedAt": "2026-09-24T09:03:26.223Z"
+  },
+  {
+    "tripId": "5009e2b2-091a-465a-8289-1ce574111ad0",
+    "pickupLocation": {
+      "lat": 10.7769,
+      "lng": 106.7009
+    },
+    "vehicleType": "4-seat",
+    "candidates": [
+      {
+        "driverId": "1fe2fa99-237f-4bbc-a2be-6eeeb0d9474f",
+        "distanceKm": 0.6633753160684971,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:20.359Z"
+      },
+      {
+        "driverId": "ff8e43fb-ce1c-422d-923c-cf422a3d2d83",
+        "distanceKm": 1.4599671372728924,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:23.379Z"
+      }
+    ],
+    "status": "no_driver_found",
+    "assignedDriverId": null,
+    "createdAt": "2026-09-24T09:03:20.351Z",
+    "updatedAt": "2026-09-24T09:03:26.398Z"
+  },
+  {
+    "tripId": "3f03925e-7c93-4c14-b31a-aca00e2b00a1",
+    "pickupLocation": {
+      "lat": 10.7769,
+      "lng": 106.7009
+    },
+    "vehicleType": "4-seat",
+    "candidates": [
+      {
+        "driverId": "1fe2fa99-237f-4bbc-a2be-6eeeb0d9474f",
+        "distanceKm": 0.6633753160684971,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:20.528Z"
+      },
+      {
+        "driverId": "ff8e43fb-ce1c-422d-923c-cf422a3d2d83",
+        "distanceKm": 1.4599671372728924,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:23.547Z"
+      }
+    ],
+    "status": "no_driver_found",
+    "assignedDriverId": null,
+    "createdAt": "2026-09-24T09:03:20.521Z",
+    "updatedAt": "2026-09-24T09:03:26.564Z"
+  },
+  {
+    "tripId": "6ce63d44-7fb6-474a-a79f-e798de656f3f",
+    "pickupLocation": {
+      "lat": 10.77,
+      "lng": 106.7
+    },
+    "vehicleType": "4-seat",
+    "candidates": [
+      {
+        "driverId": "1fe2fa99-237f-4bbc-a2be-6eeeb0d9474f",
+        "distanceKm": 0.11119492664469463,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:21.060Z"
+      },
+      {
+        "driverId": "ff8e43fb-ce1c-422d-923c-cf422a3d2d83",
+        "distanceKm": 2.2238985328911274,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:24.071Z"
+      }
+    ],
+    "status": "no_driver_found",
+    "assignedDriverId": null,
+    "createdAt": "2026-09-24T09:03:21.052Z",
+    "updatedAt": "2026-09-24T09:03:27.098Z"
+  },
+  {
+    "tripId": "4c1c872d-77ca-4b1e-b3ff-d69a9e8d64e1",
+    "pickupLocation": {
+      "lat": 10.7769,
+      "lng": 106.7009
+    },
+    "vehicleType": "4-seat",
+    "candidates": [
+      {
+        "driverId": "1fe2fa99-237f-4bbc-a2be-6eeeb0d9474f",
+        "distanceKm": 0.6633753160684971,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:21.509Z"
+      },
+      {
+        "driverId": "ff8e43fb-ce1c-422d-923c-cf422a3d2d83",
+        "distanceKm": 1.4599671372728924,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:24.532Z"
+      }
+    ],
+    "status": "no_driver_found",
+    "assignedDriverId": null,
+    "createdAt": "2026-09-24T09:03:21.500Z",
+    "updatedAt": "2026-09-24T09:03:27.554Z"
+  },
+  {
+    "tripId": "0df98460-1a37-49f5-a67c-29f91e87a270",
+    "pickupLocation": {
+      "lat": 10.7769,
+      "lng": 106.7009
+    },
+    "vehicleType": "4-seat",
+    "candidates": [
+      {
+        "driverId": "1fe2fa99-237f-4bbc-a2be-6eeeb0d9474f",
+        "distanceKm": 0.6633753160684971,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:22.615Z"
+      },
+      {
+        "driverId": "ff8e43fb-ce1c-422d-923c-cf422a3d2d83",
+        "distanceKm": 1.4599671372728924,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:25.635Z"
+      }
+    ],
+    "status": "no_driver_found",
+    "assignedDriverId": null,
+    "createdAt": "2026-09-24T09:03:22.602Z",
+    "updatedAt": "2026-09-24T09:03:28.655Z"
+  },
+  {
+    "tripId": "49970be6-c536-4fe8-bfe6-ce94a5153eee",
+    "pickupLocation": {
+      "lat": 10.77,
+      "lng": 106.7
+    },
+    "vehicleType": "4-seat",
+    "candidates": [
+      {
+        "driverId": "1fe2fa99-237f-4bbc-a2be-6eeeb0d9474f",
+        "distanceKm": 0.11119492664469463,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:22.758Z"
+      },
+      {
+        "driverId": "ff8e43fb-ce1c-422d-923c-cf422a3d2d83",
+        "distanceKm": 2.2238985328911274,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:25.783Z"
+      }
+    ],
+    "status": "no_driver_found",
+    "assignedDriverId": null,
+    "createdAt": "2026-09-24T09:03:22.751Z",
+    "updatedAt": "2026-09-24T09:03:28.815Z"
+  },
+  {
+    "tripId": "53fe0e0e-09b2-4877-87fe-9042e4abedb4",
+    "pickupLocation": {
+      "lat": 10.77,
+      "lng": 106.7
+    },
+    "vehicleType": "4-seat",
+    "candidates": [
+      {
+        "driverId": "1fe2fa99-237f-4bbc-a2be-6eeeb0d9474f",
+        "distanceKm": 0.11119492664469463,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:22.939Z"
+      },
+      {
+        "driverId": "ff8e43fb-ce1c-422d-923c-cf422a3d2d83",
+        "distanceKm": 2.2238985328911274,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:25.963Z"
+      }
+    ],
+    "status": "no_driver_found",
+    "assignedDriverId": null,
+    "createdAt": "2026-09-24T09:03:22.932Z",
+    "updatedAt": "2026-09-24T09:03:28.992Z"
+  },
+  {
+    "tripId": "7d13c71f-beda-4ea3-9b62-463f4abfc1f0",
+    "pickupLocation": {
+      "lat": 10.77,
+      "lng": 106.7
+    },
+    "vehicleType": "4-seat",
+    "candidates": [
+      {
+        "driverId": "1fe2fa99-237f-4bbc-a2be-6eeeb0d9474f",
+        "distanceKm": 0.11119492664469463,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:23.224Z"
+      },
+      {
+        "driverId": "ff8e43fb-ce1c-422d-923c-cf422a3d2d83",
+        "distanceKm": 2.2238985328911274,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:26.250Z"
+      }
+    ],
+    "status": "no_driver_found",
+    "assignedDriverId": null,
+    "createdAt": "2026-09-24T09:03:23.208Z",
+    "updatedAt": "2026-09-24T09:03:29.280Z"
+  },
+  {
+    "tripId": "f1326041-3ee0-408b-ace8-565c6932112a",
+    "pickupLocation": {
+      "lat": 10.77,
+      "lng": 106.7
+    },
+    "vehicleType": "4-seat",
+    "candidates": [
+      {
+        "driverId": "1fe2fa99-237f-4bbc-a2be-6eeeb0d9474f",
+        "distanceKm": 0.11119492664469463,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:23.507Z"
+      },
+      {
+        "driverId": "ff8e43fb-ce1c-422d-923c-cf422a3d2d83",
+        "distanceKm": 2.2238985328911274,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:26.526Z"
+      }
+    ],
+    "status": "no_driver_found",
+    "assignedDriverId": null,
+    "createdAt": "2026-09-24T09:03:23.500Z",
+    "updatedAt": "2026-09-24T09:03:29.552Z"
+  },
+  {
+    "tripId": "602e985d-aea0-4a37-bb6a-1db16fe2141c",
+    "pickupLocation": {
+      "lat": 10.7769,
+      "lng": 106.7009
+    },
+    "vehicleType": "4-seat",
+    "candidates": [
+      {
+        "driverId": "1fe2fa99-237f-4bbc-a2be-6eeeb0d9474f",
+        "distanceKm": 0.6633753160684971,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:23.794Z"
+      },
+      {
+        "driverId": "ff8e43fb-ce1c-422d-923c-cf422a3d2d83",
+        "distanceKm": 1.4599671372728924,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:26.817Z"
+      }
+    ],
+    "status": "no_driver_found",
+    "assignedDriverId": null,
+    "createdAt": "2026-09-24T09:03:23.784Z",
+    "updatedAt": "2026-09-24T09:03:29.849Z"
+  },
+  {
+    "tripId": "fbf77f8a-dc09-4c30-b9b7-0f54be8ffc5a",
+    "pickupLocation": {
+      "lat": 10.7769,
+      "lng": 106.7009
+    },
+    "vehicleType": "4-seat",
+    "candidates": [
+      {
+        "driverId": "1fe2fa99-237f-4bbc-a2be-6eeeb0d9474f",
+        "distanceKm": 0.6633753160684971,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:24.092Z"
+      },
+      {
+        "driverId": "ff8e43fb-ce1c-422d-923c-cf422a3d2d83",
+        "distanceKm": 1.4599671372728924,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:27.129Z"
+      }
+    ],
+    "status": "no_driver_found",
+    "assignedDriverId": null,
+    "createdAt": "2026-09-24T09:03:24.084Z",
+    "updatedAt": "2026-09-24T09:03:30.150Z"
+  },
+  {
+    "tripId": "cb5346bc-bf44-4ace-a989-abf28d484e69",
+    "pickupLocation": {
+      "lat": 10.7769,
+      "lng": 106.7009
+    },
+    "vehicleType": "4-seat",
+    "candidates": [
+      {
+        "driverId": "1fe2fa99-237f-4bbc-a2be-6eeeb0d9474f",
+        "distanceKm": 0.6633753160684971,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:24.176Z"
+      },
+      {
+        "driverId": "ff8e43fb-ce1c-422d-923c-cf422a3d2d83",
+        "distanceKm": 1.4599671372728924,
+        "status": "timeout",
+        "offeredAt": "2026-09-24T09:03:27.189Z"
+      }
+    ],
+    "status": "no_driver_found",
+    "assignedDriverId": null,
+    "createdAt": "2026-09-24T09:03:24.168Z",
+    "updatedAt": "2026-09-24T09:03:30.216Z"
+  }
+]

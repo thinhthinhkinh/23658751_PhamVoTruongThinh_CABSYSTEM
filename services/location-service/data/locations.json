@@ -1,0 +1,92 @@
+[
+  {
+    "driverId": "1fe2fa99-237f-4bbc-a2be-6eeeb0d9474f",
+    "lat": 10.771,
+    "lng": 106.7,
+    "updatedAt": "2026-09-24T09:03:05.597Z"
+  },
+  {
+    "driverId": "ff8e43fb-ce1c-422d-923c-cf422a3d2d83",
+    "lat": 10.79,
+    "lng": 106.7,
+    "updatedAt": "2026-09-24T09:03:05.667Z"
+  },
+  {
+    "driverId": "fee2ab0c-1aa3-444a-89d5-7e7dfc48813e",
+    "lat": 21.771,
+    "lng": 106.7,
+    "updatedAt": "2026-09-24T09:03:07.061Z"
+  },
+  {
+    "driverId": "e64aa597-7993-46af-964c-1be311741a58",
+    "lat": 21.79,
+    "lng": 106.7,
+    "updatedAt": "2026-09-24T09:03:07.132Z"
+  },
+  {
+    "driverId": "120bd3f8-8cb1-4f74-86b2-6b2f010b1cb3",
+    "lat": 22.771,
+    "lng": 106.7,
+    "updatedAt": "2026-09-24T09:03:12.293Z"
+  },
+  {
+    "driverId": "00571b67-6969-4293-99d0-b167ae072cea",
+    "lat": 22.79,
+    "lng": 106.7,
+    "updatedAt": "2026-09-24T09:03:12.353Z"
+  },
+  {
+    "driverId": "7ce4ca62-d860-4ba2-aede-ac7942a328a6",
+    "lat": 24.771,
+    "lng": 106.7,
+    "updatedAt": "2026-09-24T09:03:14.306Z"
+  },
+  {
+    "driverId": "c852f32d-68ea-4b05-865c-b1b347cf5eb7",
+    "lat": 23.771,
+    "lng": 106.7,
+    "updatedAt": "2026-09-24T09:03:17.441Z"
+  },
+  {
+    "driverId": "3656a252-7f88-4802-9a1e-2de5eaae0d07",
+    "lat": 23.85,
+    "lng": 106.7,
+    "updatedAt": "2026-09-24T09:03:17.497Z"
+  },
+  {
+    "driverId": "c857f16f-4d07-4758-8afe-fdc71dc5dbb7",
+    "lat": 10.771,
+    "lng": 106.7,
+    "updatedAt": "2026-09-24T09:03:22.018Z"
+  },
+  {
+    "driverId": "298a674c-5cf6-4fb1-8286-80e23f7718e6",
+    "lat": 10.775,
+    "lng": 106.7,
+    "updatedAt": "2026-09-24T09:03:22.026Z"
+  },
+  {
+    "driverId": "bff69a12-d7b7-4196-a5d8-a6ae1eb13304",
+    "lat": 10.78,
+    "lng": 106.7,
+    "updatedAt": "2026-09-24T09:03:22.034Z"
+  },
+  {
+    "driverId": "8402b900-dbef-4037-92b5-97473cd67b5e",
+    "lat": 10.7745,
+    "lng": 106.7,
+    "updatedAt": "2026-09-24T09:03:24.225Z"
+  },
+  {
+    "driverId": "351573c1-c2ac-49f1-9206-1fbde946d88d",
+    "lat": 10.815,
+    "lng": 106.7,
+    "updatedAt": "2026-09-24T09:03:24.234Z"
+  },
+  {
+    "driverId": "56b58a24-b3a4-4970-93fa-3a0baf00fec1",
+    "lat": 10.7769,
+    "lng": 106.7009,
+    "updatedAt": "2026-09-24T09:03:24.539Z"
+  }
+]

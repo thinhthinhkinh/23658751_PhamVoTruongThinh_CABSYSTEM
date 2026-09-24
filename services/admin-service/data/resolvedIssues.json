@@ -1,0 +1,23 @@
+[
+  {
+    "id": "17097e33-a696-4015-92b7-1143d0cba126",
+    "tripId": "6dd86dd0-9b52-4947-956d-8585bf0590fd",
+    "resolutionNote": "Đã liên hệ tài xế, chuyến tiếp tục bình thường",
+    "resolvedBy": "staff-test-1",
+    "resolvedAt": "2026-09-10T10:12:18.513Z"
+  },
+  {
+    "id": "acdfc32b-1d8c-451d-9aea-c8545d4950d1",
+    "tripId": "5f4a8746-38e6-4592-ba0b-9744f5794a43",
+    "resolutionNote": "Đã liên hệ tài xế, chuyến tiếp tục bình thường",
+    "resolvedBy": "staff-test-1",
+    "resolvedAt": "2026-09-24T09:00:45.058Z"
+  },
+  {
+    "id": "741dbd7c-0c5c-4299-88c0-7ddc920b7ff5",
+    "tripId": "096ace96-3ea3-45a3-9cb2-cba255e05960",
+    "resolutionNote": "Đã liên hệ tài xế, chuyến tiếp tục bình thường",
+    "resolvedBy": "staff-test-1",
+    "resolvedAt": "2026-09-24T09:03:19.851Z"
+  }
+]

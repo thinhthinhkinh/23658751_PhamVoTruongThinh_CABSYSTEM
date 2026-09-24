@@ -1,0 +1,25 @@
+[
+  {
+    "name": "Push notification (app)",
+    "type": "push"
+  },
+  {
+    "name": "SMS",
+    "type": "sms"
+  },
+  {
+    "name": "Zalo OA",
+    "type": "zalo",
+    "addedAt": "2026-09-10T10:12:23.255Z"
+  },
+  {
+    "name": "Zalo OA",
+    "type": "zalo",
+    "addedAt": "2026-09-24T09:00:58.045Z"
+  },
+  {
+    "name": "Zalo OA",
+    "type": "zalo",
+    "addedAt": "2026-09-24T09:03:23.570Z"
+  }
+]

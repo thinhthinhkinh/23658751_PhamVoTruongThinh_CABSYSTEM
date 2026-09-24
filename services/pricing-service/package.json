@@ -1,0 +1,17 @@
+{
+  "name": "pricing-service",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tính cước chuyến đi theo loại dịch vụ & thông tin chuyến (FR-14)",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "jsonwebtoken": "^9.0.2"
+  }
+}

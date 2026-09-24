@@ -1,0 +1,1892 @@
+[
+  {
+    "id": "f47f9ea9-b7ec-4c73-bb93-468a5fbc91e0",
+    "userId": "631a1683-0b6f-4557-8ea8-f5b70638b142",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-10T10:12:10.291Z"
+  },
+  {
+    "id": "ec41699b-7051-4625-ad05-e894921dcc3a",
+    "userId": "62edeb4a-330c-408b-82ec-4afb68911482",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-10T10:12:10.985Z"
+  },
+  {
+    "id": "9a891f21-ba6e-4bfc-8043-de79b2dc2c2c",
+    "userId": "6a40bdc0-1e09-4762-86ea-119ea2f313d1",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-10T10:12:14.296Z"
+  },
+  {
+    "id": "15604184-8b89-4f7d-b377-816bb0fca68f",
+    "userId": "258b78ac-9ae3-4904-bdc4-993f26e6853b",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Đã tìm thấy tài xế",
+    "body": "Tài xế đang trên đường đến đón bạn, dự kiến đến sau 1 phút.",
+    "sentAt": "2026-09-10T10:12:14.420Z"
+  },
+  {
+    "id": "ffd04fd7-35d3-4673-8dbd-c046fb6b68c6",
+    "userId": "87ab7209-d325-4d72-a451-7054c3f231bf",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-10T10:12:15.053Z"
+  },
+  {
+    "id": "b88d6cfd-585f-48b9-bc27-2f236d595327",
+    "userId": "ce197c5d-6932-43ce-8b95-3df2e0160c60",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Thanh toán thành công",
+    "body": "Thanh toán cho chuyến của bạn (cash) đã hoàn tất.",
+    "sentAt": "2026-09-10T10:12:18.069Z"
+  },
+  {
+    "id": "ee58b4e5-f2ca-4b86-804f-04abcea494c2",
+    "userId": "a9daa9ed-3895-4a5d-98b1-892810193871",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Thanh toán thành công",
+    "body": "Thanh toán cho chuyến của bạn (cash) đã hoàn tất.",
+    "sentAt": "2026-09-10T10:12:18.113Z"
+  },
+  {
+    "id": "9656207f-e865-4beb-b59b-b9048731da2c",
+    "userId": "c43803fc-20e1-4af6-b19e-ce17c3348607",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đến điểm đón",
+    "sentAt": "2026-09-10T10:12:18.194Z"
+  },
+  {
+    "id": "d04107e7-2745-4038-a369-1fc30adf9cc0",
+    "userId": "c43803fc-20e1-4af6-b19e-ce17c3348607",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đón bạn, chuyến đi bắt đầu",
+    "sentAt": "2026-09-10T10:12:18.209Z"
+  },
+  {
+    "id": "1b03e666-ca51-4bad-aa9e-d151d88847e7",
+    "userId": "c43803fc-20e1-4af6-b19e-ce17c3348607",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Chuyến đi đang diễn ra",
+    "sentAt": "2026-09-10T10:12:18.228Z"
+  },
+  {
+    "id": "639e0053-40f4-4922-b315-d3b0124ec726",
+    "userId": "c43803fc-20e1-4af6-b19e-ce17c3348607",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Cảm ơn bạn đã sử dụng dịch vụ. Vui lòng đánh giá tài xế.",
+    "sentAt": "2026-09-10T10:12:18.263Z"
+  },
+  {
+    "id": "a8a3e2c1-5456-4ce7-9ee9-1b1180015436",
+    "userId": "fd20bd73-ef3a-44e9-8344-30a023fe01cb",
+    "userRole": "driver",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Bạn đã hoàn thành chuyến đi.",
+    "sentAt": "2026-09-10T10:12:18.263Z"
+  },
+  {
+    "id": "a4815498-5e21-44b5-a827-a9189ee32a54",
+    "userId": "091f10c4-7c43-444f-98ad-389bdddfce80",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đến điểm đón",
+    "sentAt": "2026-09-10T10:12:18.446Z"
+  },
+  {
+    "id": "73a8e3ad-1136-4333-8353-922cd3dd2c0a",
+    "userId": "091f10c4-7c43-444f-98ad-389bdddfce80",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đón bạn, chuyến đi bắt đầu",
+    "sentAt": "2026-09-10T10:12:18.449Z"
+  },
+  {
+    "id": "6524cce8-8d2c-43ec-8ce4-b9b913457961",
+    "userId": "091f10c4-7c43-444f-98ad-389bdddfce80",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Chuyến đi đang diễn ra",
+    "sentAt": "2026-09-10T10:12:18.457Z"
+  },
+  {
+    "id": "b12f706a-15a5-4b0b-810e-dd30a6f6ff38",
+    "userId": "091f10c4-7c43-444f-98ad-389bdddfce80",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Cảm ơn bạn đã sử dụng dịch vụ. Vui lòng đánh giá tài xế.",
+    "sentAt": "2026-09-10T10:12:18.495Z"
+  },
+  {
+    "id": "d8c86c95-6b9b-427a-91b0-3fec26079e0d",
+    "userId": "40c21168-06bc-4ddd-aacb-e9fd83ba0164",
+    "userRole": "driver",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Bạn đã hoàn thành chuyến đi.",
+    "sentAt": "2026-09-10T10:12:18.496Z"
+  },
+  {
+    "id": "cd250687-4cda-40e2-af57-57e531ba0bc0",
+    "userId": "d7561905-0ffa-4edd-a94f-fc61e3b047a0",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đến điểm đón",
+    "sentAt": "2026-09-10T10:12:18.627Z"
+  },
+  {
+    "id": "897f5ed9-742e-4a69-a13a-b4fb2148538a",
+    "userId": "d7561905-0ffa-4edd-a94f-fc61e3b047a0",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đón bạn, chuyến đi bắt đầu",
+    "sentAt": "2026-09-10T10:12:18.645Z"
+  },
+  {
+    "id": "4b68deb7-7089-4fe8-833f-9c52f2b831ac",
+    "userId": "d7561905-0ffa-4edd-a94f-fc61e3b047a0",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Chuyến đi đang diễn ra",
+    "sentAt": "2026-09-10T10:12:18.662Z"
+  },
+  {
+    "id": "097834b9-2611-4609-93e3-45e563e8ee48",
+    "userId": "d7561905-0ffa-4edd-a94f-fc61e3b047a0",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Cảm ơn bạn đã sử dụng dịch vụ. Vui lòng đánh giá tài xế.",
+    "sentAt": "2026-09-10T10:12:18.711Z"
+  },
+  {
+    "id": "dfebce7d-bb5f-420a-8216-a58acb85f8d8",
+    "userId": "1a0f3d88-7e65-477b-b433-7fa0a81a7fe9",
+    "userRole": "driver",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Bạn đã hoàn thành chuyến đi.",
+    "sentAt": "2026-09-10T10:12:18.712Z"
+  },
+  {
+    "id": "6c282299-22cf-46a9-85f8-f8ef027b5a2f",
+    "userId": "2a7dec84-461d-42ff-86fe-e2adef8b8956",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đến điểm đón",
+    "sentAt": "2026-09-10T10:12:18.828Z"
+  },
+  {
+    "id": "f5dc1ca2-db26-41fa-bb5b-28857a54a42d",
+    "userId": "2a7dec84-461d-42ff-86fe-e2adef8b8956",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đón bạn, chuyến đi bắt đầu",
+    "sentAt": "2026-09-10T10:12:18.844Z"
+  },
+  {
+    "id": "d2c79488-944b-4536-88be-bea911b00200",
+    "userId": "2a7dec84-461d-42ff-86fe-e2adef8b8956",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Chuyến đi đang diễn ra",
+    "sentAt": "2026-09-10T10:12:18.860Z"
+  },
+  {
+    "id": "0d7744f8-88fa-4cf3-89e7-d3c6bd10687c",
+    "userId": "2a7dec84-461d-42ff-86fe-e2adef8b8956",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Cảm ơn bạn đã sử dụng dịch vụ. Vui lòng đánh giá tài xế.",
+    "sentAt": "2026-09-10T10:12:18.912Z"
+  },
+  {
+    "id": "7106891e-c847-4e88-95a7-34fb11d4f556",
+    "userId": "9917d65d-a131-43c2-aa16-e8f8e8151acc",
+    "userRole": "driver",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Bạn đã hoàn thành chuyến đi.",
+    "sentAt": "2026-09-10T10:12:18.914Z"
+  },
+  {
+    "id": "0c48189c-bb5c-4f63-b438-42e156c49ae1",
+    "userId": "9445fd4f-0218-422a-97fe-d53398f7fc77",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đến điểm đón",
+    "sentAt": "2026-09-10T10:12:19.043Z"
+  },
+  {
+    "id": "3078ee20-c329-4e05-b2ca-84f51a57f07e",
+    "userId": "9445fd4f-0218-422a-97fe-d53398f7fc77",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đón bạn, chuyến đi bắt đầu",
+    "sentAt": "2026-09-10T10:12:19.061Z"
+  },
+  {
+    "id": "24c896f5-1c54-455d-845d-6f54ec40c616",
+    "userId": "9445fd4f-0218-422a-97fe-d53398f7fc77",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Chuyến đi đang diễn ra",
+    "sentAt": "2026-09-10T10:12:19.080Z"
+  },
+  {
+    "id": "ba7f97bb-5cca-4806-907f-f019b1a05c5d",
+    "userId": "9445fd4f-0218-422a-97fe-d53398f7fc77",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Cảm ơn bạn đã sử dụng dịch vụ. Vui lòng đánh giá tài xế.",
+    "sentAt": "2026-09-10T10:12:19.126Z"
+  },
+  {
+    "id": "a6925abb-c4ce-4a51-a9b4-3d1c40a2161e",
+    "userId": "0127f76e-daf3-4381-b09b-534519a1b79f",
+    "userRole": "driver",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Bạn đã hoàn thành chuyến đi.",
+    "sentAt": "2026-09-10T10:12:19.127Z"
+  },
+  {
+    "id": "c246f7d2-1cef-4748-94f9-0756f359bd33",
+    "userId": "31f6bab0-e7c1-45c5-a977-0d13c0c9d101",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đến điểm đón",
+    "sentAt": "2026-09-10T10:12:19.226Z"
+  },
+  {
+    "id": "c9d3d06d-09dd-4507-abdc-0f9899f9ccc9",
+    "userId": "31f6bab0-e7c1-45c5-a977-0d13c0c9d101",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đón bạn, chuyến đi bắt đầu",
+    "sentAt": "2026-09-10T10:12:19.237Z"
+  },
+  {
+    "id": "a9e6b0a2-9c45-4868-8f49-56a3bf0d5aa8",
+    "userId": "31f6bab0-e7c1-45c5-a977-0d13c0c9d101",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Chuyến đi đang diễn ra",
+    "sentAt": "2026-09-10T10:12:19.250Z"
+  },
+  {
+    "id": "9fc4cf57-4ac8-4c33-9ae0-2029bd55812f",
+    "userId": "31f6bab0-e7c1-45c5-a977-0d13c0c9d101",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Cảm ơn bạn đã sử dụng dịch vụ. Vui lòng đánh giá tài xế.",
+    "sentAt": "2026-09-10T10:12:19.295Z"
+  },
+  {
+    "id": "09218004-558c-4607-961a-9adae797ff87",
+    "userId": "2a372e9c-eeed-4796-81cc-946f712e84da",
+    "userRole": "driver",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Bạn đã hoàn thành chuyến đi.",
+    "sentAt": "2026-09-10T10:12:19.296Z"
+  },
+  {
+    "id": "3bbe2f45-6de2-4f8b-8936-ed709629767e",
+    "userId": "a55d0472-baae-4a9d-9218-61fcc9010285",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đến điểm đón",
+    "sentAt": "2026-09-10T10:12:19.397Z"
+  },
+  {
+    "id": "4b7a5e14-1ea2-4573-a8fd-40f8c1785972",
+    "userId": "a55d0472-baae-4a9d-9218-61fcc9010285",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đón bạn, chuyến đi bắt đầu",
+    "sentAt": "2026-09-10T10:12:19.400Z"
+  },
+  {
+    "id": "16563ea2-d83e-4cfa-bbb4-34d03b7d69f7",
+    "userId": "a55d0472-baae-4a9d-9218-61fcc9010285",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Chuyến đi đang diễn ra",
+    "sentAt": "2026-09-10T10:12:19.431Z"
+  },
+  {
+    "id": "8afdd1e0-f1a0-4c4c-9ed9-b6de8181d6c8",
+    "userId": "a55d0472-baae-4a9d-9218-61fcc9010285",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Cảm ơn bạn đã sử dụng dịch vụ. Vui lòng đánh giá tài xế.",
+    "sentAt": "2026-09-10T10:12:19.444Z"
+  },
+  {
+    "id": "7f740bcd-8776-4967-9780-e064d9d3cea5",
+    "userId": "bfd4e4fd-a269-41a4-884d-94858062b9ab",
+    "userRole": "driver",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Bạn đã hoàn thành chuyến đi.",
+    "sentAt": "2026-09-10T10:12:19.445Z"
+  },
+  {
+    "id": "fbd00f5e-3d62-4501-95e6-c79f24b8b36a",
+    "userId": "d0cf129a-1526-47e5-83e1-b675f6c121fb",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đến điểm đón",
+    "sentAt": "2026-09-10T10:12:20.111Z"
+  },
+  {
+    "id": "803a10a5-a463-4a74-a4f3-6485c5e03b22",
+    "userId": "d0cf129a-1526-47e5-83e1-b675f6c121fb",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đón bạn, chuyến đi bắt đầu",
+    "sentAt": "2026-09-10T10:12:20.127Z"
+  },
+  {
+    "id": "181a373d-b6c2-49f0-8c56-607c459e2f0b",
+    "userId": "d0cf129a-1526-47e5-83e1-b675f6c121fb",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Chuyến đi đang diễn ra",
+    "sentAt": "2026-09-10T10:12:20.138Z"
+  },
+  {
+    "id": "2c1f9a80-de39-4827-90c7-d81ca5e7aaa1",
+    "userId": "20eca6d6-8b32-48aa-a73a-f5d8faa3ecd6",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Cảm ơn bạn đã sử dụng dịch vụ. Vui lòng đánh giá tài xế.",
+    "sentAt": "2026-09-10T10:12:20.795Z"
+  },
+  {
+    "id": "f4cf570a-bd13-4f56-9a8f-35763076a4c4",
+    "userId": "50923295-8cde-458d-972d-1681e44472ee",
+    "userRole": "driver",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Bạn đã hoàn thành chuyến đi.",
+    "sentAt": "2026-09-10T10:12:20.796Z"
+  },
+  {
+    "id": "1d98b727-09fe-4dc2-b1d9-df5b926ba424",
+    "userId": "fd35280d-2531-4f9f-ae98-02b99c265ec2",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Đã tìm thấy tài xế",
+    "body": "Tài xế đang trên đường đến đón bạn, dự kiến đến sau 5 phút.",
+    "sentAt": "2026-09-10T10:12:21.263Z"
+  },
+  {
+    "id": "da08696b-9fc4-4125-9c0e-f1e55ee016a0",
+    "userId": "f1800cca-daa6-4872-aee3-9f7b01c690a3",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Thanh toán thất bại",
+    "body": "Giao dịch thất bại: Ngân hàng từ chối giao dịch (mô phỏng).",
+    "sentAt": "2026-09-10T10:12:21.510Z"
+  },
+  {
+    "id": "7c7c2b36-b41e-4b5c-8581-a94fd645c37e",
+    "userId": "eecef2ed-ae18-4a9a-879e-42b1e87b89ba",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-10T10:12:22.471Z"
+  },
+  {
+    "id": "ce2aaf72-1e2e-405d-8112-3b23d380b414",
+    "userId": "187581a8-d34d-4506-81d8-4d57ed73143c",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-10T10:12:23.545Z"
+  },
+  {
+    "id": "a2979179-53e9-4075-a1ae-c9064d12cf19",
+    "userId": "ce197c5d-6932-43ce-8b95-3df2e0160c60",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-10T10:12:24.122Z"
+  },
+  {
+    "id": "6c44cb68-cf34-4ce1-be66-0ac4ab3610a9",
+    "userId": "a9daa9ed-3895-4a5d-98b1-892810193871",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-10T10:12:24.153Z"
+  },
+  {
+    "id": "5fc6c7be-eb23-4a21-8ddb-90a67e2bafc3",
+    "userId": "c43803fc-20e1-4af6-b19e-ce17c3348607",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-10T10:12:24.279Z"
+  },
+  {
+    "id": "7c3d9b80-6022-4048-acc5-83107aca7eba",
+    "userId": "091f10c4-7c43-444f-98ad-389bdddfce80",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-10T10:12:24.531Z"
+  },
+  {
+    "id": "1f3a4186-cdc1-4eca-a6d2-41f642b25c0d",
+    "userId": "d7561905-0ffa-4edd-a94f-fc61e3b047a0",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-10T10:12:24.759Z"
+  },
+  {
+    "id": "d33d6417-700f-41e7-a6d1-27d8d299c42a",
+    "userId": "2a7dec84-461d-42ff-86fe-e2adef8b8956",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-10T10:12:24.899Z"
+  },
+  {
+    "id": "7a786c97-bf79-4b7c-8479-9528efe58240",
+    "userId": "9445fd4f-0218-422a-97fe-d53398f7fc77",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-10T10:12:25.148Z"
+  },
+  {
+    "id": "41d6582f-beaa-4880-9c34-93a3b747ae5d",
+    "userId": "31f6bab0-e7c1-45c5-a977-0d13c0c9d101",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-10T10:12:25.308Z"
+  },
+  {
+    "id": "110677c6-fa2c-4cd8-b209-1fc539e85aac",
+    "userId": "a55d0472-baae-4a9d-9218-61fcc9010285",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-10T10:12:25.498Z"
+  },
+  {
+    "id": "2cdf709a-e858-46c6-9cdf-2b806d87a3cd",
+    "userId": "d0cf129a-1526-47e5-83e1-b675f6c121fb",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-10T10:12:26.228Z"
+  },
+  {
+    "id": "c2fdaebb-4018-4616-af13-48a0f7e6bf7a",
+    "userId": "20eca6d6-8b32-48aa-a73a-f5d8faa3ecd6",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-10T10:12:26.916Z"
+  },
+  {
+    "id": "9e64d6d7-4d14-4414-846c-add62dcf1a87",
+    "userId": "fd35280d-2531-4f9f-ae98-02b99c265ec2",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-10T10:12:27.347Z"
+  },
+  {
+    "id": "4d44f1d8-bb90-43bb-83d1-1b2bef36341b",
+    "userId": "f1800cca-daa6-4872-aee3-9f7b01c690a3",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-10T10:12:27.623Z"
+  },
+  {
+    "id": "44dcaf8a-c118-460d-936c-452a501992e6",
+    "userId": "f58c9a3d-3a58-4641-afdb-f22fa5558473",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-10T10:12:27.751Z"
+  },
+  {
+    "id": "e595924c-4ae3-4342-8e75-2570950fbe99",
+    "userId": "2d6602c4-ee55-4bb6-bf0f-b733ae712c48",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-10T10:12:27.791Z"
+  },
+  {
+    "id": "c7c908c3-e3c0-468f-bd7f-b3a0a7e880c1",
+    "userId": "14906ea1-f887-432b-8b48-bd9c5aaa3486",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-10T10:12:28.561Z"
+  },
+  {
+    "id": "1498b57c-3c87-42f1-8eb3-316a9329f091",
+    "userId": "e3d19db8-1830-4c0c-b930-6a98906832a3",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-10T10:12:28.854Z"
+  },
+  {
+    "id": "0aa80ad3-a251-43c2-97f5-e825ba1a49a8",
+    "userId": "a8b42579-b047-439f-9830-c45ae9102997",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-10T10:12:28.924Z"
+  },
+  {
+    "id": "9920c77e-cc1f-42af-9891-58bac93ce8bc",
+    "userId": "c397e2dd-f9f2-46f3-ad15-ee6308faf4c6",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-10T10:12:29.118Z"
+  },
+  {
+    "id": "9d8ab58d-eeab-440f-a853-cb841219cdfd",
+    "userId": "a70d9365-cead-4271-9175-531f9b3c921c",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Thanh toán thành công",
+    "body": "Thanh toán cho chuyến của bạn (cash) đã hoàn tất.",
+    "sentAt": "2026-09-24T09:00:42.872Z"
+  },
+  {
+    "id": "8867eea6-fa53-425f-8281-fb3019e12fb5",
+    "userId": "d63687c9-b803-4831-b82e-1339caa8a5e9",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Thanh toán thành công",
+    "body": "Thanh toán cho chuyến của bạn (cash) đã hoàn tất.",
+    "sentAt": "2026-09-24T09:00:42.936Z"
+  },
+  {
+    "id": "467fef66-e55f-4137-ac87-e8cb9842d627",
+    "userId": "80fddb8d-366e-45ab-b42b-96f55e1af65f",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Cảm ơn bạn đã sử dụng dịch vụ. Vui lòng đánh giá tài xế.",
+    "sentAt": "2026-09-24T09:00:44.462Z"
+  },
+  {
+    "id": "27204259-a616-4112-b8e6-8cd18a08628a",
+    "userId": "71474a84-0c27-48c7-ba6f-84f7607de91b",
+    "userRole": "driver",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Bạn đã hoàn thành chuyến đi.",
+    "sentAt": "2026-09-24T09:00:44.463Z"
+  },
+  {
+    "id": "712d5a9e-1b33-4a55-beaf-8e4849182570",
+    "userId": "f53e0237-c287-44c0-b9ab-2ada2efad7cb",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đến điểm đón",
+    "sentAt": "2026-09-24T09:00:44.642Z"
+  },
+  {
+    "id": "977796ab-a1d8-4ee3-bc74-8bd4e91031fb",
+    "userId": "f53e0237-c287-44c0-b9ab-2ada2efad7cb",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đón bạn, chuyến đi bắt đầu",
+    "sentAt": "2026-09-24T09:00:44.648Z"
+  },
+  {
+    "id": "f748f3c9-4667-4147-bc63-8205d15510a9",
+    "userId": "f53e0237-c287-44c0-b9ab-2ada2efad7cb",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Chuyến đi đang diễn ra",
+    "sentAt": "2026-09-24T09:00:44.668Z"
+  },
+  {
+    "id": "59002116-f44b-4424-a40a-274a51c78fe9",
+    "userId": "f53e0237-c287-44c0-b9ab-2ada2efad7cb",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Cảm ơn bạn đã sử dụng dịch vụ. Vui lòng đánh giá tài xế.",
+    "sentAt": "2026-09-24T09:00:44.706Z"
+  },
+  {
+    "id": "6ab8eabb-a9ed-4bc2-9cf3-6ffb210863c8",
+    "userId": "eb98a29f-a9a6-4d82-86f3-8b277f73831f",
+    "userRole": "driver",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Bạn đã hoàn thành chuyến đi.",
+    "sentAt": "2026-09-24T09:00:44.708Z"
+  },
+  {
+    "id": "b710cb6b-27b8-4625-b2e1-ff442812a734",
+    "userId": "020795a2-8ae4-4fec-a6ae-48a4832a3840",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đến điểm đón",
+    "sentAt": "2026-09-24T09:00:44.961Z"
+  },
+  {
+    "id": "3979def7-3514-4d09-9bbd-514b7daf9c16",
+    "userId": "020795a2-8ae4-4fec-a6ae-48a4832a3840",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đón bạn, chuyến đi bắt đầu",
+    "sentAt": "2026-09-24T09:00:44.979Z"
+  },
+  {
+    "id": "9e65031d-ede1-4bdd-8898-a47d57cf27e1",
+    "userId": "020795a2-8ae4-4fec-a6ae-48a4832a3840",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Chuyến đi đang diễn ra",
+    "sentAt": "2026-09-24T09:00:44.993Z"
+  },
+  {
+    "id": "a43e1e9c-927b-4894-b1c0-d0e4168b7b0a",
+    "userId": "020795a2-8ae4-4fec-a6ae-48a4832a3840",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Cảm ơn bạn đã sử dụng dịch vụ. Vui lòng đánh giá tài xế.",
+    "sentAt": "2026-09-24T09:00:45.041Z"
+  },
+  {
+    "id": "3664b964-e909-4c3f-9f19-f380e278a98f",
+    "userId": "023f1db9-f6f1-44cf-9c17-ae0016c3c67d",
+    "userRole": "driver",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Bạn đã hoàn thành chuyến đi.",
+    "sentAt": "2026-09-24T09:00:45.044Z"
+  },
+  {
+    "id": "d767490c-43ec-4c9e-b5ff-04a8979e297e",
+    "userId": "46f9647d-f5d8-4bd2-88be-6e027204a791",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đến điểm đón",
+    "sentAt": "2026-09-24T09:00:46.460Z"
+  },
+  {
+    "id": "eeea8df0-a057-4801-a27b-ef819a471a11",
+    "userId": "46f9647d-f5d8-4bd2-88be-6e027204a791",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đón bạn, chuyến đi bắt đầu",
+    "sentAt": "2026-09-24T09:00:46.464Z"
+  },
+  {
+    "id": "03c2da10-98a4-4917-a6e2-d8bb1599706d",
+    "userId": "46f9647d-f5d8-4bd2-88be-6e027204a791",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Chuyến đi đang diễn ra",
+    "sentAt": "2026-09-24T09:00:46.473Z"
+  },
+  {
+    "id": "a358a371-8d77-4384-9270-dfdc652bb689",
+    "userId": "46f9647d-f5d8-4bd2-88be-6e027204a791",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Cảm ơn bạn đã sử dụng dịch vụ. Vui lòng đánh giá tài xế.",
+    "sentAt": "2026-09-24T09:00:46.509Z"
+  },
+  {
+    "id": "e0203b03-8c13-4bc8-bb07-ee779c069572",
+    "userId": "478a9d06-1d86-4118-b026-3ba3f4500d99",
+    "userRole": "driver",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Bạn đã hoàn thành chuyến đi.",
+    "sentAt": "2026-09-24T09:00:46.510Z"
+  },
+  {
+    "id": "11d6e3aa-6f6f-4b66-98c6-215ac4a6e3f2",
+    "userId": "a70d9365-cead-4271-9175-531f9b3c921c",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:00:48.925Z"
+  },
+  {
+    "id": "fd0d8aca-f45c-4ed9-8d7c-96e0e078822a",
+    "userId": "d63687c9-b803-4831-b82e-1339caa8a5e9",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:00:49.025Z"
+  },
+  {
+    "id": "2d93137e-62f8-4714-b49f-7514f4e2e703",
+    "userId": "80fddb8d-366e-45ab-b42b-96f55e1af65f",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:00:50.561Z"
+  },
+  {
+    "id": "3ad8c76b-1b8f-4952-8c5a-ed9cc575927b",
+    "userId": "f53e0237-c287-44c0-b9ab-2ada2efad7cb",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:00:50.710Z"
+  },
+  {
+    "id": "ea698f33-5b3b-4cc4-b867-93ffafe33f23",
+    "userId": "020795a2-8ae4-4fec-a6ae-48a4832a3840",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:00:51.026Z"
+  },
+  {
+    "id": "9b046076-8cbf-4bd6-a54a-12ec0180253f",
+    "userId": "f0c63690-10b9-4521-8852-8adab9346a24",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đến điểm đón",
+    "sentAt": "2026-09-24T09:00:51.092Z"
+  },
+  {
+    "id": "8f567c49-969e-4143-b76b-29700959ced6",
+    "userId": "f0c63690-10b9-4521-8852-8adab9346a24",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đón bạn, chuyến đi bắt đầu",
+    "sentAt": "2026-09-24T09:00:51.097Z"
+  },
+  {
+    "id": "45f67d58-f62b-4aff-9216-a3d02ee2ca59",
+    "userId": "f0c63690-10b9-4521-8852-8adab9346a24",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Chuyến đi đang diễn ra",
+    "sentAt": "2026-09-24T09:00:51.141Z"
+  },
+  {
+    "id": "2ee0f74d-02d1-4316-954c-1cf6ff56d6f8",
+    "userId": "f2ab1c23-83d1-4366-9a3c-cb236ae04040",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Đã tìm thấy tài xế",
+    "body": "Tài xế đang trên đường đến đón bạn, dự kiến đến sau 5 phút.",
+    "sentAt": "2026-09-24T09:00:51.206Z"
+  },
+  {
+    "id": "75d369ba-efac-4788-9eb1-ad89652e6cc6",
+    "userId": "6ecf6434-6617-4546-818f-bd09611a329c",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Thanh toán thất bại",
+    "body": "Giao dịch thất bại: Ngân hàng từ chối giao dịch (mô phỏng).",
+    "sentAt": "2026-09-24T09:00:51.526Z"
+  },
+  {
+    "id": "584eb970-e3e8-4d70-9ce9-2b542813a07e",
+    "userId": "4af5c853-dd0f-421e-8dee-fc394538dfe2",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đến điểm đón",
+    "sentAt": "2026-09-24T09:00:51.678Z"
+  },
+  {
+    "id": "8b0687f7-4320-4ce3-9f84-83afc391e3ef",
+    "userId": "4af5c853-dd0f-421e-8dee-fc394538dfe2",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đón bạn, chuyến đi bắt đầu",
+    "sentAt": "2026-09-24T09:00:51.680Z"
+  },
+  {
+    "id": "1114db66-d20c-4e0b-a46e-e33715cdf075",
+    "userId": "4af5c853-dd0f-421e-8dee-fc394538dfe2",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Chuyến đi đang diễn ra",
+    "sentAt": "2026-09-24T09:00:51.693Z"
+  },
+  {
+    "id": "c7ec235e-eead-47a1-90db-7655e0ee6d9a",
+    "userId": "4af5c853-dd0f-421e-8dee-fc394538dfe2",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Cảm ơn bạn đã sử dụng dịch vụ. Vui lòng đánh giá tài xế.",
+    "sentAt": "2026-09-24T09:00:51.709Z"
+  },
+  {
+    "id": "761dafe3-bc6c-4442-9919-5e184f6169f3",
+    "userId": "9445c2b3-57d2-4f44-bbea-5fffd3ae1122",
+    "userRole": "driver",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Bạn đã hoàn thành chuyến đi.",
+    "sentAt": "2026-09-24T09:00:51.710Z"
+  },
+  {
+    "id": "3579b79e-7e42-42c5-b697-6a4dcfa2fa7a",
+    "userId": "46f9647d-f5d8-4bd2-88be-6e027204a791",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:00:52.523Z"
+  },
+  {
+    "id": "1362185c-5241-4b99-957a-53c6cc51f8c6",
+    "userId": "ce2744e1-8baf-4001-bfbc-c105e7ede9cc",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:00:52.824Z"
+  },
+  {
+    "id": "21dda187-0786-48a9-9563-517e46111c53",
+    "userId": "2c5cf084-fb5f-4797-aa97-71db59298bda",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:00:53.234Z"
+  },
+  {
+    "id": "0b54f42f-b2a3-411c-b882-d28e84d6873a",
+    "userId": "e54a5b6d-114d-43ee-8181-9deba4ab5f44",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:00:55.398Z"
+  },
+  {
+    "id": "ed664752-f95a-4699-a5ec-ec2ae2ea366c",
+    "userId": "a6ce507a-870d-4b70-91ce-86b1bc928217",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đến điểm đón",
+    "sentAt": "2026-09-24T09:00:55.524Z"
+  },
+  {
+    "id": "0575056e-d4c5-46e6-b095-1bbf4e9f4eec",
+    "userId": "a6ce507a-870d-4b70-91ce-86b1bc928217",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đón bạn, chuyến đi bắt đầu",
+    "sentAt": "2026-09-24T09:00:55.530Z"
+  },
+  {
+    "id": "c657c78a-b609-499b-af31-4c8f11709dd0",
+    "userId": "a6ce507a-870d-4b70-91ce-86b1bc928217",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Chuyến đi đang diễn ra",
+    "sentAt": "2026-09-24T09:00:55.562Z"
+  },
+  {
+    "id": "df7d87bf-b396-454c-8015-0fc1a8ae0476",
+    "userId": "a6ce507a-870d-4b70-91ce-86b1bc928217",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Cảm ơn bạn đã sử dụng dịch vụ. Vui lòng đánh giá tài xế.",
+    "sentAt": "2026-09-24T09:00:55.566Z"
+  },
+  {
+    "id": "f2558f17-3e48-46ef-b018-2b2fbfbda23b",
+    "userId": "564bf8a2-9e57-471b-b323-f9d537bdff9d",
+    "userRole": "driver",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Bạn đã hoàn thành chuyến đi.",
+    "sentAt": "2026-09-24T09:00:55.572Z"
+  },
+  {
+    "id": "43221018-d9ed-4883-9338-bc5fc5cb163c",
+    "userId": "e0432982-aea4-414b-b694-c9dc9a82316d",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đến điểm đón",
+    "sentAt": "2026-09-24T09:00:56.008Z"
+  },
+  {
+    "id": "320087e8-6076-465a-b297-0ffda1012e3a",
+    "userId": "e0432982-aea4-414b-b694-c9dc9a82316d",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đón bạn, chuyến đi bắt đầu",
+    "sentAt": "2026-09-24T09:00:56.028Z"
+  },
+  {
+    "id": "d44706df-0466-48d7-84f1-eb2e980fff3f",
+    "userId": "e0432982-aea4-414b-b694-c9dc9a82316d",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Chuyến đi đang diễn ra",
+    "sentAt": "2026-09-24T09:00:56.030Z"
+  },
+  {
+    "id": "7144c2cf-bacb-4932-abe5-e8b0efb499c2",
+    "userId": "e0432982-aea4-414b-b694-c9dc9a82316d",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Cảm ơn bạn đã sử dụng dịch vụ. Vui lòng đánh giá tài xế.",
+    "sentAt": "2026-09-24T09:00:56.065Z"
+  },
+  {
+    "id": "b769747e-98fa-4826-80e9-a1911dd8c926",
+    "userId": "7d266194-598a-43d5-9ad6-2235fa55ef96",
+    "userRole": "driver",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Bạn đã hoàn thành chuyến đi.",
+    "sentAt": "2026-09-24T09:00:56.066Z"
+  },
+  {
+    "id": "b3a7bc87-100b-4ca3-b47d-d2f9cd11197d",
+    "userId": "03c27091-f72c-46f6-96e4-45c862f23000",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đến điểm đón",
+    "sentAt": "2026-09-24T09:00:56.825Z"
+  },
+  {
+    "id": "f153e870-06d5-474c-9b08-a9fd8781cdac",
+    "userId": "03c27091-f72c-46f6-96e4-45c862f23000",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đón bạn, chuyến đi bắt đầu",
+    "sentAt": "2026-09-24T09:00:56.842Z"
+  },
+  {
+    "id": "470df78c-1537-4bc8-b3d4-676f296a1d63",
+    "userId": "03c27091-f72c-46f6-96e4-45c862f23000",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Chuyến đi đang diễn ra",
+    "sentAt": "2026-09-24T09:00:56.858Z"
+  },
+  {
+    "id": "c33d961d-165a-4870-98d5-90d456b60522",
+    "userId": "03c27091-f72c-46f6-96e4-45c862f23000",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Cảm ơn bạn đã sử dụng dịch vụ. Vui lòng đánh giá tài xế.",
+    "sentAt": "2026-09-24T09:00:56.907Z"
+  },
+  {
+    "id": "eb4cc9cf-7aba-4ac6-b1ad-3d50508b0de7",
+    "userId": "a3562809-1ebe-4f0b-882e-5fad469f57c1",
+    "userRole": "driver",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Bạn đã hoàn thành chuyến đi.",
+    "sentAt": "2026-09-24T09:00:56.908Z"
+  },
+  {
+    "id": "35039a23-7f81-45ac-84f0-28a89f448208",
+    "userId": "85f5bf73-9293-46f5-b5be-7c6cec8b1b6b",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:00:57.493Z"
+  },
+  {
+    "id": "3f7a2d29-ad68-41c4-a5b9-e805078e763d",
+    "userId": "4fc7cd07-a63b-4cca-9cab-fe700147ab41",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:01:00.177Z"
+  },
+  {
+    "id": "50a882b5-081f-42da-b28c-d229be3008dc",
+    "userId": "27f1e2af-9dda-4203-b13d-8ff7c69768ab",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:01:01.573Z"
+  },
+  {
+    "id": "67a5a9e6-ba57-401f-8ee7-c12f05bbf371",
+    "userId": "f0c63690-10b9-4521-8852-8adab9346a24",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:01:03.226Z"
+  },
+  {
+    "id": "9f581794-6173-468a-8761-b5ba57d7171b",
+    "userId": "f2ab1c23-83d1-4366-9a3c-cb236ae04040",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:01:03.390Z"
+  },
+  {
+    "id": "3b53f017-35c7-492a-97b3-528bfcd62c5a",
+    "userId": "6ecf6434-6617-4546-818f-bd09611a329c",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:01:03.650Z"
+  },
+  {
+    "id": "8d2f54fb-8359-417c-9926-b96326b7039b",
+    "userId": "4af5c853-dd0f-421e-8dee-fc394538dfe2",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:01:03.845Z"
+  },
+  {
+    "id": "34869943-c4b3-414c-be1d-a04fc6fa1bbb",
+    "userId": "a196b04b-2321-48f3-874e-5b1db02af850",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:01:05.117Z"
+  },
+  {
+    "id": "4ffc7021-b665-4a05-b783-d57e490e3719",
+    "userId": "ab6b476c-22c2-4dc7-9294-3c331a8da778",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:01:05.274Z"
+  },
+  {
+    "id": "11424957-e1a9-41a1-b83a-bedbe7eb2607",
+    "userId": "0b53e0f5-c876-4818-8919-5a450646a21a",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:01:06.921Z"
+  },
+  {
+    "id": "8fd19ab0-868f-4c14-9ea9-73f1840f70df",
+    "userId": "882e0136-4349-4afe-9703-d9bfae43a70f",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:01:07.035Z"
+  },
+  {
+    "id": "6f02e1cd-29f4-44d2-9079-77e77367324d",
+    "userId": "d3daf410-b4b6-4130-bdf6-95bec0214a8b",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:01:07.190Z"
+  },
+  {
+    "id": "567b4d5a-e3a3-4169-befd-1bd48220a526",
+    "userId": "a6ce507a-870d-4b70-91ce-86b1bc928217",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:01:07.666Z"
+  },
+  {
+    "id": "f728bf63-8d06-41a0-91ae-2806e265c501",
+    "userId": "63823876-9ce9-40f4-9273-4350bdc076a0",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:01:07.916Z"
+  },
+  {
+    "id": "16011762-b205-4112-8ca6-857a5c7578c9",
+    "userId": "e0432982-aea4-414b-b694-c9dc9a82316d",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:01:08.170Z"
+  },
+  {
+    "id": "9194e328-5878-4fbf-b391-eba04b888f5a",
+    "userId": "d86d09c5-e5ac-4c0d-90d7-357f2265b57b",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:01:08.392Z"
+  },
+  {
+    "id": "a4766033-f4bd-4984-831f-52369c028a8f",
+    "userId": "03c27091-f72c-46f6-96e4-45c862f23000",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:01:08.933Z"
+  },
+  {
+    "id": "97304cef-56a2-482d-a703-bc8969138c05",
+    "userId": "b35e5b60-5c1f-43bb-8f42-4bf2f6cf710f",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:03:11.835Z"
+  },
+  {
+    "id": "21980ad5-6925-466e-98cb-6673d1720745",
+    "userId": "fe4a27cd-5196-420a-b210-7a5f0299b0b1",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:03:13.300Z"
+  },
+  {
+    "id": "dd442221-2e05-4c4d-97a1-1f04e01bafe6",
+    "userId": "a8a276ba-13a7-496d-a20d-680af56589fd",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Đã tìm thấy tài xế",
+    "body": "Tài xế đang trên đường đến đón bạn, dự kiến đến sau 1 phút.",
+    "sentAt": "2026-09-24T09:03:15.381Z"
+  },
+  {
+    "id": "910854ad-189b-4bdf-8ddb-6b5ba315c9a9",
+    "userId": "ed2ca467-fea0-4332-a4ce-f5971234d892",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Thanh toán thành công",
+    "body": "Thanh toán cho chuyến của bạn (cash) đã hoàn tất.",
+    "sentAt": "2026-09-24T09:03:15.996Z"
+  },
+  {
+    "id": "a7403793-54cf-4555-80f6-f1b8e717884d",
+    "userId": "200855c1-d541-4e14-bb40-5e96b3e841b9",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Thanh toán thành công",
+    "body": "Thanh toán cho chuyến của bạn (cash) đã hoàn tất.",
+    "sentAt": "2026-09-24T09:03:16.063Z"
+  },
+  {
+    "id": "45736075-18f0-4547-979b-331099548891",
+    "userId": "47d03f7f-0d2b-45dc-b2c1-cdd1c52575da",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:03:16.179Z"
+  },
+  {
+    "id": "a3be8637-aaa2-481b-8ce9-c2c405911916",
+    "userId": "b579a6eb-877f-490e-beca-b0e135bb4671",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:03:16.460Z"
+  },
+  {
+    "id": "5075c6f3-3e9a-4f7f-b47e-efe4e27d3d3e",
+    "userId": "ac134ac8-8d11-48b3-952e-3ed40410defe",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đến điểm đón",
+    "sentAt": "2026-09-24T09:03:19.301Z"
+  },
+  {
+    "id": "19982847-a394-41ea-8bd9-6f634d58c0cf",
+    "userId": "ac134ac8-8d11-48b3-952e-3ed40410defe",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đón bạn, chuyến đi bắt đầu",
+    "sentAt": "2026-09-24T09:03:19.313Z"
+  },
+  {
+    "id": "852f239a-f549-4dd2-bc54-4fd703ce8e8a",
+    "userId": "ac134ac8-8d11-48b3-952e-3ed40410defe",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Chuyến đi đang diễn ra",
+    "sentAt": "2026-09-24T09:03:19.317Z"
+  },
+  {
+    "id": "65139dd7-2ad6-488d-a635-c2b5d8f1dd26",
+    "userId": "ac134ac8-8d11-48b3-952e-3ed40410defe",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Cảm ơn bạn đã sử dụng dịch vụ. Vui lòng đánh giá tài xế.",
+    "sentAt": "2026-09-24T09:03:19.358Z"
+  },
+  {
+    "id": "541c369c-6f74-425d-b4d7-49f278fcaeae",
+    "userId": "9df5f1db-ace5-4d50-a4cc-86defb4d3571",
+    "userRole": "driver",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Bạn đã hoàn thành chuyến đi.",
+    "sentAt": "2026-09-24T09:03:19.359Z"
+  },
+  {
+    "id": "9c859570-b722-43f4-a75a-ccd0e06f80dd",
+    "userId": "5bf2b69c-4f7e-4ad0-9880-390270c05e42",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đến điểm đón",
+    "sentAt": "2026-09-24T09:03:19.547Z"
+  },
+  {
+    "id": "836e4942-1710-4651-b1e7-b8e27df543fc",
+    "userId": "5bf2b69c-4f7e-4ad0-9880-390270c05e42",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đón bạn, chuyến đi bắt đầu",
+    "sentAt": "2026-09-24T09:03:19.565Z"
+  },
+  {
+    "id": "1cdbfef4-fb1f-43e6-b5e4-53d262e694e7",
+    "userId": "5bf2b69c-4f7e-4ad0-9880-390270c05e42",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Chuyến đi đang diễn ra",
+    "sentAt": "2026-09-24T09:03:19.582Z"
+  },
+  {
+    "id": "b94b5f0f-78d5-41f9-9d1b-9920ebbac4a3",
+    "userId": "5bf2b69c-4f7e-4ad0-9880-390270c05e42",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Cảm ơn bạn đã sử dụng dịch vụ. Vui lòng đánh giá tài xế.",
+    "sentAt": "2026-09-24T09:03:19.613Z"
+  },
+  {
+    "id": "4dbd1e88-09c9-4a5f-8323-99a61a47bfdc",
+    "userId": "a890224d-2ea9-4f39-a76a-69165e89cf88",
+    "userRole": "driver",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Bạn đã hoàn thành chuyến đi.",
+    "sentAt": "2026-09-24T09:03:19.614Z"
+  },
+  {
+    "id": "635cd58b-232d-4aa6-88c4-5767ed4c3a86",
+    "userId": "aa786c2d-c7f5-49e4-8fd5-3c445ebf02c7",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đến điểm đón",
+    "sentAt": "2026-09-24T09:03:19.779Z"
+  },
+  {
+    "id": "1a63c56d-8271-4f5a-91b4-74de1e40b2a2",
+    "userId": "aa786c2d-c7f5-49e4-8fd5-3c445ebf02c7",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đón bạn, chuyến đi bắt đầu",
+    "sentAt": "2026-09-24T09:03:19.784Z"
+  },
+  {
+    "id": "98873ebf-2784-499a-b757-64522cbaf1b2",
+    "userId": "aa786c2d-c7f5-49e4-8fd5-3c445ebf02c7",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Chuyến đi đang diễn ra",
+    "sentAt": "2026-09-24T09:03:19.791Z"
+  },
+  {
+    "id": "d55be1cb-f1b4-47f0-ac7f-f21ce6b9d3e0",
+    "userId": "aa786c2d-c7f5-49e4-8fd5-3c445ebf02c7",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Cảm ơn bạn đã sử dụng dịch vụ. Vui lòng đánh giá tài xế.",
+    "sentAt": "2026-09-24T09:03:19.814Z"
+  },
+  {
+    "id": "3f52f75b-d51c-4aed-9e2c-3394ceb5e4a2",
+    "userId": "b7c5d372-b18d-4ed3-9969-d742d1566771",
+    "userRole": "driver",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Bạn đã hoàn thành chuyến đi.",
+    "sentAt": "2026-09-24T09:03:19.815Z"
+  },
+  {
+    "id": "83cdded9-9af2-49f7-bb0b-143fce152f57",
+    "userId": "8b540297-d3c0-4471-81d1-b2215c64a8c7",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đến điểm đón",
+    "sentAt": "2026-09-24T09:03:19.982Z"
+  },
+  {
+    "id": "aad847d5-6dc5-403f-8053-ab6520143bdd",
+    "userId": "8b540297-d3c0-4471-81d1-b2215c64a8c7",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đón bạn, chuyến đi bắt đầu",
+    "sentAt": "2026-09-24T09:03:19.986Z"
+  },
+  {
+    "id": "1778d968-09e9-47cb-b499-eb4579a1468f",
+    "userId": "8b540297-d3c0-4471-81d1-b2215c64a8c7",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Chuyến đi đang diễn ra",
+    "sentAt": "2026-09-24T09:03:20.013Z"
+  },
+  {
+    "id": "ede8f9c8-ef5d-45db-b172-665779810811",
+    "userId": "8b540297-d3c0-4471-81d1-b2215c64a8c7",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Cảm ơn bạn đã sử dụng dịch vụ. Vui lòng đánh giá tài xế.",
+    "sentAt": "2026-09-24T09:03:20.047Z"
+  },
+  {
+    "id": "3de869d6-c449-4581-8601-d2e2efeac228",
+    "userId": "8fadd606-cf5a-4196-ad12-20ee1dffff54",
+    "userRole": "driver",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Bạn đã hoàn thành chuyến đi.",
+    "sentAt": "2026-09-24T09:03:20.049Z"
+  },
+  {
+    "id": "643d0bd2-9c8f-4efd-9fca-188178f96ac3",
+    "userId": "aea48fa7-2fe9-4672-857c-89a0f60e229b",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đến điểm đón",
+    "sentAt": "2026-09-24T09:03:20.180Z"
+  },
+  {
+    "id": "8e15cdff-aea6-4290-92d2-40d4e3de1615",
+    "userId": "aea48fa7-2fe9-4672-857c-89a0f60e229b",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đón bạn, chuyến đi bắt đầu",
+    "sentAt": "2026-09-24T09:03:20.184Z"
+  },
+  {
+    "id": "6cce3d50-9db0-4429-a33f-9a7b235ec611",
+    "userId": "aea48fa7-2fe9-4672-857c-89a0f60e229b",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Chuyến đi đang diễn ra",
+    "sentAt": "2026-09-24T09:03:20.215Z"
+  },
+  {
+    "id": "fd2836f0-2099-4739-931d-5d89365e01bc",
+    "userId": "aea48fa7-2fe9-4672-857c-89a0f60e229b",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Cảm ơn bạn đã sử dụng dịch vụ. Vui lòng đánh giá tài xế.",
+    "sentAt": "2026-09-24T09:03:20.242Z"
+  },
+  {
+    "id": "b6bc31ee-2abb-43a0-9123-4aede069e7c4",
+    "userId": "715990ea-a9dd-4415-9d84-757d0e50bc5f",
+    "userRole": "driver",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Bạn đã hoàn thành chuyến đi.",
+    "sentAt": "2026-09-24T09:03:20.243Z"
+  },
+  {
+    "id": "c791bf92-a4c6-48f8-b833-b5b2658b35d0",
+    "userId": "b4c1d3d4-8bcb-464b-acc2-383229c037e9",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đến điểm đón",
+    "sentAt": "2026-09-24T09:03:20.355Z"
+  },
+  {
+    "id": "f11d61bc-0b98-4746-b444-48dfddb7efa0",
+    "userId": "b4c1d3d4-8bcb-464b-acc2-383229c037e9",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đón bạn, chuyến đi bắt đầu",
+    "sentAt": "2026-09-24T09:03:20.366Z"
+  },
+  {
+    "id": "96c158f6-3565-4cf6-9fbd-77d23cbcc6a1",
+    "userId": "b4c1d3d4-8bcb-464b-acc2-383229c037e9",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Chuyến đi đang diễn ra",
+    "sentAt": "2026-09-24T09:03:20.381Z"
+  },
+  {
+    "id": "fa8fbb89-3190-4e73-a6c0-1ecd327f25d4",
+    "userId": "b4c1d3d4-8bcb-464b-acc2-383229c037e9",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Cảm ơn bạn đã sử dụng dịch vụ. Vui lòng đánh giá tài xế.",
+    "sentAt": "2026-09-24T09:03:20.414Z"
+  },
+  {
+    "id": "ad518c16-4115-407b-8c02-98420679a971",
+    "userId": "99f7c4dd-9c56-432a-859a-9d1737efe781",
+    "userRole": "driver",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Bạn đã hoàn thành chuyến đi.",
+    "sentAt": "2026-09-24T09:03:20.416Z"
+  },
+  {
+    "id": "0b4836bb-6ad4-42bb-96f7-630717b6d540",
+    "userId": "d34eaaf7-6db7-4914-a0e1-c27797c5ebbc",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đến điểm đón",
+    "sentAt": "2026-09-24T09:03:20.530Z"
+  },
+  {
+    "id": "fd9ef5fe-ecde-4ff3-a5b8-7f7c8d429a11",
+    "userId": "d34eaaf7-6db7-4914-a0e1-c27797c5ebbc",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đón bạn, chuyến đi bắt đầu",
+    "sentAt": "2026-09-24T09:03:20.544Z"
+  },
+  {
+    "id": "d3da1eab-165d-41f3-b298-010ed5f3b6c1",
+    "userId": "d34eaaf7-6db7-4914-a0e1-c27797c5ebbc",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Chuyến đi đang diễn ra",
+    "sentAt": "2026-09-24T09:03:20.562Z"
+  },
+  {
+    "id": "72e8d125-6887-4c89-8b3e-1e3d9d090553",
+    "userId": "d34eaaf7-6db7-4914-a0e1-c27797c5ebbc",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Cảm ơn bạn đã sử dụng dịch vụ. Vui lòng đánh giá tài xế.",
+    "sentAt": "2026-09-24T09:03:20.596Z"
+  },
+  {
+    "id": "e9275dc2-7fdf-49ea-ba8e-c0dfaa828f2a",
+    "userId": "2ecd55a8-ffb7-474e-b29a-0475dfb846d9",
+    "userRole": "driver",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Bạn đã hoàn thành chuyến đi.",
+    "sentAt": "2026-09-24T09:03:20.598Z"
+  },
+  {
+    "id": "b06b0748-38d5-4bcf-bb2a-b1d1d13fc90d",
+    "userId": "cebfb403-76bb-451e-820f-31c876bfee80",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Cảm ơn bạn đã sử dụng dịch vụ. Vui lòng đánh giá tài xế.",
+    "sentAt": "2026-09-24T09:03:21.030Z"
+  },
+  {
+    "id": "86de9063-5b2a-4dad-8ae6-eb62ff2e5f1c",
+    "userId": "565cfe09-4ca2-42dd-85c8-1631c8a32bb1",
+    "userRole": "driver",
+    "channel": "push",
+    "title": "Chuyến đi hoàn thành",
+    "body": "Bạn đã hoàn thành chuyến đi.",
+    "sentAt": "2026-09-24T09:03:21.031Z"
+  },
+  {
+    "id": "9f2e200f-8186-4cef-b84f-20d64db89063",
+    "userId": "ca244386-70f2-48fc-8644-2b05da0c1da3",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đến điểm đón",
+    "sentAt": "2026-09-24T09:03:21.508Z"
+  },
+  {
+    "id": "56c53695-b529-4380-b722-9780955ee64a",
+    "userId": "ca244386-70f2-48fc-8644-2b05da0c1da3",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Tài xế đã đón bạn, chuyến đi bắt đầu",
+    "sentAt": "2026-09-24T09:03:21.511Z"
+  },
+  {
+    "id": "7c9b3ff3-1864-438f-a5bf-64e0750e5cf5",
+    "userId": "ca244386-70f2-48fc-8644-2b05da0c1da3",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Cập nhật chuyến đi",
+    "body": "Chuyến đi đang diễn ra",
+    "sentAt": "2026-09-24T09:03:21.530Z"
+  },
+  {
+    "id": "f6dd110e-2454-4b36-8da4-fed9508b6ae6",
+    "userId": "ed2ca467-fea0-4332-a4ce-f5971234d892",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:03:22.030Z"
+  },
+  {
+    "id": "762213c6-4bfe-42f8-aeea-e73c6dabc824",
+    "userId": "200855c1-d541-4e14-bb40-5e96b3e841b9",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:03:22.127Z"
+  },
+  {
+    "id": "b37addf4-817c-4e6e-aace-6142a192fa6a",
+    "userId": "761da700-4522-41e1-9b45-6c35868618c7",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Đã tìm thấy tài xế",
+    "body": "Tài xế đang trên đường đến đón bạn, dự kiến đến sau 5 phút.",
+    "sentAt": "2026-09-24T09:03:22.730Z"
+  },
+  {
+    "id": "950c11ff-cc15-4c80-b4a9-98a8ca8859ba",
+    "userId": "97b76670-08f5-4dd0-a84f-0787c4c1ebf1",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Thanh toán thất bại",
+    "body": "Giao dịch thất bại: Ngân hàng từ chối giao dịch (mô phỏng).",
+    "sentAt": "2026-09-24T09:03:22.912Z"
+  },
+  {
+    "id": "42dfb5b3-492c-47eb-a0f7-840e6cdbf5b2",
+    "userId": "3a9fe046-47b3-4843-9d00-04e969eb55e0",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:03:23.676Z"
+  },
+  {
+    "id": "55da2738-0598-4554-a1c6-70ca60906b22",
+    "userId": "23ff8745-c0bb-41c0-98e9-a7cefe9f3003",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:03:24.730Z"
+  },
+  {
+    "id": "c4c3cb1e-c86b-415b-9242-3e56bdfd1239",
+    "userId": "ac134ac8-8d11-48b3-952e-3ed40410defe",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:03:25.379Z"
+  },
+  {
+    "id": "06a48ffa-57d1-416c-ab74-736a1717c978",
+    "userId": "5bf2b69c-4f7e-4ad0-9880-390270c05e42",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:03:25.629Z"
+  },
+  {
+    "id": "73de26f7-50f4-402c-99a3-71957ba463ed",
+    "userId": "aa786c2d-c7f5-49e4-8fd5-3c445ebf02c7",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:03:25.847Z"
+  },
+  {
+    "id": "26a3c8cc-a3d8-4d11-9337-78f03a918c7e",
+    "userId": "8b540297-d3c0-4471-81d1-b2215c64a8c7",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:03:26.079Z"
+  },
+  {
+    "id": "caa30738-c0b8-4cf9-b56f-eb9f5f0420e6",
+    "userId": "aea48fa7-2fe9-4672-857c-89a0f60e229b",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:03:26.268Z"
+  },
+  {
+    "id": "81636bd3-67ba-434f-a97d-4902f818df42",
+    "userId": "b4c1d3d4-8bcb-464b-acc2-383229c037e9",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:03:26.415Z"
+  },
+  {
+    "id": "4b562ca6-82bd-494e-9c0b-e3ec926bcc89",
+    "userId": "d34eaaf7-6db7-4914-a0e1-c27797c5ebbc",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:03:26.574Z"
+  },
+  {
+    "id": "435439d4-cdab-4c78-b898-8291683debb1",
+    "userId": "cebfb403-76bb-451e-820f-31c876bfee80",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:03:27.166Z"
+  },
+  {
+    "id": "96609a52-1ba8-499f-ae3e-c82f8e01b32f",
+    "userId": "ca244386-70f2-48fc-8644-2b05da0c1da3",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:03:27.583Z"
+  },
+  {
+    "id": "01f8c2bf-1fd8-44f7-9b0c-b3b14d914ee8",
+    "userId": "944fba2d-9c7b-4c3b-bdb7-2a6b4a9b88a9",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:03:28.696Z"
+  },
+  {
+    "id": "b09f4b4b-fd0b-40ae-aae0-28b235df0500",
+    "userId": "761da700-4522-41e1-9b45-6c35868618c7",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:03:28.852Z"
+  },
+  {
+    "id": "56c58441-9df3-4205-bebf-56fa07513179",
+    "userId": "97b76670-08f5-4dd0-a84f-0787c4c1ebf1",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:03:29.018Z"
+  },
+  {
+    "id": "1b1e72d5-9323-48bb-a41b-54a3b8a1f142",
+    "userId": "02769c7a-b637-4001-9422-54f2085b5fe6",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:03:29.329Z"
+  },
+  {
+    "id": "9a4deebf-5f10-4e65-8e6d-25027714cbc1",
+    "userId": "2a71852d-6bc6-432d-964c-b044bd88686d",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:03:29.570Z"
+  },
+  {
+    "id": "5e336377-fd38-4f28-8fcc-f405a659364e",
+    "userId": "c250ac2c-bfab-4bcb-a12d-0db078634796",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:03:29.883Z"
+  },
+  {
+    "id": "75cd219a-6641-45ac-bfd3-1278ac731e9a",
+    "userId": "cd81bb89-7794-4e5d-a7f5-621e9de7edb6",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:03:30.182Z"
+  },
+  {
+    "id": "e54a0862-3165-4125-a3e1-7e614684fa01",
+    "userId": "148bbd2b-962b-4690-bef4-63c27cd263d3",
+    "userRole": "customer",
+    "channel": "push",
+    "title": "Không tìm được tài xế",
+    "body": "Hiện chưa tìm được tài xế phù hợp cho chuyến của bạn, vui lòng thử lại sau.",
+    "sentAt": "2026-09-24T09:03:30.246Z"
+  }
+]

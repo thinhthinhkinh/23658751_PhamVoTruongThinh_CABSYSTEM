@@ -1,0 +1,367 @@
+[
+  {
+    "tripId": "88d3cd95-7b64-4e9f-bf5c-0041e9d2b87b",
+    "amount": 50000,
+    "cachedAt": "2026-09-10T10:12:18.022Z"
+  },
+  {
+    "tripId": "a323cb58-3253-4d6d-a242-9d9b6c0bcbd6",
+    "amount": 50000,
+    "cachedAt": "2026-09-10T10:12:18.075Z"
+  },
+  {
+    "tripId": "4d5e51c9-e2e9-4ca7-b73e-b6fc5a35317f",
+    "amount": 70000,
+    "cachedAt": "2026-09-10T10:12:18.252Z"
+  },
+  {
+    "tripId": "6dd86dd0-9b52-4947-956d-8585bf0590fd",
+    "amount": 70000,
+    "cachedAt": "2026-09-10T10:12:18.495Z"
+  },
+  {
+    "tripId": "b23ff107-6546-4da3-b465-1d5bc8e47be7",
+    "amount": 70000,
+    "cachedAt": "2026-09-10T10:12:18.711Z"
+  },
+  {
+    "tripId": "85353097-2cb8-4684-a2e8-28e9a8dad824",
+    "amount": 70000,
+    "cachedAt": "2026-09-10T10:12:18.912Z"
+  },
+  {
+    "tripId": "757155d0-8b79-43c5-88d2-eaf0a553dcd0",
+    "amount": 70000,
+    "cachedAt": "2026-09-10T10:12:19.126Z"
+  },
+  {
+    "tripId": "8ef14e03-a80d-4651-a1f0-ae871604e660",
+    "amount": 70000,
+    "cachedAt": "2026-09-10T10:12:19.296Z"
+  },
+  {
+    "tripId": "3fc0d802-b066-4192-887a-330f98feff08",
+    "amount": 70000,
+    "cachedAt": "2026-09-10T10:12:19.435Z"
+  },
+  {
+    "tripId": "6a0e2fc2-a36e-4d62-a8c8-fb6839ce7672",
+    "amount": 70000,
+    "cachedAt": "2026-09-10T10:12:19.748Z"
+  },
+  {
+    "tripId": "3b19dd41-4856-4719-8fdf-eda5651a05ef",
+    "amount": 70000,
+    "cachedAt": "2026-09-10T10:12:20.304Z"
+  },
+  {
+    "tripId": "9c467fbc-802f-4827-8302-142aebfd3765",
+    "amount": 70000,
+    "cachedAt": "2026-09-10T10:12:20.335Z"
+  },
+  {
+    "tripId": "7fbd9071-e461-4a30-a8ad-420ac0bb84f1",
+    "amount": 70000,
+    "cachedAt": "2026-09-10T10:12:20.367Z"
+  },
+  {
+    "tripId": "0befb9d3-eae3-4b74-bbff-7ba4910634e5",
+    "amount": 70000,
+    "cachedAt": "2026-09-10T10:12:20.403Z"
+  },
+  {
+    "tripId": "348cb881-2de0-42b6-9902-0b4085126064",
+    "amount": 70000,
+    "cachedAt": "2026-09-10T10:12:20.424Z"
+  },
+  {
+    "tripId": "05825ece-32e0-492d-a3b2-c74ce165e28a",
+    "amount": 70000,
+    "cachedAt": "2026-09-10T10:12:20.468Z"
+  },
+  {
+    "tripId": "8228ad57-bdcc-428f-9692-d8f07c9600ce",
+    "amount": 70000,
+    "cachedAt": "2026-09-10T10:12:20.500Z"
+  },
+  {
+    "tripId": "87725507-f81c-4c7d-9848-ff8330dfc0ca",
+    "amount": 70000,
+    "cachedAt": "2026-09-10T10:12:20.533Z"
+  },
+  {
+    "tripId": "6392dccb-76e3-4161-b355-56f3da13f850",
+    "amount": 70000,
+    "cachedAt": "2026-09-10T10:12:20.556Z"
+  },
+  {
+    "tripId": "9888ec0c-b726-479d-a15b-ea8c30d9d417",
+    "amount": 70000,
+    "cachedAt": "2026-09-10T10:12:20.947Z"
+  },
+  {
+    "tripId": "6845ded8-cf91-4062-b138-b8b7bf91400f",
+    "amount": 70000,
+    "cachedAt": "2026-09-10T10:12:20.982Z"
+  },
+  {
+    "tripId": "6084c03f-0a65-43df-bd69-1082804804a8",
+    "amount": 70000,
+    "cachedAt": "2026-09-10T10:12:21.004Z"
+  },
+  {
+    "tripId": "adb3172f-5841-48d5-984f-bfbd45efed19",
+    "amount": 70000,
+    "cachedAt": "2026-09-10T10:12:21.031Z"
+  },
+  {
+    "tripId": "a71c8d6a-12a1-49ea-b4a1-8dbfecf67dca",
+    "amount": 70000,
+    "cachedAt": "2026-09-10T10:12:21.068Z"
+  },
+  {
+    "tripId": "45259d0a-5d60-43b8-a3f9-7a685f10f34e",
+    "amount": 70000,
+    "cachedAt": "2026-09-10T10:12:22.332Z"
+  },
+  {
+    "tripId": "10b4e5f3-f008-4bc2-8c4a-55456f0bedd7",
+    "amount": 70000,
+    "cachedAt": "2026-09-10T10:12:22.573Z"
+  },
+  {
+    "tripId": "a0e2b91d-322b-46e4-a51a-660cdcbb388c",
+    "amount": 70000,
+    "cachedAt": "2026-09-10T10:12:23.147Z"
+  },
+  {
+    "tripId": "87c3ff9a-d6c8-4369-8888-ccf86a3b302e",
+    "amount": 50000,
+    "cachedAt": "2026-09-24T09:00:42.791Z"
+  },
+  {
+    "tripId": "0e1f19fc-5e23-47b6-9679-d6b575b58063",
+    "amount": 50000,
+    "cachedAt": "2026-09-24T09:00:42.880Z"
+  },
+  {
+    "tripId": "d9341032-a9c5-47f7-b38f-b19b06375ac1",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:00:44.706Z"
+  },
+  {
+    "tripId": "5f4a8746-38e6-4592-ba0b-9744f5794a43",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:00:45.040Z"
+  },
+  {
+    "tripId": "bd302c28-be48-4fbb-9b65-5c700eaf13c8",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:00:46.517Z"
+  },
+  {
+    "tripId": "ca81bafe-7d25-48c4-a27a-f913d2a931d8",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:00:47.731Z"
+  },
+  {
+    "tripId": "32b2d043-2065-418d-a218-b458758cf393",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:00:51.422Z"
+  },
+  {
+    "tripId": "89088a5f-2304-4b1f-aa02-8266468c9e9b",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:00:51.705Z"
+  },
+  {
+    "tripId": "2cb31fc1-9f42-4b0f-bf2e-e2f88b988a29",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:00:52.075Z"
+  },
+  {
+    "tripId": "2a65fbd2-f847-4c31-a317-0d006d986723",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:00:52.097Z"
+  },
+  {
+    "tripId": "333ba8a6-27ca-4937-83a9-fdf3ee9e44e1",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:00:52.129Z"
+  },
+  {
+    "tripId": "78c473e5-7fa6-433c-a744-e953434a7177",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:00:52.164Z"
+  },
+  {
+    "tripId": "6a40f69c-6a4a-4e1c-b783-6d79eea18336",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:00:52.197Z"
+  },
+  {
+    "tripId": "0c86df60-fa05-42c6-b3a0-095fe871427d",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:00:52.231Z"
+  },
+  {
+    "tripId": "36dfa090-06a1-455a-9dd3-60d449d00e34",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:00:52.261Z"
+  },
+  {
+    "tripId": "3ecdcdab-ed38-4265-8b98-6e2476774c67",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:00:52.301Z"
+  },
+  {
+    "tripId": "739008f0-62b8-47a7-95d7-95e7493a3012",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:00:52.349Z"
+  },
+  {
+    "tripId": "dd2f59af-bdc1-42bd-8662-9ff143ea84a1",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:00:52.382Z"
+  },
+  {
+    "tripId": "5254c2cd-8df3-4d1c-b858-25db5e0d0a22",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:00:52.414Z"
+  },
+  {
+    "tripId": "8cbca371-2359-422a-a1fd-6f2ef1581986",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:00:52.448Z"
+  },
+  {
+    "tripId": "84369b5d-58f4-485d-97da-7b9444200da9",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:00:52.482Z"
+  },
+  {
+    "tripId": "3f11011b-8cc9-4405-9aa3-46eb8006b3d2",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:00:54.402Z"
+  },
+  {
+    "tripId": "35e19fe7-9ac5-4d67-be60-43aac76ff7d9",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:00:55.095Z"
+  },
+  {
+    "tripId": "27f85448-cb8b-49b8-8eab-f0445921b49b",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:00:55.566Z"
+  },
+  {
+    "tripId": "4f3aaa1f-21a3-4772-ade9-4ab0b845df35",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:00:55.640Z"
+  },
+  {
+    "tripId": "76ef97e7-7b3b-4292-812c-73fcc437b666",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:00:56.064Z"
+  },
+  {
+    "tripId": "6d081a89-29f1-4a8d-ac49-18e910fa52c3",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:00:56.906Z"
+  },
+  {
+    "tripId": "f43c7f44-870a-48a6-a097-ee1d6a3473cd",
+    "amount": 50000,
+    "cachedAt": "2026-09-24T09:03:15.952Z"
+  },
+  {
+    "tripId": "0610abc1-22f0-4296-b2e7-4450320412d8",
+    "amount": 50000,
+    "cachedAt": "2026-09-24T09:03:16.008Z"
+  },
+  {
+    "tripId": "74d1c808-4522-463b-9436-724c6221dc50",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:03:19.180Z"
+  },
+  {
+    "tripId": "5ae82361-fe6c-43a3-97dc-1675cc3de382",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:03:19.353Z"
+  },
+  {
+    "tripId": "bb84018c-2304-49d6-97a2-1bd71d1b5824",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:03:19.612Z"
+  },
+  {
+    "tripId": "096ace96-3ea3-45a3-9cb2-cba255e05960",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:03:19.831Z"
+  },
+  {
+    "tripId": "63d0961c-a64e-4186-a1cd-f12c61782245",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:03:20.053Z"
+  },
+  {
+    "tripId": "0b6d9c81-9a7d-4e0a-bd04-4ed3eae9fc99",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:03:20.262Z"
+  },
+  {
+    "tripId": "5009e2b2-091a-465a-8289-1ce574111ad0",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:03:20.420Z"
+  },
+  {
+    "tripId": "3f03925e-7c93-4c14-b31a-aca00e2b00a1",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:03:20.602Z"
+  },
+  {
+    "tripId": "2024e913-1f56-48b0-b1d0-f043d4a77c71",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:03:22.364Z"
+  },
+  {
+    "tripId": "660b6d06-59c5-465f-a392-777ffd19e0df",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:03:22.393Z"
+  },
+  {
+    "tripId": "443f1662-accb-47c6-b687-0547c84d929d",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:03:22.425Z"
+  },
+  {
+    "tripId": "e7247ff8-68da-4531-82d4-c075d7076440",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:03:22.458Z"
+  },
+  {
+    "tripId": "588812e7-0e39-4635-92c0-436015161c43",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:03:23.265Z"
+  },
+  {
+    "tripId": "86dea58a-ab14-4c98-805c-1ce8b5de3774",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:03:23.623Z"
+  },
+  {
+    "tripId": "676e53d6-2c81-41d8-bc61-ac37ab1b2033",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:03:23.795Z"
+  },
+  {
+    "tripId": "f183438d-ad58-4d74-9d6e-8871b0113e6d",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:03:23.864Z"
+  },
+  {
+    "tripId": "50028140-770b-4832-ae33-a785abff7217",
+    "amount": 70000,
+    "cachedAt": "2026-09-24T09:03:23.908Z"
+  }
+]

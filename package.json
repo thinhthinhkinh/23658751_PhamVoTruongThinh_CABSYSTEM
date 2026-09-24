@@ -1,0 +1,29 @@
+{
+  "name": "cab-system",
+  "version": "1.0.0",
+  "private": true,
+  "description": "CAB System - microservices demo cho môn Thiết kế Kiến trúc Vi dịch vụ (MSA)",
+  "workspaces": [
+    "event-bus-service",
+    "api-gateway",
+    "services/*"
+  ],
+  "scripts": {
+    "install:all": "npm install",
+    "start:event-bus": "npm run start -w event-bus-service",
+    "start:gateway": "npm run start -w api-gateway",
+    "start:customer": "npm run start -w customer-service",
+    "start:driver": "npm run start -w driver-service",
+    "start:trip": "npm run start -w trip-service",
+    "start:dispatch": "npm run start -w dispatch-service",
+    "start:location": "npm run start -w location-service",
+    "start:pricing": "npm run start -w pricing-service",
+    "start:payment": "npm run start -w payment-service",
+    "start:notification": "npm run start -w notification-service",
+    "start:admin": "npm run start -w admin-service",
+    "start:all": "concurrently -n bus,gw,cust,drv,trip,disp,loc,price,pay,noti,admin -c blue,cyan,green,yellow,magenta,red,gray,white,blue,cyan,green \"npm:start:event-bus\" \"npm:start:gateway\" \"npm:start:customer\" \"npm:start:driver\" \"npm:start:trip\" \"npm:start:dispatch\" \"npm:start:location\" \"npm:start:pricing\" \"npm:start:payment\" \"npm:start:notification\" \"npm:start:admin\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

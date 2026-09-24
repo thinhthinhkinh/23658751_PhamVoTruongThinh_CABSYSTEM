@@ -1,0 +1,122 @@
+[
+  {
+    "tripId": "4d5e51c9-e2e9-4ca7-b73e-b6fc5a35317f",
+    "driverId": "fd20bd73-ef3a-44e9-8344-30a023fe01cb",
+    "customerId": "c43803fc-20e1-4af6-b19e-ce17c3348607",
+    "score": 5,
+    "comment": null,
+    "createdAt": "2026-09-10T10:12:18.258Z"
+  },
+  {
+    "tripId": "6dd86dd0-9b52-4947-956d-8585bf0590fd",
+    "driverId": "40c21168-06bc-4ddd-aacb-e9fd83ba0164",
+    "customerId": "091f10c4-7c43-444f-98ad-389bdddfce80",
+    "score": 5,
+    "comment": null,
+    "createdAt": "2026-09-10T10:12:18.483Z"
+  },
+  {
+    "tripId": "b23ff107-6546-4da3-b465-1d5bc8e47be7",
+    "driverId": "1a0f3d88-7e65-477b-b433-7fa0a81a7fe9",
+    "customerId": "d7561905-0ffa-4edd-a94f-fc61e3b047a0",
+    "score": 5,
+    "comment": null,
+    "createdAt": "2026-09-10T10:12:18.700Z"
+  },
+  {
+    "tripId": "85353097-2cb8-4684-a2e8-28e9a8dad824",
+    "driverId": "9917d65d-a131-43c2-aa16-e8f8e8151acc",
+    "customerId": "2a7dec84-461d-42ff-86fe-e2adef8b8956",
+    "score": 5,
+    "comment": null,
+    "createdAt": "2026-09-10T10:12:18.904Z"
+  },
+  {
+    "tripId": "757155d0-8b79-43c5-88d2-eaf0a553dcd0",
+    "driverId": "0127f76e-daf3-4381-b09b-534519a1b79f",
+    "customerId": "9445fd4f-0218-422a-97fe-d53398f7fc77",
+    "score": 5,
+    "comment": null,
+    "createdAt": "2026-09-10T10:12:19.115Z"
+  },
+  {
+    "tripId": "d9341032-a9c5-47f7-b38f-b19b06375ac1",
+    "driverId": "eb98a29f-a9a6-4d82-86f3-8b277f73831f",
+    "customerId": "f53e0237-c287-44c0-b9ab-2ada2efad7cb",
+    "score": 5,
+    "comment": null,
+    "createdAt": "2026-09-24T09:00:44.724Z"
+  },
+  {
+    "tripId": "5f4a8746-38e6-4592-ba0b-9744f5794a43",
+    "driverId": "023f1db9-f6f1-44cf-9c17-ae0016c3c67d",
+    "customerId": "020795a2-8ae4-4fec-a6ae-48a4832a3840",
+    "score": 5,
+    "comment": null,
+    "createdAt": "2026-09-24T09:00:45.028Z"
+  },
+  {
+    "tripId": "89088a5f-2304-4b1f-aa02-8266468c9e9b",
+    "driverId": "9445c2b3-57d2-4f44-bbea-5fffd3ae1122",
+    "customerId": "4af5c853-dd0f-421e-8dee-fc394538dfe2",
+    "score": 5,
+    "comment": null,
+    "createdAt": "2026-09-24T09:00:51.711Z"
+  },
+  {
+    "tripId": "27f85448-cb8b-49b8-8eab-f0445921b49b",
+    "driverId": "564bf8a2-9e57-471b-b323-f9d537bdff9d",
+    "customerId": "a6ce507a-870d-4b70-91ce-86b1bc928217",
+    "score": 5,
+    "comment": null,
+    "createdAt": "2026-09-24T09:00:55.570Z"
+  },
+  {
+    "tripId": "76ef97e7-7b3b-4292-812c-73fcc437b666",
+    "driverId": "7d266194-598a-43d5-9ad6-2235fa55ef96",
+    "customerId": "e0432982-aea4-414b-b694-c9dc9a82316d",
+    "score": 5,
+    "comment": null,
+    "createdAt": "2026-09-24T09:00:56.066Z"
+  },
+  {
+    "tripId": "5ae82361-fe6c-43a3-97dc-1675cc3de382",
+    "driverId": "9df5f1db-ace5-4d50-a4cc-86defb4d3571",
+    "customerId": "ac134ac8-8d11-48b3-952e-3ed40410defe",
+    "score": 5,
+    "comment": null,
+    "createdAt": "2026-09-24T09:03:19.352Z"
+  },
+  {
+    "tripId": "bb84018c-2304-49d6-97a2-1bd71d1b5824",
+    "driverId": "a890224d-2ea9-4f39-a76a-69165e89cf88",
+    "customerId": "5bf2b69c-4f7e-4ad0-9880-390270c05e42",
+    "score": 5,
+    "comment": null,
+    "createdAt": "2026-09-24T09:03:19.603Z"
+  },
+  {
+    "tripId": "096ace96-3ea3-45a3-9cb2-cba255e05960",
+    "driverId": "b7c5d372-b18d-4ed3-9969-d742d1566771",
+    "customerId": "aa786c2d-c7f5-49e4-8fd5-3c445ebf02c7",
+    "score": 5,
+    "comment": null,
+    "createdAt": "2026-09-24T09:03:19.822Z"
+  },
+  {
+    "tripId": "63d0961c-a64e-4186-a1cd-f12c61782245",
+    "driverId": "8fadd606-cf5a-4196-ad12-20ee1dffff54",
+    "customerId": "8b540297-d3c0-4471-81d1-b2215c64a8c7",
+    "score": 5,
+    "comment": null,
+    "createdAt": "2026-09-24T09:03:20.053Z"
+  },
+  {
+    "tripId": "5009e2b2-091a-465a-8289-1ce574111ad0",
+    "driverId": "99f7c4dd-9c56-432a-859a-9d1737efe781",
+    "customerId": "b4c1d3d4-8bcb-464b-acc2-383229c037e9",
+    "score": 5,
+    "comment": null,
+    "createdAt": "2026-09-24T09:03:20.420Z"
+  }
+]

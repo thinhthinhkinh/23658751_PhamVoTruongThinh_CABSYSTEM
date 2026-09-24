@@ -1,0 +1,5 @@
+[
+  { "vehicleType": "motorbike", "baseFare": 10000, "perKmRate": 4000, "perMinuteRate": 300 },
+  { "vehicleType": "4-seat", "baseFare": 15000, "perKmRate": 9500, "perMinuteRate": 500 },
+  { "vehicleType": "7-seat", "baseFare": 20000, "perKmRate": 12500, "perMinuteRate": 650 }
+]

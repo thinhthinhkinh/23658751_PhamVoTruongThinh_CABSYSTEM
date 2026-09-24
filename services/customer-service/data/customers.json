@@ -1,0 +1,332 @@
+[
+  {
+    "id": "35c8dcc4-6862-4244-9789-55b627b5287e",
+    "fullName": "A",
+    "email": "test_1789035139484_n09ihs@test.com",
+    "passwordHash": "7faf46891f2c054e1a1bb17b566bcfb7:e7f411b1494e82f401e11352b43aed1635d18a860ecdd293e688ea5de2802bbead3c68ed0c518502371efd4594f5878974e774f307e0c4496b53c8eaf96b32c1",
+    "phone": null,
+    "active": false,
+    "createdAt": "2026-09-10T10:12:19.528Z",
+    "updatedAt": "2026-09-10T10:12:19.541Z"
+  },
+  {
+    "id": "d7167b5c-d996-4fc5-9fa7-f2a23f875dcb",
+    "fullName": "A",
+    "email": "test_1789035139619_e2vcxy@test.com",
+    "passwordHash": "3fccc30f7ba27897b8439084e822d91f:f1c0a3d4a5b93c9eb9fd373abd746eb81eb1d8f3cdc3c74c317787dedeeb28247357be5ea4856941a472538dc7189fc31dede055fa4c014586e7f775c234a2c4",
+    "phone": null,
+    "active": true,
+    "createdAt": "2026-09-10T10:12:19.651Z",
+    "updatedAt": "2026-09-10T10:12:19.651Z"
+  },
+  {
+    "id": "a5f44b83-06d7-4e86-87fe-587c2cccd153",
+    "fullName": "B",
+    "email": "test_1789035139655_ng3i7x@test.com",
+    "passwordHash": "7b4a76029487072d3cb8fa0c2ea099d6:04f3b5394ac3d9307dfa122cf164698ddc83394f25a51a1b022e56a105a19080134d7b76a7d13f8556c68d2b69c3ccad4a194295f6255a9ab526f7a468292d7a",
+    "phone": null,
+    "active": true,
+    "createdAt": "2026-09-10T10:12:19.692Z",
+    "updatedAt": "2026-09-10T10:12:19.692Z"
+  },
+  {
+    "id": "3f671b01-b794-4a73-8220-25fc4a58062c",
+    "fullName": "A",
+    "email": "test_1789035139821_ot4j7y@test.com",
+    "passwordHash": "a8f5bc309d1946b34ac80d620fff5f8c:14cf26e38ed2dd4fb6741346a8442f2326d29a62d4c363e7d3db8e4320e41c42eb56333da513067ecef277524148b115c272d71eed69e734426b75e466a439be",
+    "phone": null,
+    "active": true,
+    "createdAt": "2026-09-10T10:12:19.852Z",
+    "updatedAt": "2026-09-10T10:12:19.852Z"
+  },
+  {
+    "id": "b37f58a0-6816-49e0-9887-2337ab5edb04",
+    "fullName": "A",
+    "email": "test_1789035140178_y79jwj@test.com",
+    "passwordHash": "8966c20016c4140a60b57a86ed967c6b:7cc54abcb5541d613910198b8f6ecca6dd35d7f91af2a0c7be8aff43fb439c1657f91fec3ed4874f0168305a402015fddd085142d64c775d336b56fa670d3704",
+    "phone": null,
+    "active": false,
+    "createdAt": "2026-09-10T10:12:20.209Z",
+    "updatedAt": "2026-09-10T10:12:20.218Z"
+  },
+  {
+    "id": "971b0e4b-c91d-486a-8159-7a233dabc659",
+    "fullName": "A",
+    "email": "test_1789035140640_dk0xhq@test.com",
+    "passwordHash": "e5f8e2798c52e7bcc6c5620248c16810:05e0ddd3a1f436e0427aa1a1722faa75536008091f6f00509d31eb831f64892d7ec34dc36dbaf412ade83b2460dd64495b50f8a982cf76064535048c90f54d6e",
+    "phone": null,
+    "active": true,
+    "createdAt": "2026-09-10T10:12:20.679Z",
+    "updatedAt": "2026-09-10T10:12:20.679Z"
+  },
+  {
+    "id": "ec69dcb9-cb0b-4779-b448-2d552dbedb42",
+    "fullName": "Tên mới",
+    "email": "test_1789035141309_osvlmx@test.com",
+    "passwordHash": "91ab17733ecfbf8edb070ca85758e221:64b2313c3b8d4ffeb4df543a2a895322274e70e51f51da81524805a277823e94a056b0ed1d473ed0e34d8b3393d1c5095031c9d8f67dbf54412ac47b9e428d6b",
+    "phone": "0900000009",
+    "active": true,
+    "createdAt": "2026-09-10T10:12:21.340Z",
+    "updatedAt": "2026-09-10T10:12:21.348Z"
+  },
+  {
+    "id": "8931a839-2ef2-4536-837d-b92aac44a08e",
+    "fullName": "A",
+    "email": "test_1789035141907_skbwi7@test.com",
+    "passwordHash": "23ec4766636583d0cc660f1b428053f9:1579579a248ca47e4b49fed611036df39ce33071f515e481000b3bc5ba0d15002bb6ec3af7241275471c06bdf1bca5a88d0a30be45a8c18f4efc4e223f014f53",
+    "phone": null,
+    "active": true,
+    "createdAt": "2026-09-10T10:12:21.944Z",
+    "updatedAt": "2026-09-10T10:12:21.944Z"
+  },
+  {
+    "id": "9beae3b1-5e30-4d3e-b9d9-b6e830485b6d",
+    "fullName": "A",
+    "email": "test_1789035141998_8wvr2l@test.com",
+    "passwordHash": "22ec597f25211dba34e5ba9ae76745cc:4f66c9ff3435f604627cb4aea917148272bc3faf987c5d158840759ff2d744c586dd681bd05e980be17f69c653b6d289c9227f7ed0106734f6a0eab32674192d",
+    "phone": null,
+    "active": true,
+    "createdAt": "2026-09-10T10:12:22.028Z",
+    "updatedAt": "2026-09-10T10:12:22.028Z"
+  },
+  {
+    "id": "55685ff2-b831-4a63-8013-e37248d9f8cd",
+    "fullName": "Nguyễn Văn A",
+    "email": "test_1789035142172_da4x0x@test.com",
+    "passwordHash": "2096fcb6b3298286d03fb712fb9dfbe2:db42ce1b26d3e39e23d177ca1dd3c116a8d5e9c246e92de9491f40217a66ad976e9b8e18f7894719e86d4d135212c3340bc1297add3b9a943adc5805598ada3a",
+    "phone": null,
+    "active": true,
+    "createdAt": "2026-09-10T10:12:22.205Z",
+    "updatedAt": "2026-09-10T10:12:22.205Z"
+  },
+  {
+    "id": "87518984-afa0-4efc-a197-e62a598a434b",
+    "fullName": "A",
+    "email": "test_1789035142638_5q18t4@test.com",
+    "passwordHash": "75851686634b77b242e016d3f57966e1:333b4a738b9e456d0567943f2b2e54aae9ff322cd25fa4fb4200ac043ae832cd20a8c0f89bbcb7502a578b18c6d10afc1f920de997a322c0d8eefb41c4e5b332",
+    "phone": null,
+    "active": true,
+    "createdAt": "2026-09-10T10:12:22.672Z",
+    "updatedAt": "2026-09-10T10:12:22.672Z"
+  },
+  {
+    "id": "f7abefd9-2020-4cc6-8195-33729d1db857",
+    "fullName": "A",
+    "email": "test_1790240450464_3a40et@test.com",
+    "passwordHash": "0ea21812125378578da59203f3a34363:cbc1f96fe54568bee1dbfcacddeb3a4755a07fa9ab793475844bc262767b5887b2086efcc0e460b90ebb43ccb2e3ef462c4f4deb7d36d1f28b37f5250af28691",
+    "phone": null,
+    "active": false,
+    "createdAt": "2026-09-24T09:00:50.507Z",
+    "updatedAt": "2026-09-24T09:00:50.522Z"
+  },
+  {
+    "id": "a8e0c724-9d17-4a6c-8b78-13fa76c026da",
+    "fullName": "A",
+    "email": "test_1790240450627_3nusht@test.com",
+    "passwordHash": "bcdf5ba2521b3ddab6eeb37fe4b75f72:5d6e1ae58ed3db389af8c9568cd8c4c1b25ffdf8001ec9bc75c04f3fdfb197fd02492ea6487aee02ff3bf9ac398042e1e232a128a505cc7f3affea363644fac9",
+    "phone": null,
+    "active": false,
+    "createdAt": "2026-09-24T09:00:50.658Z",
+    "updatedAt": "2026-09-24T09:00:50.674Z"
+  },
+  {
+    "id": "78657874-263e-49bc-bd6e-cd4e1fea7734",
+    "fullName": "A",
+    "email": "test_1790240451268_ms11dc@test.com",
+    "passwordHash": "12a0f84daed5930da76604ea8ac95678:e547c8c1e55ca9805b3a37b112d96e1f48b54afacb35eb51244735295f43fb52fafddb9374c3da02aee26b8f1c44dcacd67de6855e8bfcc13d4def4200652537",
+    "phone": null,
+    "active": true,
+    "createdAt": "2026-09-24T09:00:51.304Z",
+    "updatedAt": "2026-09-24T09:00:51.304Z"
+  },
+  {
+    "id": "387ba4fa-490f-4745-8d54-7dafa69d2174",
+    "fullName": "B",
+    "email": "test_1790240451314_qvr90z@test.com",
+    "passwordHash": "839ae8f0f72835afd9b3606783db6dfe:a4b0f8954091084693849be353469e0a6051126fa219c33a925cdd421eedbac86fffd93d09586543e8dcccd70fe9192a780307a8f790186ebec5c7a2c120166b",
+    "phone": null,
+    "active": true,
+    "createdAt": "2026-09-24T09:00:51.349Z",
+    "updatedAt": "2026-09-24T09:00:51.349Z"
+  },
+  {
+    "id": "f10139e8-8c30-486c-88c2-4bd4d6d4ca8f",
+    "fullName": "A",
+    "email": "test_1790240452730_d48t1h@test.com",
+    "passwordHash": "30664b5551929b2e5cdc62cf78ba5fbc:0f58a1b604116f325a391bf3fc2fad7b0d21bea05b542e95d3e30057c11ca9167ea33b0a1607848671bf0739f2147b0c1c4f84b3d6d30fe2dbaea8f546a2ea85",
+    "phone": null,
+    "active": true,
+    "createdAt": "2026-09-24T09:00:52.764Z",
+    "updatedAt": "2026-09-24T09:00:52.764Z"
+  },
+  {
+    "id": "3d96b6f6-115f-4a32-bb12-4b1ff3274e7f",
+    "fullName": "Tên mới",
+    "email": "test_1790240454566_kew26a@test.com",
+    "passwordHash": "46a95260fb7db8ffcb7433238896d646:44b50cac66791c58b50c405e4c0677533f32fce54d391674b95a8f34cfbabdb3b6894c2adbd2c59e570b0d44fa3427d28ede65553cefae05bbb853f054ba659c",
+    "phone": "0900000009",
+    "active": true,
+    "createdAt": "2026-09-24T09:00:54.599Z",
+    "updatedAt": "2026-09-24T09:00:54.616Z"
+  },
+  {
+    "id": "5f431ccd-5299-42c5-b3d5-ac237007c340",
+    "fullName": "A",
+    "email": "test_1790240454741_gg9yit@test.com",
+    "passwordHash": "64ed6fae53af9a350e8687a68e2b5465:9a483b5a8e3029e171134fb06750746d16ec854c7ed53370f3b90a0697a17143c26d1f9dcd0fc74ce19c754b059d98e15175f2ad88f0e0c2b9b7f9ffd8c6c6e2",
+    "phone": null,
+    "active": true,
+    "createdAt": "2026-09-24T09:00:54.771Z",
+    "updatedAt": "2026-09-24T09:00:54.771Z"
+  },
+  {
+    "id": "bcc4236d-59d3-40f1-9eec-99df1b88ee4f",
+    "fullName": "Nguyễn Văn A",
+    "email": "test_1790240455232_w25ap6@test.com",
+    "passwordHash": "5caaf6583fda1dca8589e808684679ff:cd1e7006595783d8de062f486f6a9f82243036f18c9dd98c384ab4bece9102dcf2e0313c81c54ed35a9e84de4cee0d3b54cf68e2802ca4a46a455928c0a525aa",
+    "phone": null,
+    "active": true,
+    "createdAt": "2026-09-24T09:00:55.268Z",
+    "updatedAt": "2026-09-24T09:00:55.268Z"
+  },
+  {
+    "id": "e9267c9d-dc3e-48d0-882c-ddcb569e9604",
+    "fullName": "A",
+    "email": "test_1790240456947_y4r806@test.com",
+    "passwordHash": "33f7816dd94fea65355aa6db456a9578:c775dfe0330ff307094637491a5d8caf8018124bb6fc1a16c766d170be70beeb20b401268ab0fde41240023a8a8dc62399667da2469da8a29957fcaf68550804",
+    "phone": null,
+    "active": true,
+    "createdAt": "2026-09-24T09:00:56.979Z",
+    "updatedAt": "2026-09-24T09:00:56.979Z"
+  },
+  {
+    "id": "4de1b5e5-eeff-484a-a70b-d8934879b7e2",
+    "fullName": "A",
+    "email": "test_1790240457255_bpn7t7@test.com",
+    "passwordHash": "82368e2eb17c845f2398783618435936:8363828cadc9a75cbc5ef7cd6063f7c2af0d8c148069d744884d6e6960fb3c729e755a426970c5822e5591005904fd37cb1ca64217c7cdb6e0f2bbdc6e5613c6",
+    "phone": null,
+    "active": true,
+    "createdAt": "2026-09-24T09:00:57.295Z",
+    "updatedAt": "2026-09-24T09:00:57.295Z"
+  },
+  {
+    "id": "184d50b1-3850-4d0c-8c54-56c1bf012b9e",
+    "fullName": "A",
+    "email": "test_1790240457516_zlxhxn@test.com",
+    "passwordHash": "f4e185ddb3f4f839edaf4fcceed0302a:d03891829895f3fa438524c80bd93f5eddae502b75ec294f2369816a7174d6d429c16375f8d8b516d21fa3c843b281d3ce28b3531677bbb048fa9dfb21f9d315",
+    "phone": null,
+    "active": true,
+    "createdAt": "2026-09-24T09:00:57.556Z",
+    "updatedAt": "2026-09-24T09:00:57.556Z"
+  },
+  {
+    "id": "c8c3040c-ff73-4948-9f61-91a55e4b9b6c",
+    "fullName": "A",
+    "email": "test_1790240600755_jqwn8b@test.com",
+    "passwordHash": "a4efbabe4303eb656ddda10e21c3f7a0:b5ff45084511416a6cc265da7783165233ce3c5161e3652a292994682231469541dd774e4c238e23cc79d5acfa1fea6c6ba11033a1977c697ec5d5a4bf929d48",
+    "phone": null,
+    "active": true,
+    "createdAt": "2026-09-24T09:03:20.804Z",
+    "updatedAt": "2026-09-24T09:03:20.804Z"
+  },
+  {
+    "id": "fe1c1e07-341e-4d26-8ab4-a0a82ebec736",
+    "fullName": "A",
+    "email": "test_1790240600881_ad4o2j@test.com",
+    "passwordHash": "c3797b03fd7fe1b4a02feeaad497afc0:1d387fcc139f961b7e3e261b87c0eb8fa0d275374b2cb825177d74c5d6a947a9a4fc43a0cfc4eb7ac601d3921765d69d347238b3dc53c278ebe2b75cadbce98a",
+    "phone": null,
+    "active": false,
+    "createdAt": "2026-09-24T09:03:20.920Z",
+    "updatedAt": "2026-09-24T09:03:20.929Z"
+  },
+  {
+    "id": "951b7884-e9a1-490e-b24a-6c1f1044238e",
+    "fullName": "A",
+    "email": "test_1790240601088_kobsbd@test.com",
+    "passwordHash": "1acae828b073e5ffc6d42b06f7676be4:5d5495d6ebbdffa4b4f8bd4677f96e78fa7b0061347085c3c5521619ece78a5787be9f39eecbcf25ee745bed39265b2c2f5439ea82ea84b19a5589db7f4b5d08",
+    "phone": null,
+    "active": true,
+    "createdAt": "2026-09-24T09:03:21.136Z",
+    "updatedAt": "2026-09-24T09:03:21.136Z"
+  },
+  {
+    "id": "c56a24eb-e94c-4781-93aa-6111403d761e",
+    "fullName": "B",
+    "email": "test_1790240601133_bea92n@test.com",
+    "passwordHash": "ee833f9538d1baf9a27bf00f94b4d7cb:bde25f5420baf84892bbe838cbac58325d2a1e158777f544a164d3ac782a6928f18f4721c8a681aa329cf26a3cbf2d115e4c86eb6ae2a03d8de29fd95fe7e301",
+    "phone": null,
+    "active": true,
+    "createdAt": "2026-09-24T09:03:21.174Z",
+    "updatedAt": "2026-09-24T09:03:21.174Z"
+  },
+  {
+    "id": "97bc3ec0-18cf-40ed-a230-93524db560c4",
+    "fullName": "A",
+    "email": "test_1790240601211_7zknuf@test.com",
+    "passwordHash": "2262979751b5ca14ef0dd9c011a7d421:29f66b95410edffbf58ce3ba7d40fcee8b53a4137350cf23773b99144c41342301d3dd6aa1532720e893f215e24bab90c6c83cc5860576660a4a640af4d0dc9f",
+    "phone": null,
+    "active": false,
+    "createdAt": "2026-09-24T09:03:21.251Z",
+    "updatedAt": "2026-09-24T09:03:21.262Z"
+  },
+  {
+    "id": "31bdb6e0-cb4a-41e3-9a31-2cbe6330e6fd",
+    "fullName": "A",
+    "email": "test_1790240601330_ijgfm3@test.com",
+    "passwordHash": "2cb5771635ed19d9c678a82494dfc981:e7b43dff00762764e46e5e50c197f01bb09e81deb92531b83f08e0d771b9e6ff4253c4329036ef056155e0302b0ec11dfacaa7cffb5cc6d6cf63f708be79c9d0",
+    "phone": null,
+    "active": true,
+    "createdAt": "2026-09-24T09:03:21.368Z",
+    "updatedAt": "2026-09-24T09:03:21.368Z"
+  },
+  {
+    "id": "36c17238-86d7-4e41-8b0b-4591668e8ffb",
+    "fullName": "A",
+    "email": "test_1790240601650_dtkg8d@test.com",
+    "passwordHash": "b0214ebe22cc53731e399b5e0ea724f0:17935c2cb39b5113749a03494210a614d9f2e1db031e59e9ea5ccfd35998954060a230270b9c21b5bbc0de52d5bd60cb12edf6b92aa1510c0733eeaab7e3e730",
+    "phone": null,
+    "active": true,
+    "createdAt": "2026-09-24T09:03:21.699Z",
+    "updatedAt": "2026-09-24T09:03:21.699Z"
+  },
+  {
+    "id": "34eea4cf-a24a-4b30-8f71-d1ebabb5073b",
+    "fullName": "A",
+    "email": "test_1790240602083_co7ebz@test.com",
+    "passwordHash": "d51ba272c4183104d90f13fd1beb70f5:86b283503fc85fa85838c2707f68de6c0f3900aed3d364130721faaae74b439a1ae0d4a0d2d4d31d069e39973fc9fcdd357c80aa6a969e9ea5779558dc594e45",
+    "phone": null,
+    "active": true,
+    "createdAt": "2026-09-24T09:03:22.136Z",
+    "updatedAt": "2026-09-24T09:03:22.136Z"
+  },
+  {
+    "id": "21a2acb4-feba-44df-8036-47a62bdff043",
+    "fullName": "Tên mới",
+    "email": "test_1790240602186_00zic0@test.com",
+    "passwordHash": "311071221ca7884e5386727c07de3038:ccbb3490478e99897f0dbd00cd30073876b0ee8a665079b5728eabfdc9baaa1698c105dd161e46f618a343b02f98823ec31c8344eb57245204bad463ade33b25",
+    "phone": "0900000009",
+    "active": true,
+    "createdAt": "2026-09-24T09:03:22.229Z",
+    "updatedAt": "2026-09-24T09:03:22.242Z"
+  },
+  {
+    "id": "63a93273-a2e3-4582-94e2-7e0b9bd9e5f2",
+    "fullName": "Nguyễn Văn A",
+    "email": "test_1790240602971_zhdxap@test.com",
+    "passwordHash": "03d6d264692f3946cd3e72b786786677:afcdf7f602b568169d764f2f4350cd6c89c4dcf0e23a57e3bdc40a25a2dcaff75501222a911b7de42473ee633ce9fa42295fcb30cb02cc0e415dca6532c9cf3f",
+    "phone": null,
+    "active": true,
+    "createdAt": "2026-09-24T09:03:23.017Z",
+    "updatedAt": "2026-09-24T09:03:23.017Z"
+  },
+  {
+    "id": "79d395d4-7473-42f8-806c-986fd0e3e1bd",
+    "fullName": "A",
+    "email": "test_1790240603334_zffi69@test.com",
+    "passwordHash": "e0f4f6683ea7342d9a5aa46bf1a05368:6a42c0abd64569a14aa45d7eb950157cb553ed8172dc07fcb4ee6365ed91a2323f17901afa6f1580b94459de0b7432cd9634ca4c0a383d5920e034e06da9af7a",
+    "phone": null,
+    "active": true,
+    "createdAt": "2026-09-24T09:03:23.389Z",
+    "updatedAt": "2026-09-24T09:03:23.389Z"
+  }
+]

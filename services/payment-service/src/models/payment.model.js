@@ -1,19 +1,37 @@
-// Model: 1 giao dịch thanh toán (FR-15, FR-16)
-// Lưu ý BR-06: KHÔNG lưu số thẻ/tài khoản thanh toán nhạy cảm — chỉ lưu providerRef
-// (mã tham chiếu phía cổng thanh toán ngoài).
-function createPayment({ id, tripId, method, amount }) {
-  const now = new Date().toISOString();
-  return {
-    id,
-    tripId,
-    method, // "cash" | "e-wallet" | "card"
-    amount,
-    status: "pending", // pending | success | failed
-    providerRef: null,
-    failReason: null,
-    createdAt: now,
-    updatedAt: now,
-  };
-}
+const mongoose = require("mongoose");
 
-module.exports = { createPayment };
+const paymentSchema = new mongoose.Schema(
+  {
+    _id: { type: String },
+    tripId: { type: String, required: true, unique: true },
+    method: { type: String, enum: ["cash", "e-wallet", "card"], required: true },
+    amount: { type: Number, required: true },
+    status: { type: String, enum: ["pending", "success", "failed"], default: "pending" },
+    providerRef: { type: String, default: null },
+    failReason: { type: String, default: null },
+  },
+  {
+    timestamps: true,
+    toObject: { transform: (doc, ret) => { ret.id = ret._id; delete ret._id; delete ret.__v; } },
+    toJSON: { transform: (doc, ret) => { ret.id = ret._id; delete ret._id; delete ret.__v; } },
+  }
+);
+
+// FareCache dùng chính tripId làm _id, không dùng timestamps tự động
+// vì cachedAt cần được ghi đè mỗi lần cache lại (kể cả khi update, không chỉ lúc tạo mới).
+const fareCacheSchema = new mongoose.Schema(
+  {
+    _id: { type: String },
+    amount: { type: Number, required: true },
+    cachedAt: { type: Date, required: true },
+  },
+  {
+    toObject: { transform: (doc, ret) => { ret.tripId = ret._id; delete ret._id; delete ret.__v; } },
+    toJSON: { transform: (doc, ret) => { ret.tripId = ret._id; delete ret._id; delete ret.__v; } },
+  }
+);
+
+const Payment = mongoose.model("Payment", paymentSchema);
+const FareCache = mongoose.model("FareCache", fareCacheSchema);
+
+module.exports = { Payment, FareCache };

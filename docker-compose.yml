@@ -1,0 +1,251 @@
+﻿services:
+  mongodb:
+    image: mongo:7
+    ports: ["27017:27017"]
+    volumes:
+      - mongodb-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  event-bus-service:
+    build: ./event-bus-service
+    ports: ["4000:4000"]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4000/health"]
+      interval: 10s
+      timeout: 5s
+      start_period: 15s
+      retries: 5
+
+  customer-service:
+    build: ./services/customer-service
+    ports: ["4001:4001"]
+    environment:
+      JWT_SECRET: cab-system-super-secret-key-change-me
+      MONGO_URI: mongodb://mongodb:27017/customer_db
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4001/health"]
+      interval: 10s
+      timeout: 5s
+      start_period: 15s
+      retries: 5
+
+  driver-service:
+    build: ./services/driver-service
+    ports: ["4002:4002"]
+    environment:
+      JWT_SECRET: cab-system-super-secret-key-change-me
+      MONGO_URI: mongodb://mongodb:27017/driver_db
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4002/health"]
+      interval: 10s
+      timeout: 5s
+      start_period: 15s
+      retries: 5
+
+  location-service:
+    build: ./services/location-service
+    ports: ["4005:4005"]
+    environment:
+      JWT_SECRET: cab-system-super-secret-key-change-me
+      MONGO_URI: mongodb://mongodb:27017/location_db
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4005/health"]
+      interval: 10s
+      timeout: 5s
+      start_period: 15s
+      retries: 5
+
+  pricing-service:
+    build: ./services/pricing-service
+    ports: ["4006:4006"]
+    environment:
+      JWT_SECRET: cab-system-super-secret-key-change-me
+      MONGO_URI: mongodb://mongodb:27017/pricing_db
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4006/health"]
+      interval: 10s
+      timeout: 5s
+      start_period: 15s
+      retries: 5
+
+  trip-service:
+    build: ./services/trip-service
+    ports: ["4003:4003"]
+    environment:
+      JWT_SECRET: cab-system-super-secret-key-change-me
+      TRIP_SERVICE_URL: http://trip-service:4003
+      EVENT_BUS_URL: http://event-bus-service:4000
+      PRICING_SERVICE_URL: http://pricing-service:4006
+      MONGO_URI: mongodb://mongodb:27017/trip_db
+    depends_on:
+      event-bus-service:
+        condition: service_healthy
+      pricing-service:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4003/health"]
+      interval: 10s
+      timeout: 5s
+      start_period: 15s
+      retries: 5
+
+  dispatch-service:
+    build: ./services/dispatch-service
+    ports: ["4004:4004"]
+    environment:
+      JWT_SECRET: cab-system-super-secret-key-change-me
+      DISPATCH_OFFER_TIMEOUT_SEC: "3"
+      DISPATCH_SERVICE_URL: http://dispatch-service:4004
+      EVENT_BUS_URL: http://event-bus-service:4000
+      DRIVER_SERVICE_URL: http://driver-service:4002
+      LOCATION_SERVICE_URL: http://location-service:4005
+      MONGO_URI: mongodb://mongodb:27017/dispatch_db
+    depends_on:
+      event-bus-service:
+        condition: service_healthy
+      driver-service:
+        condition: service_healthy
+      location-service:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4004/health"]
+      interval: 10s
+      timeout: 5s
+      start_period: 15s
+      retries: 5
+
+  payment-service:
+    build: ./services/payment-service
+    ports: ["4007:4007"]
+    environment:
+      JWT_SECRET: cab-system-super-secret-key-change-me
+      PAYMENT_SERVICE_URL: http://payment-service:4007
+      EVENT_BUS_URL: http://event-bus-service:4000
+      TRIP_SERVICE_URL: http://trip-service:4003
+      MONGO_URI: mongodb://mongodb:27017/payment_db
+    depends_on:
+      event-bus-service:
+        condition: service_healthy
+      trip-service:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4007/health"]
+      interval: 10s
+      timeout: 5s
+      start_period: 15s
+      retries: 5
+
+  notification-service:
+    build: ./services/notification-service
+    ports: ["4008:4008"]
+    environment:
+      JWT_SECRET: cab-system-super-secret-key-change-me
+      NOTIFICATION_SERVICE_URL: http://notification-service:4008
+      EVENT_BUS_URL: http://event-bus-service:4000
+      TRIP_SERVICE_URL: http://trip-service:4003
+      MONGO_URI: mongodb://mongodb:27017/notification_db
+    depends_on:
+      event-bus-service:
+        condition: service_healthy
+      trip-service:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4008/health"]
+      interval: 10s
+      timeout: 5s
+      start_period: 15s
+      retries: 5
+
+  admin-service:
+    build: ./services/admin-service
+    ports: ["4009:4009"]
+    environment:
+      JWT_SECRET: cab-system-super-secret-key-change-me
+      CUSTOMER_SERVICE_URL: http://customer-service:4001
+      DRIVER_SERVICE_URL: http://driver-service:4002
+      TRIP_SERVICE_URL: http://trip-service:4003
+      PAYMENT_SERVICE_URL: http://payment-service:4007
+      MONGO_URI: mongodb://mongodb:27017/admin_db
+    depends_on:
+      customer-service:
+        condition: service_healthy
+      driver-service:
+        condition: service_healthy
+      trip-service:
+        condition: service_healthy
+      payment-service:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4009/health"]
+      interval: 10s
+      timeout: 5s
+      start_period: 15s
+      retries: 5
+
+  api-gateway:
+    build: ./api-gateway
+    ports: ["3000:3000"]
+    environment:
+      CUSTOMER_SERVICE_URL: http://customer-service:4001
+      DRIVER_SERVICE_URL: http://driver-service:4002
+      TRIP_SERVICE_URL: http://trip-service:4003
+      DISPATCH_SERVICE_URL: http://dispatch-service:4004
+      LOCATION_SERVICE_URL: http://location-service:4005
+      PRICING_SERVICE_URL: http://pricing-service:4006
+      PAYMENT_SERVICE_URL: http://payment-service:4007
+      NOTIFICATION_SERVICE_URL: http://notification-service:4008
+      ADMIN_SERVICE_URL: http://admin-service:4009
+    depends_on:
+      customer-service:
+        condition: service_healthy
+      driver-service:
+        condition: service_healthy
+      trip-service:
+        condition: service_healthy
+      dispatch-service:
+        condition: service_healthy
+      location-service:
+        condition: service_healthy
+      pricing-service:
+        condition: service_healthy
+      payment-service:
+        condition: service_healthy
+      notification-service:
+        condition: service_healthy
+      admin-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 10s
+      timeout: 5s
+      start_period: 15s
+      retries: 5
+
+volumes:
+  mongodb-data:

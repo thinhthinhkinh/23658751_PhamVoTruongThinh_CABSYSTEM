@@ -1,25 +1,51 @@
-// Model: cấu trúc 1 bản ghi Driver (FR-02, FR-11)
-// status: "offline" | "available" | "busy"
-function createDriver({ id, fullName, email, passwordHash, phone, vehicle, createdByStaff }) {
-  const now = new Date().toISOString();
-  return {
-    id,
-    fullName,
-    email,
-    passwordHash,
-    phone: phone || null,
-    vehicle: vehicle || null, // { plate, model, type }
-    status: "offline",
-    active: true,
-    createdByStaff: !!createdByStaff, // true nếu do nhân viên vận hành tạo (FR-02)
-    createdAt: now,
-    updatedAt: now,
-  };
-}
+const mongoose = require("mongoose");
+
+const vehicleSchema = new mongoose.Schema(
+  {
+    plate: { type: String, required: true },
+    model: { type: String, required: true },
+    type: { type: String, required: true },
+  },
+  { _id: false }
+);
+
+const driverSchema = new mongoose.Schema(
+  {
+    _id: { type: String },
+    fullName: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    passwordHash: { type: String, required: true },
+    phone: { type: String, default: null },
+    vehicle: { type: vehicleSchema, default: null },
+    status: { type: String, enum: ["offline", "available", "busy"], default: "offline" },
+    active: { type: Boolean, default: true },
+    createdByStaff: { type: Boolean, default: false },
+  },
+  {
+    timestamps: true,
+    toObject: {
+      transform: (doc, ret) => {
+        ret.id = ret._id;
+        delete ret._id;
+        delete ret.__v;
+      },
+    },
+    toJSON: {
+      transform: (doc, ret) => {
+        ret.id = ret._id;
+        delete ret._id;
+        delete ret.__v;
+      },
+    },
+  }
+);
+
+const Driver = mongoose.model("Driver", driverSchema);
 
 function toPublicJSON(driver) {
-  const { passwordHash, ...rest } = driver;
+  const obj = driver.toObject ? driver.toObject() : driver;
+  const { passwordHash, ...rest } = obj;
   return rest;
 }
 
-module.exports = { createDriver, toPublicJSON };
+module.exports = { Driver, toPublicJSON };

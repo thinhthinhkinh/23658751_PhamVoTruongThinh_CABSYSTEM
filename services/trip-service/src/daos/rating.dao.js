@@ -1,20 +1,16 @@
-const path = require("path");
-const { readData, writeData } = require("../utils/jsonFileStore");
-
-const DATA_FILE = path.join(__dirname, "../../data/ratings.json");
+const { Rating } = require("../models/trip.model");
 
 function findByTripId(tripId) {
-  return readData(DATA_FILE).find((r) => r.tripId === tripId) || null;
+  return Rating.findById(tripId);
 }
 
 function findByDriverId(driverId) {
-  return readData(DATA_FILE).filter((r) => r.driverId === driverId);
+  return Rating.find({ driverId });
 }
 
-function insert(rating) {
-  const data = readData(DATA_FILE);
-  data.push(rating);
-  writeData(DATA_FILE, data);
+async function insert(ratingData) {
+  const rating = new Rating(ratingData);
+  await rating.save();
   return rating;
 }
 

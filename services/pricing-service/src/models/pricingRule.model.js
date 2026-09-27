@@ -1,8 +1,30 @@
-// Model: 1 quy tắc tính giá theo loại xe (FR-14)
-// ⚠️ Công thức & mức giá trong data/pricingRules.json chỉ là placeholder —
-// công thức tính cước chính thức chưa được khách hàng chốt (xem Mục 9 tài liệu BA).
-function createPricingRule({ vehicleType, baseFare, perKmRate, perMinuteRate }) {
-  return { vehicleType, baseFare, perKmRate, perMinuteRate };
-}
+const mongoose = require("mongoose");
 
-module.exports = { createPricingRule };
+const pricingRuleSchema = new mongoose.Schema(
+  {
+    _id: { type: String }, // vehicleType là khóa chính
+    baseFare: { type: Number, required: true },
+    perKmRate: { type: Number, required: true },
+    perMinuteRate: { type: Number, required: true },
+  },
+  {
+    toObject: {
+      transform: (doc, ret) => {
+        ret.vehicleType = ret._id;
+        delete ret._id;
+        delete ret.__v;
+      },
+    },
+    toJSON: {
+      transform: (doc, ret) => {
+        ret.vehicleType = ret._id;
+        delete ret._id;
+        delete ret.__v;
+      },
+    },
+  }
+);
+
+const PricingRule = mongoose.model("PricingRule", pricingRuleSchema);
+
+module.exports = { PricingRule };

@@ -1,16 +1,12 @@
-const path = require("path");
-const { readData, writeData } = require("../utils/jsonFileStore");
-
-const DATA_FILE = path.join(__dirname, "../../data/channels.json");
+const { Channel } = require("../models/notification.model");
 
 function findAll() {
-  return readData(DATA_FILE);
+  return Channel.find({});
 }
 
-function insert(channel) {
-  const data = readData(DATA_FILE);
-  data.push(channel);
-  writeData(DATA_FILE, data);
+async function insert(channelData) {
+  const channel = new Channel(channelData);
+  await channel.save();
   return channel;
 }
 

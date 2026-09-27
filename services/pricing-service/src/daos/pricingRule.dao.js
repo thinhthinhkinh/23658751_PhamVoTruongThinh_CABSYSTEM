@@ -1,14 +1,11 @@
-const path = require("path");
-const { readData } = require("../utils/jsonFileStore");
-
-const DATA_FILE = path.join(__dirname, "../../data/pricingRules.json");
+const { PricingRule } = require("../models/pricingRule.model");
 
 function findAll() {
-  return readData(DATA_FILE);
+  return PricingRule.find({});
 }
 
 function findByVehicleType(vehicleType) {
-  return readData(DATA_FILE).find((r) => r.vehicleType === vehicleType) || null;
+  return PricingRule.findById(vehicleType);
 }
 
 module.exports = { findAll, findByVehicleType };

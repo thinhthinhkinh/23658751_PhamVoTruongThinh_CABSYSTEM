@@ -2,18 +2,16 @@ const repo = require("../repositories/notification.repository");
 const { ok, okList } = require("../utils/response.util");
 const asyncHandler = require("../utils/asyncHandler");
 
-// GET /notifications/me — FR-17, FR-18
 const getMine = asyncHandler(async (req, res) => {
-  return okList(res, repo.getMyNotifications(req.user.id));
+  const notifications = await repo.getMyNotifications(req.user.id);
+  return okList(res, notifications);
 });
 
-// POST /notifications/channels — FR-19
 const addChannel = asyncHandler(async (req, res) => {
-  const channel = repo.addChannel(req.body);
+  const channel = await repo.addChannel(req.body);
   return ok(res, channel, 201);
 });
 
-// ---- webhook nhận event từ event bus ----
 const onEvent = (handlerName) =>
   asyncHandler(async (req, res) => {
     await repo[handlerName](req.body.payload);

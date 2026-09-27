@@ -1,6 +1,5 @@
 const { v4: uuidv4 } = require("uuid");
 const resolvedIssueDao = require("../daos/resolvedIssue.dao");
-const { createResolvedIssue } = require("../models/resolvedIssue.model");
 const AppError = require("../utils/AppError");
 
 const CUSTOMER_SERVICE_URL = process.env.CUSTOMER_SERVICE_URL || "http://localhost:4001";
@@ -8,9 +7,6 @@ const DRIVER_SERVICE_URL = process.env.DRIVER_SERVICE_URL || "http://localhost:4
 const TRIP_SERVICE_URL = process.env.TRIP_SERVICE_URL || "http://localhost:4003";
 const PAYMENT_SERVICE_URL = process.env.PAYMENT_SERVICE_URL || "http://localhost:4007";
 
-// Admin Service không sở hữu dữ liệu — mọi thao tác đọc/ghi nhạy cảm đều gọi sang
-// service sở hữu dữ liệu đó, kèm nguyên Authorization header của nhân viên vận hành
-// (JWT ops_staff/ops_admin hợp lệ ở mọi service vì dùng chung JWT_SECRET).
 async function callService(url, { method = "GET", authHeader, body } = {}) {
   const res = await fetch(url, {
     method,
@@ -27,7 +23,6 @@ async function callService(url, { method = "GET", authHeader, body } = {}) {
   return json.data;
 }
 
-// ---- FR-20: quản lý khách hàng / tài xế / phương tiện ----
 function listCustomers(authHeader) {
   return callService(`${CUSTOMER_SERVICE_URL}/customers/all`, { authHeader });
 }
@@ -41,12 +36,10 @@ async function listVehicles(authHeader) {
   return drivers.filter((d) => d.vehicle).map((d) => ({ driverId: d.id, driverName: d.fullName, ...d.vehicle }));
 }
 
-// FR-22: thao tác nhạy cảm — chỉ ops_admin (đã enforce ở route), Customer Service enforce lại lần nữa
 function disableCustomer(authHeader, id) {
   return callService(`${CUSTOMER_SERVICE_URL}/customers/${id}/disable`, { method: "PATCH", authHeader });
 }
 
-// ---- FR-21: giám sát vận hành ----
 function listTrips(authHeader, status) {
   const qs = status ? `?status=${encodeURIComponent(status)}` : "";
   return callService(`${TRIP_SERVICE_URL}/trips${qs}`, { authHeader });
@@ -60,12 +53,10 @@ function listTransactions(authHeader) {
   return callService(`${PAYMENT_SERVICE_URL}/payments`, { authHeader });
 }
 
-function resolveTripIssue(tripId, resolutionNote, resolvedBy) {
-  const record = createResolvedIssue({ id: uuidv4(), tripId, resolutionNote, resolvedBy });
-  return resolvedIssueDao.insert(record);
+async function resolveTripIssue(tripId, resolutionNote, resolvedBy) {
+  return resolvedIssueDao.insert({ _id: uuidv4(), tripId, resolutionNote, resolvedBy });
 }
 
-// ---- FR-23: báo cáo ----
 function inRange(dateStr, from, to) {
   const d = new Date(dateStr).getTime();
   if (from && d < new Date(from).getTime()) return false;

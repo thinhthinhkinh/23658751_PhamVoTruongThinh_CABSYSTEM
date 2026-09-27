@@ -1,16 +1,12 @@
-const path = require("path");
-const { readData, writeData } = require("../utils/jsonFileStore");
-
-const DATA_FILE = path.join(__dirname, "../../data/resolvedIssues.json");
+const { ResolvedIssue } = require("../models/resolvedIssue.model");
 
 function findByTripId(tripId) {
-  return readData(DATA_FILE).filter((r) => r.tripId === tripId);
+  return ResolvedIssue.find({ tripId });
 }
 
-function insert(record) {
-  const data = readData(DATA_FILE);
-  data.push(record);
-  writeData(DATA_FILE, data);
+async function insert(recordData) {
+  const record = new ResolvedIssue(recordData);
+  await record.save();
   return record;
 }
 

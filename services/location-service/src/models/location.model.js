@@ -1,13 +1,36 @@
-// Model: 1 bản ghi vị trí tài xế + hàm tính khoảng cách Haversine (FR-10)
+const mongoose = require("mongoose");
 
-function createLocationRecord({ driverId, lat, lng }) {
-  return { driverId, lat, lng, updatedAt: new Date().toISOString() };
-}
+const locationSchema = new mongoose.Schema(
+  {
+    _id: { type: String }, // driverId là khóa chính
+    lat: { type: Number, required: true },
+    lng: { type: Number, required: true },
+  },
+  {
+    timestamps: { createdAt: false, updatedAt: true },
+    toObject: {
+      transform: (doc, ret) => {
+        ret.driverId = ret._id;
+        delete ret._id;
+        delete ret.__v;
+      },
+    },
+    toJSON: {
+      transform: (doc, ret) => {
+        ret.driverId = ret._id;
+        delete ret._id;
+        delete ret.__v;
+      },
+    },
+  }
+);
 
-// Khoảng cách giữa 2 tọa độ (km), công thức Haversine
+const LocationRecord = mongoose.model("LocationRecord", locationSchema);
+
+// Khoảng cách giữa 2 tọa độ (km), công thức Haversine — vẫn là hàm thuần túy, không đổi
 function distanceKm(lat1, lng1, lat2, lng2) {
   const toRad = (deg) => (deg * Math.PI) / 180;
-  const R = 6371; // bán kính trái đất (km)
+  const R = 6371;
   const dLat = toRad(lat2 - lat1);
   const dLng = toRad(lng2 - lng1);
   const a =
@@ -17,4 +40,4 @@ function distanceKm(lat1, lng1, lat2, lng2) {
   return R * c;
 }
 
-module.exports = { createLocationRecord, distanceKm };
+module.exports = { LocationRecord, distanceKm };

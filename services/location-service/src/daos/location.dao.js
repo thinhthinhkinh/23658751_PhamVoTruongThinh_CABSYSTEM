@@ -1,27 +1,20 @@
-const path = require("path");
-const { readData, writeData } = require("../utils/jsonFileStore");
+const { LocationRecord } = require("../models/location.model");
 
-const DATA_FILE = path.join(__dirname, "../../data/locations.json");
-
-function findAll() {
-  return readData(DATA_FILE);
+function findAll(filter = {}) {
+  return LocationRecord.find(filter);
 }
 
 function findByDriverId(driverId) {
-  return readData(DATA_FILE).find((l) => l.driverId === driverId) || null;
+  return LocationRecord.findById(driverId);
 }
 
 // Upsert: mỗi tài xế chỉ giữ 1 bản ghi vị trí mới nhất
-function upsert(record) {
-  const data = readData(DATA_FILE);
-  const idx = data.findIndex((l) => l.driverId === record.driverId);
-  if (idx === -1) {
-    data.push(record);
-  } else {
-    data[idx] = record;
-  }
-  writeData(DATA_FILE, data);
-  return record;
+function upsert({ driverId, lat, lng }) {
+  return LocationRecord.findOneAndUpdate(
+    { _id: driverId },
+    { lat, lng },
+    { upsert: true, new: true, setDefaultsOnInsert: true }
+  );
 }
 
 module.exports = { findAll, findByDriverId, upsert };

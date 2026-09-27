@@ -1,46 +1,33 @@
-const path = require("path");
-const { readData, writeData } = require("../utils/jsonFileStore");
-
-const DATA_FILE = path.join(__dirname, "../../data/trips.json");
+const { Trip } = require("../models/trip.model");
 
 function findAll() {
-  return readData(DATA_FILE);
+  return Trip.find({});
 }
 
 function findById(id) {
-  return readData(DATA_FILE).find((t) => t.id === id) || null;
+  return Trip.findById(id);
 }
 
 function findByCustomerId(customerId) {
-  return readData(DATA_FILE)
-    .filter((t) => t.customerId === customerId)
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  return Trip.find({ customerId }).sort({ createdAt: -1 });
 }
 
 function findByDriverId(driverId) {
-  return readData(DATA_FILE)
-    .filter((t) => t.driverId === driverId)
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  return Trip.find({ driverId }).sort({ createdAt: -1 });
 }
 
 function findByStatus(status) {
-  return readData(DATA_FILE).filter((t) => t.status === status);
+  return Trip.find({ status });
 }
 
-function insert(trip) {
-  const data = readData(DATA_FILE);
-  data.push(trip);
-  writeData(DATA_FILE, data);
+async function insert(tripData) {
+  const trip = new Trip(tripData);
+  await trip.save();
   return trip;
 }
 
 function update(id, patch) {
-  const data = readData(DATA_FILE);
-  const idx = data.findIndex((t) => t.id === id);
-  if (idx === -1) return null;
-  data[idx] = { ...data[idx], ...patch, updatedAt: new Date().toISOString() };
-  writeData(DATA_FILE, data);
-  return data[idx];
+  return Trip.findByIdAndUpdate(id, patch, { new: true });
 }
 
 module.exports = { findAll, findById, findByCustomerId, findByDriverId, findByStatus, insert, update };

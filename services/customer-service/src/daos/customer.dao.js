@@ -1,34 +1,25 @@
-const path = require("path");
-const { readData, writeData } = require("../utils/jsonFileStore");
-
-const DATA_FILE = path.join(__dirname, "../../data/customers.json");
+const { Customer } = require("../models/customer.model");
 
 function findAll() {
-  return readData(DATA_FILE);
+  return Customer.find({});
 }
 
 function findById(id) {
-  return readData(DATA_FILE).find((c) => c.id === id) || null;
+  return Customer.findById(id);
 }
 
 function findByEmail(email) {
-  return readData(DATA_FILE).find((c) => c.email === email) || null;
+  return Customer.findOne({ email });
 }
 
-function insert(customer) {
-  const data = readData(DATA_FILE);
-  data.push(customer);
-  writeData(DATA_FILE, data);
+async function insert(customerData) {
+  const customer = new Customer(customerData);
+  await customer.save();
   return customer;
 }
 
 function update(id, patch) {
-  const data = readData(DATA_FILE);
-  const idx = data.findIndex((c) => c.id === id);
-  if (idx === -1) return null;
-  data[idx] = { ...data[idx], ...patch, updatedAt: new Date().toISOString() };
-  writeData(DATA_FILE, data);
-  return data[idx];
+  return Customer.findByIdAndUpdate(id, patch, { new: true });
 }
 
 module.exports = { findAll, findById, findByEmail, insert, update };

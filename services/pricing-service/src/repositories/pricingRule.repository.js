@@ -3,9 +3,8 @@ const AppError = require("../utils/AppError");
 
 // FR-14: tính số tiền khách hàng phải trả dựa trên loại dịch vụ & thông tin chuyến.
 // Công thức: baseFare + distanceKm * perKmRate + durationMin * perMinuteRate
-// ⚠️ Đây là công thức placeholder cho demo — chờ khách hàng chốt công thức thật (Mục 9 BA).
-function calculateFare({ vehicleType, distanceKm, durationMin }) {
-  const rule = dao.findByVehicleType(vehicleType);
+async function calculateFare({ vehicleType, distanceKm, durationMin }) {
+  const rule = await dao.findByVehicleType(vehicleType);
   if (!rule) {
     throw new AppError(400, "UNKNOWN_VEHICLE_TYPE", `Không có quy tắc giá cho loại xe "${vehicleType}"`);
   }
@@ -28,7 +27,7 @@ function calculateFare({ vehicleType, distanceKm, durationMin }) {
   };
 }
 
-function getRules() {
+async function getRules() {
   return dao.findAll();
 }
 

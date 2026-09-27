@@ -1,4 +1,10 @@
-// Model: vòng đời 1 chuyến đi (FR-03, FR-04, FR-05, FR-13)
+const mongoose = require("mongoose");
+
+const geoPointSchema = new mongoose.Schema(
+  { lat: { type: Number, required: true }, lng: { type: Number, required: true } },
+  { _id: false }
+);
+
 const STATUSES = [
   "requested",
   "finding_driver",
@@ -11,7 +17,6 @@ const STATUSES = [
   "cancelled",
 ];
 
-// Chuỗi trạng thái hợp lệ mà TÀI XẾ được phép chuyển tiếp (FR-13)
 const DRIVER_TRANSITIONS = {
   driver_assigned: ["arrived"],
   arrived: ["picked_up"],
@@ -19,34 +24,47 @@ const DRIVER_TRANSITIONS = {
   in_progress: ["completed"],
 };
 
-// Trạng thái còn được phép hủy chuyến — ⚠️ chính sách hủy chuyến chưa được khách hàng
-// chốt (xem Mục 9 tài liệu BA), đây là mặc định tạm thời để demo chạy được.
 const CANCELLABLE_STATUSES = ["requested", "finding_driver", "driver_assigned"];
 
-function createTrip({ id, customerId, pickupLocation, dropoffLocation, vehicleType }) {
-  const now = new Date().toISOString();
-  return {
-    id,
-    customerId,
-    driverId: null,
-    pickupLocation,
-    dropoffLocation,
-    vehicleType,
-    status: "requested",
-    distanceKm: null,
-    durationMin: null,
-    fareAmount: null,
-    createdAt: now,
-    updatedAt: now,
-  };
-}
+const tripSchema = new mongoose.Schema(
+  {
+    _id: { type: String },
+    customerId: { type: String, required: true },
+    driverId: { type: String, default: null },
+    pickupLocation: { type: geoPointSchema, required: true },
+    dropoffLocation: { type: geoPointSchema, required: true },
+    vehicleType: { type: String, required: true },
+    status: { type: String, enum: STATUSES, default: "requested" },
+    distanceKm: { type: Number, default: null },
+    durationMin: { type: Number, default: null },
+    fareAmount: { type: Number, default: null },
+  },
+  {
+    timestamps: true,
+    toObject: { transform: (doc, ret) => { ret.id = ret._id; delete ret._id; delete ret.__v; } },
+    toJSON: { transform: (doc, ret) => { ret.id = ret._id; delete ret._id; delete ret.__v; } },
+  }
+);
 
-function createRating({ tripId, driverId, customerId, score, comment }) {
-  return { tripId, driverId, customerId, score, comment: comment || null, createdAt: new Date().toISOString() };
-}
+// Rating dùng chính tripId làm _id — đúng bất biến nghiệp vụ "mỗi chuyến chỉ 1 đánh giá"
+const ratingSchema = new mongoose.Schema(
+  {
+    _id: { type: String },
+    driverId: { type: String, required: true },
+    customerId: { type: String, required: true },
+    score: { type: Number, required: true },
+    comment: { type: String, default: null },
+  },
+  {
+    timestamps: { createdAt: true, updatedAt: false },
+    toObject: { transform: (doc, ret) => { ret.tripId = ret._id; delete ret._id; delete ret.__v; } },
+    toJSON: { transform: (doc, ret) => { ret.tripId = ret._id; delete ret._id; delete ret.__v; } },
+  }
+);
 
-// Khoảng cách đường chim bay (km) — dùng làm ước lượng khi tài xế không gửi số liệu
-// GPS thực tế lúc hoàn thành chuyến (⚠️ chỉ là placeholder cho demo).
+const Trip = mongoose.model("Trip", tripSchema);
+const Rating = mongoose.model("Rating", ratingSchema);
+
 function straightLineDistanceKm(a, b) {
   const toRad = (deg) => (deg * Math.PI) / 180;
   const R = 6371;
@@ -59,10 +77,10 @@ function straightLineDistanceKm(a, b) {
 }
 
 module.exports = {
+  Trip,
+  Rating,
   STATUSES,
   DRIVER_TRANSITIONS,
   CANCELLABLE_STATUSES,
-  createTrip,
-  createRating,
   straightLineDistanceKm,
 };

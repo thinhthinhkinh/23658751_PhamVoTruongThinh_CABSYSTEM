@@ -1,8 +1,19 @@
-// Model: bản ghi xử lý sự cố cho 1 chuyến (FR-21)
-// Admin Service không sở hữu dữ liệu Trip, nên chỉ lưu log xử lý riêng ở đây,
-// thay vì chỉnh sửa trực tiếp trạng thái Trip (việc đó do chính Trip Service quản lý).
-function createResolvedIssue({ id, tripId, resolutionNote, resolvedBy }) {
-  return { id, tripId, resolutionNote, resolvedBy, resolvedAt: new Date().toISOString() };
-}
+const mongoose = require("mongoose");
 
-module.exports = { createResolvedIssue };
+const resolvedIssueSchema = new mongoose.Schema(
+  {
+    _id: { type: String },
+    tripId: { type: String, required: true },
+    resolutionNote: { type: String, required: true },
+    resolvedBy: { type: String, required: true },
+    resolvedAt: { type: Date, default: Date.now },
+  },
+  {
+    toObject: { transform: (doc, ret) => { ret.id = ret._id; delete ret._id; delete ret.__v; } },
+    toJSON: { transform: (doc, ret) => { ret.id = ret._id; delete ret._id; delete ret.__v; } },
+  }
+);
+
+const ResolvedIssue = mongoose.model("ResolvedIssue", resolvedIssueSchema);
+
+module.exports = { ResolvedIssue };

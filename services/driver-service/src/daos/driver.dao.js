@@ -1,38 +1,29 @@
-const path = require("path");
-const { readData, writeData } = require("../utils/jsonFileStore");
-
-const DATA_FILE = path.join(__dirname, "../../data/drivers.json");
+const { Driver } = require("../models/driver.model");
 
 function findAll() {
-  return readData(DATA_FILE);
+  return Driver.find({});
 }
 
 function findById(id) {
-  return readData(DATA_FILE).find((d) => d.id === id) || null;
+  return Driver.findById(id);
 }
 
 function findByEmail(email) {
-  return readData(DATA_FILE).find((d) => d.email === email) || null;
+  return Driver.findOne({ email });
 }
 
 function findByStatus(status) {
-  return readData(DATA_FILE).filter((d) => d.status === status);
+  return Driver.find({ status });
 }
 
-function insert(driver) {
-  const data = readData(DATA_FILE);
-  data.push(driver);
-  writeData(DATA_FILE, data);
+async function insert(driverData) {
+  const driver = new Driver(driverData);
+  await driver.save();
   return driver;
 }
 
 function update(id, patch) {
-  const data = readData(DATA_FILE);
-  const idx = data.findIndex((d) => d.id === id);
-  if (idx === -1) return null;
-  data[idx] = { ...data[idx], ...patch, updatedAt: new Date().toISOString() };
-  writeData(DATA_FILE, data);
-  return data[idx];
+  return Driver.findByIdAndUpdate(id, patch, { new: true });
 }
 
 module.exports = { findAll, findById, findByEmail, findByStatus, insert, update };

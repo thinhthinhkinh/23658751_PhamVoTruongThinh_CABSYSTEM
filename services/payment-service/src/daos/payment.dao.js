@@ -1,39 +1,29 @@
-const path = require("path");
-const { readData, writeData } = require("../utils/jsonFileStore");
-
-const DATA_FILE = path.join(__dirname, "../../data/payments.json");
+const { Payment } = require("../models/payment.model");
 
 function findAll() {
-  return readData(DATA_FILE);
+  return Payment.find({});
 }
 
 function findById(id) {
-  return readData(DATA_FILE).find((p) => p.id === id) || null;
+  return Payment.findById(id);
 }
 
 function findByTripId(tripId) {
-  return readData(DATA_FILE).find((p) => p.tripId === tripId) || null;
+  return Payment.findOne({ tripId });
 }
 
 function findByCustomerTripIds(tripIds) {
-  const idSet = new Set(tripIds);
-  return readData(DATA_FILE).filter((p) => idSet.has(p.tripId));
+  return Payment.find({ tripId: { $in: tripIds } });
 }
 
-function insert(payment) {
-  const data = readData(DATA_FILE);
-  data.push(payment);
-  writeData(DATA_FILE, data);
+async function insert(paymentData) {
+  const payment = new Payment(paymentData);
+  await payment.save();
   return payment;
 }
 
 function update(id, patch) {
-  const data = readData(DATA_FILE);
-  const idx = data.findIndex((p) => p.id === id);
-  if (idx === -1) return null;
-  data[idx] = { ...data[idx], ...patch, updatedAt: new Date().toISOString() };
-  writeData(DATA_FILE, data);
-  return data[idx];
+  return Payment.findByIdAndUpdate(id, patch, { new: true });
 }
 
 module.exports = { findAll, findById, findByTripId, findByCustomerTripIds, insert, update };

@@ -1,35 +1,29 @@
-const { v4: uuidv4 } = require("uuid");
 const notificationDao = require("../daos/notification.dao");
 const channelDao = require("../daos/channel.dao");
-const { createNotification, createChannel } = require("../models/notification.model");
 const AppError = require("../utils/AppError");
 
 const TRIP_SERVICE_URL = process.env.TRIP_SERVICE_URL || "http://localhost:4003";
 const DEFAULT_CHANNEL = "push";
 
-// Gửi 1 thông báo — ở demo này chỉ log ra console + lưu lại lịch sử,
-// hệ thống thật sẽ cắm thêm adapter riêng cho từng channel (FR-19).
-function send({ userId, userRole, title, body, channel = DEFAULT_CHANNEL }) {
-  const notification = createNotification({ id: uuidv4(), userId, userRole, channel, title, body });
-  notificationDao.insert(notification);
+async function send({ userId, userRole, title, body, channel = DEFAULT_CHANNEL }) {
+  const notification = await notificationDao.insert({ userId, userRole, channel, title, body });
   console.log(`[notification-service] -> ${userRole} ${userId} [${channel}] ${title}: ${body}`);
   return notification;
 }
 
-function getMyNotifications(userId) {
+async function getMyNotifications(userId) {
   return notificationDao.findByUserId(userId);
 }
 
-function addChannel({ name, type }) {
+async function addChannel({ name, type }) {
   if (!name || !type) throw new AppError(400, "INVALID_INPUT", "name và type là bắt buộc");
-  return channelDao.insert(createChannel({ name, type }));
+  return channelDao.insert({ name, type });
 }
 
-function listChannels() {
+async function listChannels() {
   return channelDao.findAll();
 }
 
-// Lấy thông tin chuyến từ Trip Service (endpoint nội bộ, không cần auth)
 async function getTripInternal(tripId) {
   const res = await fetch(`${TRIP_SERVICE_URL}/trips/${tripId}/internal`);
   if (!res.ok) return null;
@@ -37,12 +31,10 @@ async function getTripInternal(tripId) {
   return body?.data || null;
 }
 
-// ---- Mapping từng loại event sang nội dung thông báo (FR-17, FR-18) ----
-
 async function onDriverAssigned(payload) {
   const trip = await getTripInternal(payload.tripId);
   if (!trip) return;
-  send({
+  await send({
     userId: trip.customerId,
     userRole: "customer",
     title: "Đã tìm thấy tài xế",
@@ -53,7 +45,7 @@ async function onDriverAssigned(payload) {
 async function onNoDriverFound(payload) {
   const trip = await getTripInternal(payload.tripId);
   if (!trip) return;
-  send({
+  await send({
     userId: trip.customerId,
     userRole: "customer",
     title: "Không tìm được tài xế",
@@ -70,28 +62,28 @@ async function onTripStatusChanged(payload) {
     in_progress: "Chuyến đi đang diễn ra",
   }[payload.status];
   if (!statusText) return;
-  send({ userId: trip.customerId, userRole: "customer", title: "Cập nhật chuyến đi", body: statusText });
+  await send({ userId: trip.customerId, userRole: "customer", title: "Cập nhật chuyến đi", body: statusText });
 }
 
 async function onTripCompleted(payload) {
   const trip = await getTripInternal(payload.tripId);
   if (!trip) return;
-  send({ userId: trip.customerId, userRole: "customer", title: "Chuyến đi hoàn thành", body: "Cảm ơn bạn đã sử dụng dịch vụ. Vui lòng đánh giá tài xế." });
+  await send({ userId: trip.customerId, userRole: "customer", title: "Chuyến đi hoàn thành", body: "Cảm ơn bạn đã sử dụng dịch vụ. Vui lòng đánh giá tài xế." });
   if (trip.driverId) {
-    send({ userId: trip.driverId, userRole: "driver", title: "Chuyến đi hoàn thành", body: "Bạn đã hoàn thành chuyến đi." });
+    await send({ userId: trip.driverId, userRole: "driver", title: "Chuyến đi hoàn thành", body: "Bạn đã hoàn thành chuyến đi." });
   }
 }
 
 async function onPaymentCompleted(payload) {
   const trip = await getTripInternal(payload.tripId);
   if (!trip) return;
-  send({ userId: trip.customerId, userRole: "customer", title: "Thanh toán thành công", body: `Thanh toán cho chuyến của bạn (${payload.method}) đã hoàn tất.` });
+  await send({ userId: trip.customerId, userRole: "customer", title: "Thanh toán thành công", body: `Thanh toán cho chuyến của bạn (${payload.method}) đã hoàn tất.` });
 }
 
 async function onPaymentFailed(payload) {
   const trip = await getTripInternal(payload.tripId);
   if (!trip) return;
-  send({ userId: trip.customerId, userRole: "customer", title: "Thanh toán thất bại", body: `Giao dịch thất bại: ${payload.reason || "vui lòng thử lại"}.` });
+  await send({ userId: trip.customerId, userRole: "customer", title: "Thanh toán thất bại", body: `Giao dịch thất bại: ${payload.reason || "vui lòng thử lại"}.` });
 }
 
 module.exports = {

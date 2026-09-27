@@ -72,7 +72,7 @@ jobs:
         env:
           TAG: ${{ github.sha }}
         run: |
-          for image in $(docker compose config --images); do
+          for image in $(docker compose config --images | grep '^thinhpvt/'); do
             base="${image%:*}"
             docker tag "$image" "$base:latest"
             docker push "$image"

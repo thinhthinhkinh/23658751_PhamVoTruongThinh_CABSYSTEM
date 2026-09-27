@@ -26,6 +26,8 @@ jobs:
         run: cp .env.example .env
 
       - name: Build và khởi động toàn bộ cụm (đợi tất cả healthy)
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
         run: docker compose up --build -d --wait --wait-timeout 180
 
       - name: Xác nhận trạng thái container (debug)

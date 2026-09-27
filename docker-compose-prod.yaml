@@ -1,4 +1,4 @@
-﻿services:
+services:
   mongodb:
     image: mongo:7
     ports: ["27017:27017"]
@@ -11,8 +11,7 @@
       retries: 10
 
   event-bus-service:
-    build: ./event-bus-service
-    image: thinhpvt/cab-event-bus-service:${TAG:-latest}
+    image: thinhpvt/cab-event-bus-service:latest
     ports: ["4000:4000"]
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:4000/health"]
@@ -22,8 +21,7 @@
       retries: 5
 
   customer-service:
-    build: ./services/customer-service
-    image: thinhpvt/cab-customer-service:${TAG:-latest}
+    image: thinhpvt/cab-customer-service:latest
     ports: ["4001:4001"]
     environment:
       JWT_SECRET: ${JWT_SECRET}
@@ -39,8 +37,7 @@
       retries: 5
 
   driver-service:
-    build: ./services/driver-service
-    image: thinhpvt/cab-driver-service:${TAG:-latest}
+    image: thinhpvt/cab-driver-service:latest
     ports: ["4002:4002"]
     environment:
       JWT_SECRET: ${JWT_SECRET}
@@ -56,8 +53,7 @@
       retries: 5
 
   location-service:
-    build: ./services/location-service
-    image: thinhpvt/cab-location-service:${TAG:-latest}
+    image: thinhpvt/cab-location-service:latest
     ports: ["4005:4005"]
     environment:
       JWT_SECRET: ${JWT_SECRET}
@@ -73,8 +69,7 @@
       retries: 5
 
   pricing-service:
-    build: ./services/pricing-service
-    image: thinhpvt/cab-pricing-service:${TAG:-latest}
+    image: thinhpvt/cab-pricing-service:latest
     ports: ["4006:4006"]
     environment:
       JWT_SECRET: ${JWT_SECRET}
@@ -90,8 +85,7 @@
       retries: 5
 
   trip-service:
-    build: ./services/trip-service
-    image: thinhpvt/cab-trip-service:${TAG:-latest}
+    image: thinhpvt/cab-trip-service:latest
     ports: ["4003:4003"]
     environment:
       JWT_SECRET: ${JWT_SECRET}
@@ -114,12 +108,11 @@
       retries: 5
 
   dispatch-service:
-    build: ./services/dispatch-service
-    image: thinhpvt/cab-dispatch-service:${TAG:-latest}
+    image: thinhpvt/cab-dispatch-service:latest
     ports: ["4004:4004"]
     environment:
       JWT_SECRET: ${JWT_SECRET}
-      DISPATCH_OFFER_TIMEOUT_SEC: "3"
+      DISPATCH_OFFER_TIMEOUT_SEC: "20"
       DISPATCH_SERVICE_URL: http://dispatch-service:4004
       EVENT_BUS_URL: http://event-bus-service:4000
       DRIVER_SERVICE_URL: http://driver-service:4002
@@ -142,8 +135,7 @@
       retries: 5
 
   payment-service:
-    build: ./services/payment-service
-    image: thinhpvt/cab-payment-service:${TAG:-latest}
+    image: thinhpvt/cab-payment-service:latest
     ports: ["4007:4007"]
     environment:
       JWT_SECRET: ${JWT_SECRET}
@@ -166,8 +158,7 @@
       retries: 5
 
   notification-service:
-    build: ./services/notification-service
-    image: thinhpvt/cab-notification-service:${TAG:-latest}
+    image: thinhpvt/cab-notification-service:latest
     ports: ["4008:4008"]
     environment:
       JWT_SECRET: ${JWT_SECRET}
@@ -190,8 +181,7 @@
       retries: 5
 
   admin-service:
-    build: ./services/admin-service
-    image: thinhpvt/cab-admin-service:${TAG:-latest}
+    image: thinhpvt/cab-admin-service:latest
     ports: ["4009:4009"]
     environment:
       JWT_SECRET: ${JWT_SECRET}
@@ -219,8 +209,7 @@
       retries: 5
 
   api-gateway:
-    build: ./api-gateway
-    image: thinhpvt/cab-api-gateway:${TAG:-latest}
+    image: thinhpvt/cab-api-gateway:latest
     ports: ["3000:3000"]
     environment:
       CUSTOMER_SERVICE_URL: http://customer-service:4001

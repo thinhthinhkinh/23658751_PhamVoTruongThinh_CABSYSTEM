@@ -1,3 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: testcase/package-lock.json
+
+      - name: Chuẩn bị file .env cho testcase
+        working-directory: ./testcase
+        run: cp .env.example .env
+
+      - name: Build và khởi động toàn bộ cụm (đợi tất cả healthy)
+        run: docker compose up --build -d --wait --wait-timeout 180
+
+      - name: Xác nhận trạng thái container (debug)
+        if: always()
+        run: docker compose ps
+
+      - name: Cài dependency cho test
+        working-directory: ./testcase
+        run: npm ci
+
+      - name: Chạy 68 test case tích hợp
+        working-directory: ./testcase
+        run: npm test
+
+      - name: In log của các service nếu có lỗi
+        if: failure()
+        run: docker compose logs
+
+      - name: Dọn dẹp cụm
+        if: always()
+        run: docker compose down -v
+
   build-and-push:
     needs: test
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')

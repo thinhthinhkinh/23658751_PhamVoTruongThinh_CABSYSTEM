@@ -1,0 +1,34 @@
+syntax = "proto3";
+package cab.dispatch;
+
+service DispatchService {
+  rpc AcceptOffer       (OfferRequest)    returns (GrpcResponse);
+  rpc DeclineOffer      (OfferRequest)    returns (GrpcResponse);
+  rpc GetCandidates     (TripIdRequest)   returns (GrpcResponse);
+  rpc GetMyPendingOffer (UserIdRequest)   returns (GrpcResponse);
+}
+
+message OfferRequest {
+  string tripId     = 1;
+  string driverId   = 2;
+  string callerRole = 3;
+}
+
+message TripIdRequest {
+  string tripId     = 1;
+  string callerId   = 2;
+  string callerRole = 3;
+}
+
+message UserIdRequest {
+  string userId     = 1;
+  string callerRole = 2;
+}
+
+message GrpcResponse {
+  bool   success       = 1;
+  string json          = 2;
+  string error_code    = 3;
+  string error_message = 4;
+  int32  http_status   = 5;
+}

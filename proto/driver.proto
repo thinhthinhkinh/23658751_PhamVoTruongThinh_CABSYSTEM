@@ -1,0 +1,100 @@
+syntax = "proto3";
+package cab.driver;
+
+service DriverService {
+  rpc RegisterSelf    (RegisterDriverRequest)  returns (GrpcResponse);
+  rpc Login           (LoginRequest)           returns (GrpcResponse);
+  rpc CreateByStaff   (CreateDriverRequest)    returns (GrpcResponse);
+  rpc GetMyProfile    (UserIdRequest)          returns (GrpcResponse);
+  rpc UpdateProfile   (UpdateProfileRequest)   returns (GrpcResponse);
+  rpc UpdateVehicle   (UpdateVehicleRequest)   returns (GrpcResponse);
+  rpc UpdateStatus    (UpdateStatusRequest)    returns (GrpcResponse);
+  rpc ListByStatus    (ListByStatusRequest)    returns (GrpcResponse);
+  rpc ListAll         (AuthCtxRequest)         returns (GrpcResponse);
+  rpc GetById         (GetByIdRequest)         returns (GrpcResponse);
+  rpc Disable         (GetByIdRequest)         returns (GrpcResponse);
+  rpc ApproveDriver   (GetByIdRequest)         returns (GrpcResponse);
+  rpc RejectDriver    (GetByIdRequest)         returns (GrpcResponse);
+  rpc GetDriverTrips  (PaginatedRequest)       returns (GrpcResponse);
+  rpc GetDriverRatings (GetByIdRequest)        returns (GrpcResponse);
+}
+
+message RegisterDriverRequest {
+  string fullName     = 1;
+  string email        = 2;
+  string password     = 3;
+  string phone        = 4;
+  string vehiclePlate = 5;
+  string vehicleModel = 6;
+  string vehicleType  = 7;
+}
+
+message LoginRequest {
+  string email    = 1;
+  string password = 2;
+}
+
+message CreateDriverRequest {
+  string fullName     = 1;
+  string email        = 2;
+  string password     = 3;
+  string phone        = 4;
+  string vehiclePlate = 5;
+  string vehicleModel = 6;
+  string vehicleType  = 7;
+  string callerId     = 8;
+  string callerRole   = 9;
+}
+
+message UserIdRequest {
+  string userId     = 1;
+  string callerRole = 2;
+}
+
+message UpdateProfileRequest {
+  string userId   = 1;
+  string fullName = 2;
+  string phone    = 3;
+}
+
+message UpdateVehicleRequest {
+  string userId       = 1;
+  string vehiclePlate = 2;
+  string vehicleModel = 3;
+  string vehicleType  = 4;
+}
+
+message UpdateStatusRequest {
+  string userId = 1;
+  string status = 2;
+}
+
+message ListByStatusRequest {
+  string status = 1;
+}
+
+message AuthCtxRequest {
+  string callerId   = 1;
+  string callerRole = 2;
+}
+
+message GetByIdRequest {
+  string id         = 1;
+  string callerId   = 2;
+  string callerRole = 3;
+}
+
+message PaginatedRequest {
+  string userId     = 1;
+  string callerRole = 2;
+  int32  page       = 3;
+  int32  limit      = 4;
+}
+
+message GrpcResponse {
+  bool   success       = 1;
+  string json          = 2;
+  string error_code    = 3;
+  string error_message = 4;
+  int32  http_status   = 5;
+}

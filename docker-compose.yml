@@ -36,7 +36,9 @@ services:
   customer-service:
     build: ./services/customer-service
     image: thinhpvt/cab-customer-service:${TAG:-latest}
-    ports: ["4001:4001"]
+    ports:
+      - "4001:4001"
+      - "5001:5001"
     environment:
       JWT_SECRET: ${JWT_SECRET}
       MONGO_URI: mongodb://mongodb:27017/customer_db
@@ -53,7 +55,9 @@ services:
   driver-service:
     build: ./services/driver-service
     image: thinhpvt/cab-driver-service:${TAG:-latest}
-    ports: ["4002:4002"]
+    ports:
+      - "4002:4002"
+      - "5002:5002"
     environment:
       JWT_SECRET: ${JWT_SECRET}
       RABBITMQ_URL: amqp://rabbitmq:5672
@@ -73,7 +77,9 @@ services:
   location-service:
     build: ./services/location-service
     image: thinhpvt/cab-location-service:${TAG:-latest}
-    ports: ["4005:4005"]
+    ports:
+      - "4005:4005"
+      - "5005:5005"
     environment:
       JWT_SECRET: ${JWT_SECRET}
       MONGO_URI: mongodb://mongodb:27017/location_db
@@ -90,7 +96,9 @@ services:
   pricing-service:
     build: ./services/pricing-service
     image: thinhpvt/cab-pricing-service:${TAG:-latest}
-    ports: ["4006:4006"]
+    ports:
+      - "4006:4006"
+      - "5006:5006"
     environment:
       JWT_SECRET: ${JWT_SECRET}
       MONGO_URI: mongodb://mongodb:27017/pricing_db
@@ -107,7 +115,9 @@ services:
   trip-service:
     build: ./services/trip-service
     image: thinhpvt/cab-trip-service:${TAG:-latest}
-    ports: ["4003:4003"]
+    ports:
+      - "4003:4003"
+      - "5003:5003"
     environment:
       JWT_SECRET: ${JWT_SECRET}
       TRIP_SERVICE_URL: http://trip-service:4003
@@ -131,7 +141,9 @@ services:
   dispatch-service:
     build: ./services/dispatch-service
     image: thinhpvt/cab-dispatch-service:${TAG:-latest}
-    ports: ["4004:4004"]
+    ports:
+      - "4004:4004"
+      - "5004:5004"
     environment:
       JWT_SECRET: ${JWT_SECRET}
       DISPATCH_OFFER_TIMEOUT_SEC: "3"
@@ -159,12 +171,15 @@ services:
   payment-service:
     build: ./services/payment-service
     image: thinhpvt/cab-payment-service:${TAG:-latest}
-    ports: ["4007:4007"]
+    ports:
+      - "4007:4007"
+      - "5007:5007"
     environment:
       JWT_SECRET: ${JWT_SECRET}
       PAYMENT_SERVICE_URL: http://payment-service:4007
       RABBITMQ_URL: amqp://rabbitmq:5672
       TRIP_SERVICE_URL: http://trip-service:4003
+      TRIP_GRPC_URL: trip-service:5003
       MONGO_URI: mongodb://mongodb:27017/payment_db
     depends_on:
       rabbitmq:
@@ -183,7 +198,9 @@ services:
   notification-service:
     build: ./services/notification-service
     image: thinhpvt/cab-notification-service:${TAG:-latest}
-    ports: ["4008:4008"]
+    ports:
+      - "4008:4008"
+      - "5008:5008"
     environment:
       JWT_SECRET: ${JWT_SECRET}
       NOTIFICATION_SERVICE_URL: http://notification-service:4008
@@ -207,7 +224,9 @@ services:
   admin-service:
     build: ./services/admin-service
     image: thinhpvt/cab-admin-service:${TAG:-latest}
-    ports: ["4009:4009"]
+    ports:
+      - "4009:4009"
+      - "5009:5009"
     environment:
       JWT_SECRET: ${JWT_SECRET}
       CUSTOMER_SERVICE_URL: http://customer-service:4001
@@ -238,15 +257,26 @@ services:
     image: thinhpvt/cab-api-gateway:${TAG:-latest}
     ports: ["3000:3000"]
     environment:
-      CUSTOMER_SERVICE_URL: http://customer-service:4001
-      DRIVER_SERVICE_URL: http://driver-service:4002
-      TRIP_SERVICE_URL: http://trip-service:4003
-      DISPATCH_SERVICE_URL: http://dispatch-service:4004
-      LOCATION_SERVICE_URL: http://location-service:4005
-      PRICING_SERVICE_URL: http://pricing-service:4006
-      PAYMENT_SERVICE_URL: http://payment-service:4007
+      # REST URLs (for /health/services aggregation)
+      CUSTOMER_SERVICE_URL:     http://customer-service:4001
+      DRIVER_SERVICE_URL:       http://driver-service:4002
+      TRIP_SERVICE_URL:         http://trip-service:4003
+      DISPATCH_SERVICE_URL:     http://dispatch-service:4004
+      LOCATION_SERVICE_URL:     http://location-service:4005
+      PRICING_SERVICE_URL:      http://pricing-service:4006
+      PAYMENT_SERVICE_URL:      http://payment-service:4007
       NOTIFICATION_SERVICE_URL: http://notification-service:4008
-      ADMIN_SERVICE_URL: http://admin-service:4009
+      ADMIN_SERVICE_URL:        http://admin-service:4009
+      # gRPC URLs (gateway → services)
+      CUSTOMER_GRPC_URL:        customer-service:5001
+      DRIVER_GRPC_URL:          driver-service:5002
+      TRIP_GRPC_URL:            trip-service:5003
+      DISPATCH_GRPC_URL:        dispatch-service:5004
+      LOCATION_GRPC_URL:        location-service:5005
+      PRICING_GRPC_URL:         pricing-service:5006
+      PAYMENT_GRPC_URL:         payment-service:5007
+      NOTIFICATION_GRPC_URL:    notification-service:5008
+      ADMIN_GRPC_URL:           admin-service:5009
     depends_on:
       customer-service:
         condition: service_healthy

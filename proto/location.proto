@@ -1,0 +1,34 @@
+syntax = "proto3";
+package cab.location;
+
+service LocationService {
+  rpc ReportLocation    (ReportLocationRequest) returns (GrpcResponse);
+  rpc FindNearbyDrivers (NearbyRequest)         returns (GrpcResponse);
+  rpc GetDriverLocation (DriverIdRequest)       returns (GrpcResponse);
+}
+
+message ReportLocationRequest {
+  string driverId = 1;
+  double lat      = 2;
+  double lng      = 3;
+}
+
+message NearbyRequest {
+  double lat      = 1;
+  double lng      = 2;
+  double radiusKm = 3;
+  int32  limit    = 4;
+  int32  page     = 5;
+}
+
+message DriverIdRequest {
+  string driverId = 1;
+}
+
+message GrpcResponse {
+  bool   success       = 1;
+  string json          = 2;
+  string error_code    = 3;
+  string error_message = 4;
+  int32  http_status   = 5;
+}

@@ -1,0 +1,26 @@
+syntax = "proto3";
+package cab.pricing;
+
+service PricingService {
+  rpc Calculate (CalculateRequest) returns (GrpcResponse);
+  rpc GetRules  (AuthCtxRequest)   returns (GrpcResponse);
+}
+
+message CalculateRequest {
+  string vehicleType  = 1;
+  double distanceKm   = 2;
+  double durationMin  = 3;
+}
+
+message AuthCtxRequest {
+  string callerId   = 1;
+  string callerRole = 2;
+}
+
+message GrpcResponse {
+  bool   success       = 1;
+  string json          = 2;
+  string error_code    = 3;
+  string error_message = 4;
+  int32  http_status   = 5;
+}

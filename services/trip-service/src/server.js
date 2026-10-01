@@ -2,9 +2,9 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const app = require("./app");
 const eventBus = require("./utils/eventBusClient");
+const tripRepo = require("./repositories/trip.repository");
 
 const PORT = process.env.TRIP_SERVICE_PORT || 4003;
-const SELF_URL = process.env.TRIP_SERVICE_URL || `http://localhost:${PORT}`;
 const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/trip_db";
 
 mongoose
@@ -14,8 +14,8 @@ mongoose
     app.listen(PORT, async () => {
       console.log(`[trip-service] đang chạy tại http://localhost:${PORT}`);
       await Promise.all([
-        eventBus.subscribe("DriverAssigned", `${SELF_URL}/trips/events/driver-assigned`),
-        eventBus.subscribe("NoDriverFound", `${SELF_URL}/trips/events/no-driver-found`),
+        eventBus.subscribe("DriverAssigned", (payload) => tripRepo.handleDriverAssigned(payload)),
+        eventBus.subscribe("NoDriverFound", (payload) => tripRepo.handleNoDriverFound(payload)),
       ]);
     });
   })

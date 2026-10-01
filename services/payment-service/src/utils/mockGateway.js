@@ -7,7 +7,7 @@ async function charge({ method, amount }) {
   if (method === "cash") {
     return { success: true, providerRef: null };
   }
-  const success = Math.random() < 0.85;
+  const success = Math.random() < 0.70;
   return {
     success,
     providerRef: success ? `PROV-${uuidv4().slice(0, 8).toUpperCase()}` : null,

@@ -5,3 +5,7 @@ Thumbs.db
 node_modules/
 .env
 *.log
+
+# Test output files
+test-results*.txt
+testcase/test-results*.txt

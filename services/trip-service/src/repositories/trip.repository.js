@@ -52,11 +52,17 @@ async function getInternal(id) {
   return trip;
 }
 
-async function listByCustomerId(customerId) {
+async function listByCustomerId(customerId, { limit, page } = {}) {
+  if (limit && page) {
+    return dao.findByCustomerIdPaged(customerId, Math.max(1, parseInt(limit, 10)), Math.max(1, parseInt(page, 10)));
+  }
   return dao.findByCustomerId(customerId);
 }
 
-async function listByDriverId(driverId) {
+async function listByDriverId(driverId, { limit, page } = {}) {
+  if (limit && page) {
+    return dao.findByDriverIdPaged(driverId, Math.max(1, parseInt(limit, 10)), Math.max(1, parseInt(page, 10)));
+  }
   return dao.findByDriverId(driverId);
 }
 
@@ -128,6 +134,12 @@ async function cancelTrip(tripId, requesterId) {
   return updated;
 }
 
+// Escape HTML để chống Stored XSS (STT 26)
+function escapeHtml(str) {
+  if (typeof str !== "string") return str;
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
 async function addRating(tripId, customerId, { score, comment }) {
   const trip = await dao.findById(tripId);
   if (!trip) throw new AppError(404, "TRIP_NOT_FOUND", "Không tìm thấy chuyến đi");
@@ -143,7 +155,7 @@ async function addRating(tripId, customerId, { score, comment }) {
     driverId: trip.driverId,
     customerId,
     score,
-    comment: comment || null,
+    comment: comment ? escapeHtml(comment) : null,
   });
   await eventBus.publish("TripRated", { tripId, driverId: trip.driverId, score });
   return rating;
@@ -155,11 +167,13 @@ async function getDriverRatings(driverId) {
   return { averageScore, ratings };
 }
 
-// Idempotent: chỉ áp dụng nếu chuyến vẫn đang ở "finding_driver" — event đến sau
-// (dù thật hay giả lập test) khi chuyến đã được xử lý rồi sẽ bị bỏ qua an toàn.
+// Idempotent: chỉ áp dụng nếu chuyến chưa có tài xế — "finding_driver" hoặc
+// "no_driver_found" (dispatch có thể đã xử lý trước khi webhook tới, ví dụ trong test).
+// Bỏ qua nếu chuyến đã ở trạng thái khác (driver_assigned, arrived, completed, ...).
 async function handleDriverAssigned({ tripId, driverId }) {
   const trip = await dao.findById(tripId);
-  if (!trip || trip.status !== "finding_driver") return trip;
+  if (!trip) return null;
+  if (!["finding_driver", "no_driver_found"].includes(trip.status)) return trip;
   return dao.update(tripId, { driverId, status: "driver_assigned" });
 }
 

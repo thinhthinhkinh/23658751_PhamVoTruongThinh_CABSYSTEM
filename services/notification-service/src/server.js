@@ -2,10 +2,10 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const app = require("./app");
 const eventBus = require("./utils/eventBusClient");
+const notifRepo = require("./repositories/notification.repository");
 const { Channel } = require("./models/notification.model");
 
 const PORT = process.env.NOTIFICATION_SERVICE_PORT || 4008;
-const SELF_URL = process.env.NOTIFICATION_SERVICE_URL || `http://localhost:${PORT}`;
 const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/notification_db";
 
 async function seedIfEmpty() {
@@ -26,12 +26,12 @@ mongoose
     app.listen(PORT, async () => {
       console.log(`[notification-service] đang chạy tại http://localhost:${PORT}`);
       await Promise.all([
-        eventBus.subscribe("DriverAssigned", `${SELF_URL}/notifications/events/driver-assigned`),
-        eventBus.subscribe("NoDriverFound", `${SELF_URL}/notifications/events/no-driver-found`),
-        eventBus.subscribe("TripStatusChanged", `${SELF_URL}/notifications/events/trip-status-changed`),
-        eventBus.subscribe("TripCompleted", `${SELF_URL}/notifications/events/trip-completed`),
-        eventBus.subscribe("PaymentCompleted", `${SELF_URL}/notifications/events/payment-completed`),
-        eventBus.subscribe("PaymentFailed", `${SELF_URL}/notifications/events/payment-failed`),
+        eventBus.subscribe("DriverAssigned", (p) => notifRepo.onDriverAssigned(p)),
+        eventBus.subscribe("NoDriverFound", (p) => notifRepo.onNoDriverFound(p)),
+        eventBus.subscribe("TripStatusChanged", (p) => notifRepo.onTripStatusChanged(p)),
+        eventBus.subscribe("TripCompleted", (p) => notifRepo.onTripCompleted(p)),
+        eventBus.subscribe("PaymentCompleted", (p) => notifRepo.onPaymentCompleted(p)),
+        eventBus.subscribe("PaymentFailed", (p) => notifRepo.onPaymentFailed(p)),
       ]);
     });
   })

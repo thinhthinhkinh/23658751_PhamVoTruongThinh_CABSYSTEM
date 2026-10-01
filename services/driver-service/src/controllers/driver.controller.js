@@ -61,6 +61,23 @@ const disable = asyncHandler(async (req, res) => {
   return ok(res, toPublicJSON(updated));
 });
 
+const onDriverAssigned = asyncHandler(async (req, res) => {
+  const { driverId } = req.body.payload || {};
+  if (driverId) await repo.updateStatus(driverId, "busy");
+  return res.status(200).json({ received: true });
+});
+
+// FR-22: Admin duyệt / từ chối hồ sơ tài xế
+const approveDriver = asyncHandler(async (req, res) => {
+  const updated = await repo.setApprovalStatus(req.params.id, "approved");
+  return ok(res, toPublicJSON(updated));
+});
+
+const rejectDriver = asyncHandler(async (req, res) => {
+  const updated = await repo.setApprovalStatus(req.params.id, "rejected");
+  return ok(res, toPublicJSON(updated));
+});
+
 module.exports = {
   registerSelf,
   createByStaff,
@@ -73,4 +90,7 @@ module.exports = {
   listByStatus,
   listAll,
   disable,
+  approveDriver,
+  rejectDriver,
+  onDriverAssigned,
 };

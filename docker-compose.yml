@@ -1,4 +1,4 @@
-﻿services:
+services:
   mongodb:
     image: mongo:7
     ports: ["27017:27017"]
@@ -8,6 +8,18 @@
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
       interval: 5s
       timeout: 5s
+      retries: 10
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 10s
+      timeout: 5s
+      start_period: 40s
       retries: 10
 
   event-bus-service:
@@ -44,8 +56,11 @@
     ports: ["4002:4002"]
     environment:
       JWT_SECRET: ${JWT_SECRET}
+      RABBITMQ_URL: amqp://rabbitmq:5672
       MONGO_URI: mongodb://mongodb:27017/driver_db
     depends_on:
+      rabbitmq:
+        condition: service_healthy
       mongodb:
         condition: service_healthy
     healthcheck:
@@ -96,11 +111,11 @@
     environment:
       JWT_SECRET: ${JWT_SECRET}
       TRIP_SERVICE_URL: http://trip-service:4003
-      EVENT_BUS_URL: http://event-bus-service:4000
+      RABBITMQ_URL: amqp://rabbitmq:5672
       PRICING_SERVICE_URL: http://pricing-service:4006
       MONGO_URI: mongodb://mongodb:27017/trip_db
     depends_on:
-      event-bus-service:
+      rabbitmq:
         condition: service_healthy
       pricing-service:
         condition: service_healthy
@@ -121,12 +136,12 @@
       JWT_SECRET: ${JWT_SECRET}
       DISPATCH_OFFER_TIMEOUT_SEC: "3"
       DISPATCH_SERVICE_URL: http://dispatch-service:4004
-      EVENT_BUS_URL: http://event-bus-service:4000
+      RABBITMQ_URL: amqp://rabbitmq:5672
       DRIVER_SERVICE_URL: http://driver-service:4002
       LOCATION_SERVICE_URL: http://location-service:4005
       MONGO_URI: mongodb://mongodb:27017/dispatch_db
     depends_on:
-      event-bus-service:
+      rabbitmq:
         condition: service_healthy
       driver-service:
         condition: service_healthy
@@ -148,11 +163,11 @@
     environment:
       JWT_SECRET: ${JWT_SECRET}
       PAYMENT_SERVICE_URL: http://payment-service:4007
-      EVENT_BUS_URL: http://event-bus-service:4000
+      RABBITMQ_URL: amqp://rabbitmq:5672
       TRIP_SERVICE_URL: http://trip-service:4003
       MONGO_URI: mongodb://mongodb:27017/payment_db
     depends_on:
-      event-bus-service:
+      rabbitmq:
         condition: service_healthy
       trip-service:
         condition: service_healthy
@@ -172,11 +187,11 @@
     environment:
       JWT_SECRET: ${JWT_SECRET}
       NOTIFICATION_SERVICE_URL: http://notification-service:4008
-      EVENT_BUS_URL: http://event-bus-service:4000
+      RABBITMQ_URL: amqp://rabbitmq:5672
       TRIP_SERVICE_URL: http://trip-service:4003
       MONGO_URI: mongodb://mongodb:27017/notification_db
     depends_on:
-      event-bus-service:
+      rabbitmq:
         condition: service_healthy
       trip-service:
         condition: service_healthy

@@ -18,6 +18,11 @@ const driverSchema = new mongoose.Schema(
     phone: { type: String, default: null },
     vehicle: { type: vehicleSchema, default: null },
     status: { type: String, enum: ["offline", "available", "busy"], default: "offline" },
+    approvalStatus: {
+      type: String,
+      enum: ["pending_approval", "approved", "rejected"],
+      default: "pending_approval",
+    },
     active: { type: Boolean, default: true },
     createdByStaff: { type: Boolean, default: false },
   },

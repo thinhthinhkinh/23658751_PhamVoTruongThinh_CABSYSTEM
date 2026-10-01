@@ -1,0 +1,15 @@
+# Use this workspace to collaborate
+workspace:
+  id: 17349973-d3fe-4240-8ade-bbbf94d8f360
+
+localResources:
+  specs:
+    - ../api-specification/admin.yaml
+    - ../api-specification/customer.yaml
+    - ../api-specification/dispatch.yaml
+    - ../api-specification/driver.yaml
+    - ../api-specification/location.yaml
+    - ../api-specification/notification.yaml
+    - ../api-specification/payment.yaml
+    - ../api-specification/pricing.yaml
+    - ../api-specification/trip.yaml

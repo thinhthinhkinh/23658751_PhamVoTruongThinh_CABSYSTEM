@@ -13,14 +13,23 @@ const getByDriverId = asyncHandler(async (req, res) => {
 });
 
 const findNearby = asyncHandler(async (req, res) => {
-  const { lat, lng, radiusKm, driverIds } = req.query;
+  const { lat, lng, radiusKm, driverIds, limit, page } = req.query;
   const result = await repo.findNearby({
     lat: parseFloat(lat),
     lng: parseFloat(lng),
     radiusKm: radiusKm ? parseFloat(radiusKm) : undefined,
     driverIds: driverIds ? driverIds.split(",") : undefined,
   });
-  return okList(res, result);
+
+  const total = result.length;
+  if (limit && page) {
+    const limitNum = Math.max(1, parseInt(limit, 10));
+    const pageNum = Math.max(1, parseInt(page, 10));
+    const start = (pageNum - 1) * limitNum;
+    const paginated = result.slice(start, start + limitNum);
+    return okList(res, paginated, { total, page: pageNum, limit: limitNum, totalPages: Math.ceil(total / limitNum) });
+  }
+  return okList(res, result, { total });
 });
 
 module.exports = { reportLocation, getByDriverId, findNearby };

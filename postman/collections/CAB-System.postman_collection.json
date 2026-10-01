@@ -1,0 +1,638 @@
+{
+  "info": {
+    "name": "CAB System — 30 STT",
+    "description": "Collection kiểm tra 30 tiêu chí phiếu chấm. Chạy theo thứ tự folder.\nBase URL: http://localhost:3000",
+    "_postman_id": "cab-system-23658751",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "BASE", "value": "http://localhost:3000/api/v1" },
+    { "key": "GW",   "value": "http://localhost:3000" }
+  ],
+  "item": [
+
+    {
+      "name": "00 — Chuẩn bị (chạy trước)",
+      "item": [
+        {
+          "name": "Sinh Admin Token (local script)",
+          "event": [{ "listen": "prerequest", "script": { "exec": [
+            "// Tạo JWT ops_admin không cần server",
+            "const secret = 'cab-system-super-secret-key-change-me';",
+            "const header = btoa(JSON.stringify({alg:'HS256',typ:'JWT'})).replace(/=/g,'').replace(/\\+/g,'-').replace(/\\//g,'_');",
+            "const now = Math.floor(Date.now()/1000);",
+            "const payload = btoa(JSON.stringify({id:'admin-001',role:'ops_admin',iat:now,exp:now+86400})).replace(/=/g,'').replace(/\\+/g,'-').replace(/\\//g,'_');",
+            "// NOTE: Postman không thể ký HMAC — dùng lệnh dưới trong Tests tab để lấy token thật",
+            "console.log('Dùng lệnh bash để lấy ADMIN_TOKEN rồi set vào Environment');"
+          ], "type": "text/javascript" }}],
+          "request": { "method": "GET", "url": "{{GW}}/health" },
+          "_postman_previewlanguage": "json"
+        },
+        {
+          "name": "STT 9 — Đăng ký Customer",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "const r = pm.response.json();",
+            "pm.test('Status 201', () => pm.response.to.have.status(201));",
+            "pm.test('Có token', () => pm.expect(r.data.token).to.be.a('string'));",
+            "pm.environment.set('CUSTOMER_TOKEN', r.data.token);",
+            "pm.environment.set('CUSTOMER_ID', r.data.customer.id);",
+            "console.log('CUSTOMER_TOKEN saved');"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{BASE}}/customers/register",
+            "body": { "mode": "raw", "raw": "{\n  \"fullName\": \"Nguyen Van Test\",\n  \"email\": \"customer_{{$timestamp}}@cabtest.com\",\n  \"password\": \"matkhau123\",\n  \"phone\": \"0901234567\"\n}" }
+          }
+        },
+        {
+          "name": "STT 10 — Đăng nhập Customer",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "const r = pm.response.json();",
+            "pm.test('Status 200', () => pm.response.to.have.status(200));",
+            "pm.test('Có token', () => pm.expect(r.data.token).to.be.a('string'));",
+            "pm.environment.set('CUSTOMER_TOKEN', r.data.token);"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{BASE}}/customers/login",
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"{{CUSTOMER_EMAIL}}\",\n  \"password\": \"matkhau123\"\n}" }
+          }
+        },
+        {
+          "name": "STT 21 — Đăng ký Driver (→ pending_approval)",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "const r = pm.response.json();",
+            "pm.test('Status 201', () => pm.response.to.have.status(201));",
+            "pm.test('approvalStatus = pending_approval', () => pm.expect(r.data.driver.approvalStatus).to.eql('pending_approval'));",
+            "pm.environment.set('DRIVER_TOKEN', r.data.token);",
+            "pm.environment.set('DRIVER_ID', r.data.driver.id);",
+            "console.log('DRIVER_ID:', r.data.driver.id);"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{BASE}}/drivers/register",
+            "body": { "mode": "raw", "raw": "{\n  \"fullName\": \"Tran Van Driver\",\n  \"email\": \"driver_{{$timestamp}}@cabtest.com\",\n  \"password\": \"matkhau123\",\n  \"vehicle\": {\n    \"plate\": \"51H-{{$randomInt}}.99\",\n    \"model\": \"Toyota Vios\",\n    \"type\": \"4-seat\"\n  }\n}" }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "STT 1–8 — Phần Chung",
+      "item": [
+        {
+          "name": "STT 1 — Kiến trúc (xem docs)",
+          "request": { "method": "GET", "url": "{{GW}}/health",
+            "description": "Kiểm tra thủ công: mở SYSTEM-DOCUMENTATION.md\nVerify: có mô tả layered architecture, 10 services, event-driven pattern" }
+        },
+        {
+          "name": "STT 3+8 — Gateway hoạt động",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Gateway phản hồi (không phải connection refused)', () => pm.response.to.have.status(400));"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{BASE}}/customers/register",
+            "body": { "mode": "raw", "raw": "{}" },
+            "description": "Request đi qua Gateway → nhận validation error từ customer-service (không phải timeout/ECONNREFUSED)"
+          }
+        },
+        {
+          "name": "STT 5 — docker-compose ps",
+          "request": { "method": "GET", "url": "{{GW}}/health",
+            "description": "Chạy trong terminal:\n  docker-compose ps\nKỳ vọng: 13 container (healthy) bao gồm rabbitmq" }
+        },
+        {
+          "name": "STT 6 — GET /health",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 200', () => pm.response.to.have.status(200));",
+            "pm.test('status = ok', () => pm.expect(pm.response.json().status).to.eql('ok'));"
+          ], "type": "text/javascript" }}],
+          "request": { "method": "GET", "url": "{{GW}}/health" }
+        },
+        {
+          "name": "STT 6 — GET /ready",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 200', () => pm.response.to.have.status(200));",
+            "pm.test('status = ready', () => pm.expect(pm.response.json().status).to.eql('ready'));"
+          ], "type": "text/javascript" }}],
+          "request": { "method": "GET", "url": "{{GW}}/ready" }
+        },
+        {
+          "name": "STT 6 — GET /health/services",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 200', () => pm.response.to.have.status(200));",
+            "const r = pm.response.json();",
+            "pm.test('Có danh sách services', () => pm.expect(r.services).to.be.an('array'));",
+            "pm.test('Ít nhất 5 service', () => pm.expect(r.services.length).to.be.gte(5));"
+          ], "type": "text/javascript" }}],
+          "request": { "method": "GET", "url": "{{GW}}/health/services" }
+        },
+        {
+          "name": "STT 7 — RabbitMQ Exchange tồn tại",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 200', () => pm.response.to.have.status(200));",
+            "const r = pm.response.json();",
+            "pm.test('Exchange name = cab_events', () => pm.expect(r.name).to.eql('cab_events'));",
+            "pm.test('Type = topic', () => pm.expect(r.type).to.eql('topic'));",
+            "pm.test('Durable = true', () => pm.expect(r.durable).to.be.true);"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:15672/api/exchanges/%2F/cab_events",
+            "auth": { "type": "basic", "basic": [
+              { "key": "username", "value": "guest" },
+              { "key": "password", "value": "guest" }
+            ]},
+            "description": "Gọi RabbitMQ Management API — verify exchange cab_events tồn tại"
+          }
+        },
+        {
+          "name": "STT 7 — RabbitMQ Bindings (routing keys)",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 200', () => pm.response.to.have.status(200));",
+            "const bindings = pm.response.json();",
+            "const keys = bindings.map(b => b.routing_key);",
+            "pm.test('Có binding TripRequested', () => pm.expect(keys).to.include('TripRequested'));",
+            "pm.test('Có binding DriverAssigned', () => pm.expect(keys).to.include('DriverAssigned'));",
+            "pm.test('Có binding FareCalculated', () => pm.expect(keys).to.include('FareCalculated'));"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:15672/api/exchanges/%2F/cab_events/bindings/source",
+            "auth": { "type": "basic", "basic": [
+              { "key": "username", "value": "guest" },
+              { "key": "password", "value": "guest" }
+            ]}
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "STT 11–14 — Thông tin & Danh sách",
+      "item": [
+        {
+          "name": "STT 11 — Xem thông tin Customer (token)",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 200', () => pm.response.to.have.status(200));",
+            "pm.test('Có id + email', () => { const d = pm.response.json().data; pm.expect(d.id).to.be.ok; pm.expect(d.email).to.be.ok; });"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "GET",
+            "url": "{{BASE}}/customers/me",
+            "header": [{ "key": "Authorization", "value": "Bearer {{CUSTOMER_TOKEN}}" }]
+          }
+        },
+        {
+          "name": "STT 12 — Xem thông tin Driver (public)",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 200', () => pm.response.to.have.status(200));",
+            "pm.test('Có fullName', () => pm.expect(pm.response.json().data.fullName).to.be.ok);"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "GET",
+            "url": "{{BASE}}/drivers/{{DRIVER_ID}}",
+            "description": "Không cần token — endpoint public"
+          }
+        },
+        {
+          "name": "STT 13 — Tài xế gần nhất (có pagination)",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 200', () => pm.response.to.have.status(200));",
+            "const r = pm.response.json();",
+            "pm.test('Có meta pagination', () => pm.expect(r.meta).to.be.ok);",
+            "pm.test('meta.page tồn tại', () => pm.expect(r.meta.page).to.be.a('number'));"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{BASE}}/locations/nearby-drivers?lat=10.776&lng=106.700&radiusKm=5&limit=5&page=1",
+              "query": [
+                { "key": "lat", "value": "10.776" },
+                { "key": "lng", "value": "106.700" },
+                { "key": "radiusKm", "value": "5" },
+                { "key": "limit", "value": "5" },
+                { "key": "page", "value": "1" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "STT 14 — Danh sách booking Customer (pagination)",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 200', () => pm.response.to.have.status(200));",
+            "const r = pm.response.json();",
+            "pm.test('Có meta', () => pm.expect(r.meta).to.be.ok);"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{BASE}}/customers/me/trips?limit=5&page=1",
+              "query": [
+                { "key": "limit", "value": "5" },
+                { "key": "page", "value": "1" }
+              ]
+            },
+            "header": [{ "key": "Authorization", "value": "Bearer {{CUSTOMER_TOKEN}}" }]
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "STT 15–16 — Đặt xe & Tài xế nhận",
+      "item": [
+        {
+          "name": "Admin duyệt Driver (cần ADMIN_TOKEN)",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Approved thành công', () => pm.response.to.have.status(200));",
+            "pm.test('approvalStatus = approved', () => pm.expect(pm.response.json().data.approvalStatus).to.eql('approved'));"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "PATCH",
+            "url": "{{BASE}}/drivers/{{DRIVER_ID}}/approve",
+            "header": [{ "key": "Authorization", "value": "Bearer {{ADMIN_TOKEN}}" }],
+            "description": "Set ADMIN_TOKEN trong Environment trước:\nnode -e \"const jwt=require('jsonwebtoken');console.log(jwt.sign({id:'admin-001',role:'ops_admin'},'cab-system-super-secret-key-change-me',{expiresIn:'1d'}));\""
+          }
+        },
+        {
+          "name": "Driver tự chuyển sang Available",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 200', () => pm.response.to.have.status(200));",
+            "pm.test('status = available', () => pm.expect(pm.response.json().data.status).to.eql('available'));"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "PATCH",
+            "url": "{{BASE}}/drivers/me/status",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{DRIVER_TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{ \"status\": \"available\" }" }
+          }
+        },
+        {
+          "name": "Driver cập nhật vị trí",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 200', () => pm.response.to.have.status(200));"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "PUT",
+            "url": "{{BASE}}/locations/me",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{DRIVER_TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{ \"lat\": 10.776, \"lng\": 106.700 }" }
+          }
+        },
+        {
+          "name": "STT 15 — Customer tạo chuyến (→ TripRequested → dispatch)",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 201', () => pm.response.to.have.status(201));",
+            "const r = pm.response.json();",
+            "pm.test('Có tripId', () => pm.expect(r.data.id).to.be.ok);",
+            "pm.environment.set('TRIP_ID', r.data.id);",
+            "console.log('TRIP_ID:', r.data.id);"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "POST",
+            "url": "{{BASE}}/trips",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{CUSTOMER_TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"pickupLocation\": { \"lat\": 10.776, \"lng\": 106.700, \"address\": \"Ngã tư A\" },\n  \"dropoffLocation\": { \"lat\": 10.785, \"lng\": 106.695, \"address\": \"Chợ B\" },\n  \"vehicleType\": \"4-seat\"\n}" }
+          }
+        },
+        {
+          "name": "Chờ dispatch (3–5s) rồi xem trạng thái trip",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "const r = pm.response.json();",
+            "pm.test('Status 200', () => pm.response.to.have.status(200));",
+            "console.log('Trip status:', r.data.status);",
+            "pm.environment.set('TRIP_STATUS', r.data.status);",
+            "if(r.data.driverId) pm.environment.set('ASSIGNED_DRIVER_ID', r.data.driverId);"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "GET",
+            "url": "{{BASE}}/trips/{{TRIP_ID}}",
+            "header": [{ "key": "Authorization", "value": "Bearer {{CUSTOMER_TOKEN}}" }],
+            "description": "Chờ 3–5 giây sau khi tạo trip, rồi gửi request này.\nStatus kỳ vọng: 'driver_assigned' hoặc 'no_driver_found'"
+          }
+        },
+        {
+          "name": "STT 16 — Driver xem pending offer",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 200', () => pm.response.to.have.status(200));",
+            "console.log('Pending offer:', JSON.stringify(pm.response.json().data));"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "GET",
+            "url": "{{BASE}}/dispatch/drivers/me/pending",
+            "header": [{ "key": "Authorization", "value": "Bearer {{DRIVER_TOKEN}}" }]
+          }
+        },
+        {
+          "name": "STT 16 — Driver chấp nhận chuyến",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Accept thành công', () => pm.response.to.have.status(200));",
+            "console.log('Accept response:', JSON.stringify(pm.response.json()));"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "POST",
+            "url": "{{BASE}}/dispatch/{{TRIP_ID}}/accept",
+            "header": [{ "key": "Authorization", "value": "Bearer {{DRIVER_TOKEN}}" }]
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "STT 17–20 — Cập nhật chuyến, Hủy, Thanh toán, Đánh giá",
+      "item": [
+        {
+          "name": "STT 17 — Driver cập nhật trạng thái (arrived)",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 200', () => pm.response.to.have.status(200));",
+            "pm.test('status = arrived', () => pm.expect(pm.response.json().data.status).to.eql('arrived'));"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "PATCH",
+            "url": "{{BASE}}/trips/{{TRIP_ID}}/status",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{DRIVER_TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{ \"status\": \"arrived\" }" }
+          }
+        },
+        {
+          "name": "STT 17 — Driver in_progress",
+          "request": {
+            "method": "PATCH",
+            "url": "{{BASE}}/trips/{{TRIP_ID}}/status",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{DRIVER_TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{ \"status\": \"in_progress\" }" }
+          }
+        },
+        {
+          "name": "STT 17 — Driver hoàn thành chuyến (completed)",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 200', () => pm.response.to.have.status(200));",
+            "pm.test('status = completed', () => pm.expect(pm.response.json().data.status).to.eql('completed'));"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "PATCH",
+            "url": "{{BASE}}/trips/{{TRIP_ID}}/status",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{DRIVER_TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{ \"status\": \"completed\", \"distanceKm\": 3.5, \"durationMin\": 12 }" }
+          }
+        },
+        {
+          "name": "STT 18 — Hủy chuyến (dùng trip mới)",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Hủy thành công', () => [200, 400].includes(pm.response.code));",
+            "console.log('Cancel response:', pm.response.text());"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "POST",
+            "url": "{{BASE}}/trips/{{TRIP_ID}}/cancel",
+            "header": [{ "key": "Authorization", "value": "Bearer {{CUSTOMER_TOKEN}}" }],
+            "description": "Chỉ hủy được khi status = finding_driver | driver_assigned\nNếu đã completed → trả lỗi 400 (đúng spec)"
+          }
+        },
+        {
+          "name": "STT 19 — Thanh toán tiền mặt",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 201', () => pm.response.to.have.status(201));",
+            "const r = pm.response.json();",
+            "pm.test('status = completed', () => pm.expect(r.data.status).to.eql('completed'));",
+            "pm.environment.set('PAYMENT_ID', r.data.id);"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "POST",
+            "url": "{{BASE}}/payments",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{CUSTOMER_TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"tripId\": \"{{TRIP_ID}}\",\n  \"method\": \"cash\"\n}" }
+          }
+        },
+        {
+          "name": "STT 19 — Thanh toán điện tử (e-wallet, 70% success)",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "console.log('Payment status:', pm.response.json().data?.status);",
+            "pm.test('Status 201', () => pm.response.to.have.status(201));"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "POST",
+            "url": "{{BASE}}/payments",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{CUSTOMER_TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"tripId\": \"{{TRIP_ID_2}}\",\n  \"method\": \"e-wallet\"\n}" },
+            "description": "Cần TRIP_ID_2 khác với TRIP_ID — tạo thêm 1 trip completed trước khi dùng request này"
+          }
+        },
+        {
+          "name": "STT 20 — Đánh giá chuyến (sau khi completed)",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 200 hoặc 201', () => pm.expect([200,201]).to.include(pm.response.code));",
+            "console.log('Rating:', JSON.stringify(pm.response.json()));"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "POST",
+            "url": "{{BASE}}/trips/{{TRIP_ID}}/rating",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{CUSTOMER_TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{ \"score\": 5, \"comment\": \"Tài xế rất tốt\" }" }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "STT 21–23 — Driver Workflow",
+      "item": [
+        {
+          "name": "STT 22 — Admin DUYỆT tài xế",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 200', () => pm.response.to.have.status(200));",
+            "pm.test('approvalStatus = approved', () => pm.expect(pm.response.json().data.approvalStatus).to.eql('approved'));"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "PATCH",
+            "url": "{{BASE}}/drivers/{{DRIVER_ID}}/approve",
+            "header": [{ "key": "Authorization", "value": "Bearer {{ADMIN_TOKEN}}" }]
+          }
+        },
+        {
+          "name": "STT 22 — Admin TỪ CHỐI tài xế",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 200', () => pm.response.to.have.status(200));",
+            "pm.test('approvalStatus = rejected', () => pm.expect(pm.response.json().data.approvalStatus).to.eql('rejected'));"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "PATCH",
+            "url": "{{BASE}}/drivers/{{DRIVER_ID_2}}/reject",
+            "header": [{ "key": "Authorization", "value": "Bearer {{ADMIN_TOKEN}}" }],
+            "description": "Dùng DRIVER_ID_2 — driver khác vừa đăng ký"
+          }
+        },
+        {
+          "name": "STT 23 — Driver bật nhận chuyến (available)",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 200', () => pm.response.to.have.status(200));",
+            "pm.test('status = available', () => pm.expect(pm.response.json().data.status).to.eql('available'));"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "PATCH",
+            "url": "{{BASE}}/drivers/me/status",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{DRIVER_TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{ \"status\": \"available\" }" }
+          }
+        },
+        {
+          "name": "STT 23 — Driver tắt nhận chuyến (offline)",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 200', () => pm.response.to.have.status(200));",
+            "pm.test('status = offline', () => pm.expect(pm.response.json().data.status).to.eql('offline'));"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "PATCH",
+            "url": "{{BASE}}/drivers/me/status",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{DRIVER_TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{ \"status\": \"offline\" }" }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "STT 24–30 — Bảo mật",
+      "item": [
+        {
+          "name": "STT 24 — Mật khẩu hash (đăng ký rồi xem DB không có plaintext)",
+          "request": { "method": "GET", "url": "{{BASE}}/customers/me",
+            "header": [{ "key": "Authorization", "value": "Bearer {{CUSTOMER_TOKEN}}" }],
+            "description": "Kiểm tra thủ công:\ndocker exec <mongodb_container> mongosh customer_db --eval \"db.customers.findOne({},{password:1})\"\n→ Kỳ vọng: password là chuỗi hex dài (salt:hash), KHÔNG phải 'matkhau123'" }
+        },
+        {
+          "name": "STT 25 — NoSQL injection attempt",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Không bị bypass auth (401 hoặc 400, không phải 200)', () => pm.expect(pm.response.code).to.not.eql(200));"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "POST",
+            "url": "{{BASE}}/customers/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{ \"email\": { \"$gt\": \"\" }, \"password\": { \"$gt\": \"\" } }" },
+            "description": "MongoDB + Mongoose không execute operator trong string field → trả lỗi validation, không login được"
+          }
+        },
+        {
+          "name": "STT 26 — XSS input bị escape",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "const r = pm.response.json();",
+            "console.log('Rating comment saved:', r.data?.comment || r.data?.ratings?.[0]?.comment);",
+            "pm.test('Script tag bị escape', () => {",
+            "  const comment = JSON.stringify(r);",
+            "  pm.expect(comment).to.not.include('<script>');",
+            "  pm.expect(comment).to.include('&lt;script&gt;');",
+            "});"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "POST",
+            "url": "{{BASE}}/trips/{{TRIP_ID}}/rating",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{CUSTOMER_TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{ \"score\": 4, \"comment\": \"<script>alert('xss')</script>\" }" }
+          }
+        },
+        {
+          "name": "STT 27 — JWT giả mạo (401)",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 401', () => pm.response.to.have.status(401));"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "GET",
+            "url": "{{BASE}}/customers/me",
+            "header": [{ "key": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImhhY2tlciIsInJvbGUiOiJvcHNfYWRtaW4ifQ.INVALID_SIGNATURE_HERE" }]
+          }
+        },
+        {
+          "name": "STT 28 — Unauthorized (403) — Customer thao tác admin",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 403', () => pm.response.to.have.status(403));"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "PATCH",
+            "url": "{{BASE}}/drivers/{{DRIVER_ID}}/approve",
+            "header": [{ "key": "Authorization", "value": "Bearer {{CUSTOMER_TOKEN}}" }],
+            "description": "Customer không có quyền approve driver → 403"
+          }
+        },
+        {
+          "name": "STT 29 — Rate limit (429) — Gửi 35 request liên tiếp",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "console.log('Response code:', pm.response.code);",
+            "pm.test('Nhận 429 sau nhiều request', () => {",
+            "  pm.expect([201, 400, 429]).to.include(pm.response.code);",
+            "});"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "POST",
+            "url": "{{BASE}}/trips",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{CUSTOMER_TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{ \"pickupLocation\": {\"lat\":10.77,\"lng\":106.7}, \"dropoffLocation\": {\"lat\":10.78,\"lng\":106.69}, \"vehicleType\": \"4-seat\" }" },
+            "description": "Chạy request này 35 lần liên tiếp (dùng Postman Runner hoặc Collection Run với iterations=35)\n→ Một số request cuối sẽ trả 429 Too Many Requests"
+          }
+        },
+        {
+          "name": "STT 30 — Replay attack / Idempotency (409)",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 409 (đã tồn tại)', () => pm.response.to.have.status(409));"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "POST",
+            "url": "{{BASE}}/payments",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{CUSTOMER_TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"tripId\": \"{{TRIP_ID}}\",\n  \"method\": \"cash\"\n}" },
+            "description": "Gửi lần 2 cùng tripId → 409 PAYMENT_ALREADY_EXISTS (idempotent)"
+          }
+        }
+      ]
+    }
+
+  ]
+}

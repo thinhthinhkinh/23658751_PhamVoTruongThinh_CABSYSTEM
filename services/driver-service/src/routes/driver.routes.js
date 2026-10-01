@@ -15,9 +15,13 @@ router.put("/me/vehicle", authRequired, requireRole("driver"), ctrl.updateVehicl
 router.patch("/me/status", authRequired, requireRole("driver"), ctrl.updateStatus);
 
 // service-to-service: bỏ qua auth để đơn giản hóa demo (thực tế nên dùng mTLS/API key nội bộ)
+router.post("/events/driver-assigned", ctrl.onDriverAssigned);
 router.get("/", ctrl.listByStatus);
 router.get("/all", authRequired, requireRole("ops_staff", "ops_admin"), ctrl.listAll);
 router.patch("/:id/disable", authRequired, requireRole("ops_admin"), ctrl.disable);
+// FR-22: Admin duyệt / từ chối hồ sơ tài xế
+router.patch("/:id/approve", authRequired, requireRole("ops_admin", "ops_staff"), ctrl.approveDriver);
+router.patch("/:id/reject", authRequired, requireRole("ops_admin", "ops_staff"), ctrl.rejectDriver);
 router.get("/:id", ctrl.getById);
 
 module.exports = router;

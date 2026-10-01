@@ -39,13 +39,21 @@ const getDriverRatings = asyncHandler(async (req, res) => {
 });
 
 const myTripsAsCustomer = asyncHandler(async (req, res) => {
-  const trips = await repo.listByCustomerId(req.user.id);
-  return okList(res, trips);
+  const { limit, page } = req.query;
+  const result = await repo.listByCustomerId(req.user.id, { limit, page });
+  if (limit && page) {
+    return okList(res, result.items, { total: result.total, page: result.page, limit: result.limit, totalPages: Math.ceil(result.total / result.limit) });
+  }
+  return okList(res, result);
 });
 
 const myTripsAsDriver = asyncHandler(async (req, res) => {
-  const trips = await repo.listByDriverId(req.user.id);
-  return okList(res, trips);
+  const { limit, page } = req.query;
+  const result = await repo.listByDriverId(req.user.id, { limit, page });
+  if (limit && page) {
+    return okList(res, result.items, { total: result.total, page: result.page, limit: result.limit, totalPages: Math.ceil(result.total / result.limit) });
+  }
+  return okList(res, result);
 });
 
 const getInternal = asyncHandler(async (req, res) => {

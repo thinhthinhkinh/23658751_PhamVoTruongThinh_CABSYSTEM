@@ -20,6 +20,8 @@ async function register({ fullName, email, password, phone, vehicle }, createdBy
     phone: phone || null,
     vehicle: vehicle || null,
     createdByStaff: !!createdByStaff,
+    // Tài xế tự đăng ký → chờ duyệt; staff tạo → duyệt thẳng (FR-21/22)
+    approvalStatus: createdByStaff ? "approved" : "pending_approval",
   });
 }
 
@@ -83,6 +85,16 @@ async function disable(id) {
   return updated;
 }
 
+// FR-22: Admin duyệt hoặc từ chối hồ sơ tài xế
+async function setApprovalStatus(id, approvalStatus) {
+  if (!["approved", "rejected"].includes(approvalStatus)) {
+    throw new AppError(400, "INVALID_INPUT", "approvalStatus phải là 'approved' hoặc 'rejected'");
+  }
+  const updated = await dao.update(id, { approvalStatus });
+  if (!updated) throw new AppError(404, "DRIVER_NOT_FOUND", "Không tìm thấy tài xế");
+  return updated;
+}
+
 module.exports = {
   register,
   login,
@@ -93,4 +105,5 @@ module.exports = {
   listAvailable,
   listAll,
   disable,
+  setApprovalStatus,
 };

@@ -8,7 +8,9 @@ node_modules/
 
 # Test output files
 test-results*.txt
+test-output*.txt
 testcase/test-results*.txt
+testcase/test-output*.txt
 
 # Office documents and PDFs (kept locally, not in repo)
 *.docx

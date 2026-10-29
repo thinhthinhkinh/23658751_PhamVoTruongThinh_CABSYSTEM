@@ -7,7 +7,6 @@ RUN npm install --omit=dev
 
 COPY . .
 
-EXPOSE 4005
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=15s --retries=5 CMD wget -qO- http://localhost:4005/health || exit 1
 

@@ -8,7 +8,7 @@ async function createCompletedTripWithRating(score = 5) {
   const customerToken = signCustomerToken(customerId);
   const driverToken = signDriverToken(driverId);
 
-  const tripRes = await req("POST", "/trips", {
+  const tripRes = await req("POST", "/bookings", {
     token: customerToken,
     body: {
       pickupLocation: { lat: 10.77, lng: 106.7 },
@@ -16,19 +16,21 @@ async function createCompletedTripWithRating(score = 5) {
       vehicleType: "4-seat",
     },
   });
-  const tripId = tripRes.json.data.id;
+  const bookingId = tripRes.json.data.bookingId;
 
-  await req("POST", "/trips/events/driver-assigned", { body: { event: "DriverAssigned", payload: { tripId, driverId, eta: 5 } } });
-  await req("PATCH", `/trips/${tripId}/status`, { token: driverToken, body: { status: "arrived" } });
-  await req("PATCH", `/trips/${tripId}/status`, { token: driverToken, body: { status: "picked_up" } });
-  await req("PATCH", `/trips/${tripId}/status`, { token: driverToken, body: { status: "in_progress" } });
-  const completeRes = await req("PATCH", `/trips/${tripId}/status`, {
+  await req("POST", "/bookings/events/driver-assigned", { body: { event: "DriverAssigned", payload: { bookingId, driverId, eta: 5 } } });
+  await req("POST", "/trips/events/driver-assigned", { body: { event: "DriverAssigned", payload: { bookingId, driverId, eta: 5 } } });
+
+  await req("PATCH", `/trips/${bookingId}/status`, { token: driverToken, body: { status: "arrived" } });
+  await req("PATCH", `/trips/${bookingId}/status`, { token: driverToken, body: { status: "picked_up" } });
+  await req("PATCH", `/trips/${bookingId}/status`, { token: driverToken, body: { status: "in_progress" } });
+  const completeRes = await req("PATCH", `/trips/${bookingId}/status`, {
     token: driverToken,
     body: { status: "completed", distanceKm: 5, durationMin: 15 },
   });
-  await req("POST", `/trips/${tripId}/rating`, { token: customerToken, body: { score } });
+  await req("POST", `/trips/${bookingId}/rating`, { token: customerToken, body: { score } });
 
-  return { tripId, customerId, driverId, fareAmount: completeRes.json.data.fareAmount };
+  return { bookingId, customerId, driverId, fareAmount: completeRes.json.data.actualFare };
 }
 
 module.exports = { createCompletedTripWithRating };

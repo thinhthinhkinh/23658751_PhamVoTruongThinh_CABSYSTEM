@@ -1,0 +1,15 @@
+$kind: http-request
+description: |-
+  Set ADMIN_TOKEN trong Environment trước:
+  node -e "const jwt=require('jsonwebtoken');console.log(jwt.sign({id:'admin-001',role:'ops_admin'},'cab-system-super-secret-key-change-me',{expiresIn:'1d'}));"
+url: "{{BASE}}/drivers/{{DRIVER_ID}}/approve"
+method: PATCH
+headers:
+  Authorization: Bearer {{ADMIN_TOKEN}}
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Approved thành công', () => pm.response.to.have.status(200));
+      pm.test('approvalStatus = approved', () => pm.expect(pm.response.json().data.approvalStatus).to.eql('approved'));
+    language: text/javascript
+order: 1000

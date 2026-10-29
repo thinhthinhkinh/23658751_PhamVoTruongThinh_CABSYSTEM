@@ -1,0 +1,18 @@
+$kind: http-request
+url: "{{BASE}}/locations/nearby-drivers?lat=10.776&lng=106.700&radiusKm=5&limit=5&page=1"
+method: GET
+queryParams:
+  lat: "10.776"
+  lng: "106.700"
+  radiusKm: "5"
+  limit: "5"
+  page: "1"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', () => pm.response.to.have.status(200));
+      const r = pm.response.json();
+      pm.test('Có meta pagination', () => pm.expect(r.meta).to.be.ok);
+      pm.test('meta.page tồn tại', () => pm.expect(r.meta.page).to.be.a('number'));
+    language: text/javascript
+order: 3000

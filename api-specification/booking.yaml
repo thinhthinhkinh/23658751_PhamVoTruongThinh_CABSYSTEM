@@ -1,0 +1,273 @@
+openapi: 3.0.3
+info:
+  title: Booking Service API
+  version: 1.0.0
+  description: >
+    Vòng đời booking từ phía khách hàng (FR-03, FR-04, FR-05).
+    Booking chỉ quản lý đến trạng thái driver_assigned; vòng đời chuyến
+    đi (arrived → completed) và đánh giá nằm ở Trip Service.
+servers:
+  - url: http://localhost:4003
+    description: Gọi trực tiếp service (bỏ qua Gateway)
+  - url: http://localhost:3000/api/v1
+    description: Qua API Gateway (local dev)
+tags:
+  - name: Booking
+    description: Booking Service — FR-03, FR-04, FR-05
+security:
+  - bearerAuth: []
+paths:
+  /bookings:
+    post:
+      tags:
+        - Booking
+      summary: Tạo yêu cầu đặt xe
+      x-fr: FR-03
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingCreateRequest'
+      responses:
+        '201':
+          description: Đã tạo yêu cầu, đang tìm tài xế
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingEnvelope'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+  /bookings/{id}:
+    get:
+      tags:
+        - Booking
+      summary: Xem chi tiết & trạng thái hiện tại của 1 booking
+      x-fr: FR-04
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingEnvelope'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+  /bookings/{id}/status:
+    get:
+      tags:
+        - Booking
+      summary: Poll trạng thái booking (khuyến nghị WebSocket cho real-time)
+      x-fr: FR-04
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/BookingStatus'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+  /bookings/{id}/cancel:
+    post:
+      tags:
+        - Booking
+      summary: Khách hàng hủy booking
+      description: >
+        Chỉ hủy được khi booking đang ở trạng thái `requested` hoặc
+        `finding_driver`. Sau khi tài xế nhận (driver_assigned) không
+        thể hủy qua endpoint này.
+      x-fr: FR-05
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Hủy thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingEnvelope'
+        '409':
+          description: Booking không ở trạng thái có thể hủy (không phải requested/finding_driver)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /customers/me/bookings:
+    get:
+      tags:
+        - Booking
+      summary: Lịch sử booking của khách hàng
+      x-fr: FR-05
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingListEnvelope'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              example: VALIDATION_ERROR
+            message:
+              type: string
+    GeoPoint:
+      type: object
+      required:
+        - lat
+        - lng
+      properties:
+        lat:
+          type: number
+          format: double
+          example: 10.7769
+        lng:
+          type: number
+          format: double
+          example: 106.7009
+        address:
+          type: string
+    Booking:
+      type: object
+      properties:
+        bookingId:
+          type: string
+          format: uuid
+        customerId:
+          type: string
+          format: uuid
+        driverId:
+          type: string
+          format: uuid
+          nullable: true
+          description: Null cho đến khi tài xế nhận chuyến
+        pickupLocation:
+          $ref: '#/components/schemas/GeoPoint'
+        dropoffLocation:
+          $ref: '#/components/schemas/GeoPoint'
+        vehicleType:
+          type: string
+          enum:
+            - 4-seat
+            - 7-seat
+            - motorbike
+        status:
+          $ref: '#/components/schemas/BookingStatus'
+        estimatedFare:
+          type: number
+          nullable: true
+          description: Ước tính cước phí tính theo đường thẳng tại thời điểm tạo booking
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    BookingCreateRequest:
+      type: object
+      required:
+        - pickupLocation
+        - dropoffLocation
+        - vehicleType
+      properties:
+        pickupLocation:
+          $ref: '#/components/schemas/GeoPoint'
+        dropoffLocation:
+          $ref: '#/components/schemas/GeoPoint'
+        vehicleType:
+          type: string
+          enum:
+            - 4-seat
+            - 7-seat
+            - motorbike
+    BookingEnvelope:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Booking'
+    BookingListEnvelope:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Booking'
+    BookingStatus:
+      type: string
+      description: >
+        Trạng thái booking. Booking chỉ đi đến driver_assigned;
+        vòng đời sau đó (arrived → completed) thuộc Trip Service.
+      enum:
+        - requested
+        - finding_driver
+        - driver_assigned
+        - no_driver_found
+        - cancelled
+  responses:
+    NotFoundError:
+      description: Không tìm thấy tài nguyên
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: Dữ liệu đầu vào không hợp lệ
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    UnauthorizedError:
+      description: Chưa đăng nhập hoặc token không hợp lệ
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ForbiddenError:
+      description: Không có quyền thực hiện thao tác này
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    IdParam:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid

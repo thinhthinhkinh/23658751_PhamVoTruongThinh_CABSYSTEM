@@ -1,0 +1,21 @@
+$kind: http-request
+url: "{{BASE}}/trips/{{TRIP_ID}}/rating"
+method: POST
+headers:
+  Authorization: Bearer {{CUSTOMER_TOKEN}}
+  Content-Type: application/json
+body:
+  type: text
+  content: "{ \"score\": 4, \"comment\": \"<script>alert('xss')</script>\" }"
+scripts:
+  - type: afterResponse
+    code: |-
+      const r = pm.response.json();
+      console.log('Rating comment saved:', r.data?.comment || r.data?.ratings?.[0]?.comment);
+      pm.test('Script tag bị escape', () => {
+        const comment = JSON.stringify(r);
+        pm.expect(comment).to.not.include('<script>');
+        pm.expect(comment).to.include('&lt;script&gt;');
+      });
+    language: text/javascript
+order: 3000

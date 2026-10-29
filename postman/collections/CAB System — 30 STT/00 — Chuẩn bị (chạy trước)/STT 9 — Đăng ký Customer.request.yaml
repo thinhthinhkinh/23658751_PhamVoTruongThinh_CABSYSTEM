@@ -1,0 +1,25 @@
+$kind: http-request
+url: "{{BASE}}/customers/register"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "fullName": "Nguyen Van Test",
+      "email": "customer_{{$timestamp}}@cabtest.com",
+      "password": "matkhau123",
+      "phone": "0901234567"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      const r = pm.response.json();
+      pm.test('Status 201', () => pm.response.to.have.status(201));
+      pm.test('Có token', () => pm.expect(r.data.token).to.be.a('string'));
+      pm.environment.set('CUSTOMER_TOKEN', r.data.token);
+      pm.environment.set('CUSTOMER_ID', r.data.customer.id);
+      console.log('CUSTOMER_TOKEN saved');
+    language: text/javascript
+order: 2000

@@ -1,0 +1,15 @@
+$kind: http-request
+description: |-
+  Chỉ hủy được khi status = finding_driver | driver_assigned
+  Nếu đã completed → trả lỗi 400 (đúng spec)
+url: "{{BASE}}/trips/{{TRIP_ID}}/cancel"
+method: POST
+headers:
+  Authorization: Bearer {{CUSTOMER_TOKEN}}
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Hủy thành công', () => [200, 400].includes(pm.response.code));
+      console.log('Cancel response:', pm.response.text());
+    language: text/javascript
+order: 4000

@@ -1,6 +1,6 @@
 # CAB System — Tài liệu Kỹ thuật Chi tiết
 
-> Hệ thống đặt xe taxi theo kiến trúc Microservices, triển khai đầy đủ 23 Functional Requirements.  
+> Hệ thống đặt xe taxi theo kiến trúc Microservices, triển khai đầy đủ 30 tiêu chí chấm điểm.  
 > Sinh viên: **Phạm Võ Trường Thịnh** — MSSV: 23658751  
 > Môn: Microservice Architecture — IUH HK1 2026–2027
 
@@ -14,17 +14,19 @@
 4. [Authentication & Authorization](#4-authentication--authorization)
 5. [Chi tiết từng Service](#5-chi-tiết-từng-service)
    - [API Gateway](#51-api-gateway)
-   - [Customer Service](#52-customer-service)
-   - [Driver Service](#53-driver-service)
-   - [Trip Service](#54-trip-service)
-   - [Dispatch Service](#55-dispatch-service)
-   - [Location Service](#56-location-service)
-   - [Pricing Service](#57-pricing-service)
-   - [Payment Service](#58-payment-service)
-   - [Notification Service](#59-notification-service)
-   - [Admin Service](#510-admin-service)
+   - [Auth Service](#52-auth-service)
+   - [Customer Service](#53-customer-service)
+   - [Driver Service](#54-driver-service)
+   - [Booking Service](#55-booking-service)
+   - [Trip Service](#56-trip-service)
+   - [Dispatch Service](#57-dispatch-service)
+   - [Location Service](#58-location-service)
+   - [Pricing Service](#59-pricing-service)
+   - [Payment Service](#510-payment-service)
+   - [Notification Service](#511-notification-service)
+   - [Admin Service](#512-admin-service)
 6. [Pattern & Convention dùng chung](#6-pattern--convention-dùng-chung)
-7. [Cơ sở dữ liệu](#7-cơ-sở-dữ-liệu)
+7. [Cơ sở dữ liệu & Cache](#7-cơ-sở-dữ-liệu--cache)
 8. [Docker & Deployment](#8-docker--deployment)
 9. [Luồng nghiệp vụ chính](#9-luồng-nghiệp-vụ-chính)
 10. [Testing](#10-testing)
@@ -39,13 +41,20 @@ CAB System là hệ thống đặt xe taxi mô phỏng thực tế, được xâ
 
 | Thành phần | Số lượng | Công nghệ |
 |---|---|---|
-| API Gateway | 1 | Express + http-proxy-middleware |
+| API Gateway | 1 | Express + gRPC clients |
 | Message Broker | 1 | RabbitMQ 3-management (AMQP) |
-| Event Bus (legacy) | 1 | Express (HTTP pub/sub, giữ cho tương thích) |
-| Domain Services | 9 | Express + Mongoose + MongoDB |
+| Domain Services | **11** | Express + Mongoose + MongoDB + gRPC |
 | Database | 1 container dùng chung | MongoDB 7 (database riêng/service) |
+| Cache & Session Store | 1 | **Redis 7-alpine** (session, token cache, rate limit, FareCache) |
 
-**Functional Requirements phủ**: FR-01 → FR-23 (đầy đủ)
+**Functional Requirements phủ**: FR-01 → FR-25 (đầy đủ)
+
+**Giao tiếp nội bộ**: Gateway → Services dùng **gRPC**; Services → Services dùng gRPC (đồng bộ) và RabbitMQ (bất đồng bộ).
+
+**Nguyên tắc thiết kế quan trọng — Phân chia Bounded Context**:
+- **Booking** (4003): vòng đời từ phía khách hàng — `requested → finding_driver → driver_assigned | no_driver_found | cancelled`
+- **Trip** (4011): vòng đời từ phía tài xế sau khi được gán — `driver_assigned → arrived → picked_up → in_progress → completed`
+- Hai bounded context này tách biệt hoàn toàn để tuân thủ **Single Responsibility Principle (SRP)** của MSA.
 
 ---
 
@@ -54,89 +63,114 @@ CAB System là hệ thống đặt xe taxi mô phỏng thực tế, được xâ
 ### 2.1 Sơ đồ tổng thể
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                          CLIENT                                 │
-└────────────────────────────┬────────────────────────────────────┘
-                             │ HTTP (port 3000)
-                             ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                      API GATEWAY (3000)                         │
-│              Reverse Proxy — route theo path prefix             │
-└──┬──────┬──────┬──────┬──────┬──────┬──────┬──────┬────────────┘
-   │      │      │      │      │      │      │      │
-   ▼      ▼      ▼      ▼      ▼      ▼      ▼      ▼
- 4001   4002   4003   4004   4005   4006   4007   4008/4009
- CUST  DRVR   TRIP  DISP   LOC   PRIC   PAY  NOTIF/ADMIN
-   │      │      │      │                     │      │
-   └──────┴──────┴──────┴─────────────────────┴──────┘
-                             │ AMQP (amqplib)
-                             ▼
-                   ┌───────────────────┐
-                   │  RabbitMQ (5672)  │  ← topic exchange
-                   │  cab_events       │    "cab_events"
-                   │  UI: 15672        │
-                   └─────────┬─────────┘
-                             │ AMQP consumers
-          ┌──────────────────┼──────────────────┐
-          ▼                  ▼                  ▼
-       trip-svc          dispatch-svc      payment-svc
-       notif-svc         driver-svc        ...
+┌────────────────────────────────────────────────────────────────────────────┐
+│                                  CLIENT                                    │
+└───────────────────────────────────┬────────────────────────────────────────┘
+                                    │ HTTP REST (port 3000)
+                                    ▼
+┌────────────────────────────────────────────────────────────────────────────┐
+│                          API GATEWAY (3000)                                │
+│     Parse request → gRPC Auth.ValidateToken → gRPC domain call            │
+└──┬──────┬──────┬──────┬──────┬──────┬──────┬──────┬──────┬──────┬─────────┘
+   │gRPC  │gRPC  │gRPC  │gRPC  │gRPC  │gRPC  │gRPC  │gRPC  │gRPC  │gRPC
+   ▼      ▼      ▼      ▼      ▼      ▼      ▼      ▼      ▼      ▼
+ 5010   5001   5002   5003   5011   5004   5005   5006   5007  5008  5009
+ AUTH  CUST  DRVR  BOOK  TRIP  DISP   LOC  PRIC   PAY  NOTI  ADMN
 
-          ┌──────────────────────────────────────┐
-          │          MongoDB (27017)             │
-          │  customer_db | driver_db | trip_db  │
-          │  dispatch_db | location_db | ...    │
-          └──────────────────────────────────────┘
+ ─── gRPC Service-to-Service (đồng bộ) ─────────────────────────────────────
+ BOOK ──gRPC──► PRIC   (estimatedFare khi tạo booking)
+ TRIP ──gRPC──► BOOK   (GetBookingInternal: estimatedFare, customerId)
+ TRIP ──gRPC──► PRIC   (actualFare khi trip completed)
+ DISP ──gRPC──► DRVR   (GetAvailableDrivers)
+ DISP ──gRPC──► LOC    (GetNearbyDrivers)
+ PAY  ──gRPC──► BOOK   (GetBookingInternal: amount, customerId)
+ ADMN ──gRPC──► CUST   (báo cáo / disable)
+ ADMN ──gRPC──► DRVR   (báo cáo / disable)
+ ADMN ──gRPC──► BOOK   (danh sách booking, resolve)
+ ADMN ──gRPC──► TRIP   (driver performance: trips, ratings)
+ ADMN ──gRPC──► PAY    (báo cáo doanh thu)
+
+ ─── AMQP RabbitMQ — topic exchange "cab_events" ────────────────────────────
+ BOOK ──publish──► [BookingRequested]  ──► DISP
+ BOOK ──publish──► [BookingCancelled]  ──► DISP
+ DISP ──publish──► [DriverAssigned]    ──► BOOK, TRIP, NOTI
+ DISP ──publish──► [NoDriverFound]     ──► BOOK, NOTI
+ TRIP ──publish──► [TripStatusChanged] ──► NOTI
+ TRIP ──publish──► [FareCalculated]    ──► PAY  (cache fare)
+ PAY  ──publish──► [PaymentCompleted]  ──► NOTI
+ PAY  ──publish──► [PaymentFailed]     ──► NOTI
+
+┌────────────────────────────────────────────────────────┐
+│                  MongoDB (27017)                       │
+│  auth_db     | customer_db  | driver_db               │
+│  booking_db  | trip_db      | dispatch_db             │
+│  location_db | pricing_db   | payment_db              │
+│  notification_db            | admin_db                │
+└────────────────────────────────────────────────────────┘
+
+┌────────────────────────────────────────────────────────┐
+│                   Redis 7 (6379)                       │
+│  cab:session:{id}     cab:token_cache:{id}            │
+│  cab:user_sessions:{userId}   cab:ratelimit:{userId}  │
+│  cab:fare:{bookingId}                                 │
+└────────────────────────────────────────────────────────┘
 ```
 
 ### 2.2 Cổng (Port) của từng thành phần
 
-| Service | Port | Biến môi trường | FR |
+| Service | HTTP Port | gRPC Port | FR |
 |---|---|---|---|
 | api-gateway | **3000** | — | — |
-| rabbitmq | **5672** (AMQP) / **15672** (UI) | `RABBITMQ_URL` | — |
-| event-bus-service | **4000** | — (legacy, không dùng cho routing) | — |
-| customer-service | **4001** | `CUSTOMER_SERVICE_URL` | FR-01 |
-| driver-service | **4002** | `DRIVER_SERVICE_URL` | FR-02, FR-11 |
-| trip-service | **4003** | `TRIP_SERVICE_URL` | FR-03, FR-04, FR-05, FR-13 |
-| dispatch-service | **4004** | `DISPATCH_SERVICE_URL` | FR-06 → FR-09, FR-12 |
-| location-service | **4005** | `LOCATION_SERVICE_URL` | FR-10 |
-| pricing-service | **4006** | `PRICING_SERVICE_URL` | FR-14 |
-| payment-service | **4007** | `PAYMENT_SERVICE_URL` | FR-15, FR-16 |
-| notification-service | **4008** | `NOTIFICATION_SERVICE_URL` | FR-17 → FR-19 |
-| admin-service | **4009** | `ADMIN_SERVICE_URL` | FR-20 → FR-23 |
+| rabbitmq | — | **5672** (AMQP) / **15672** (UI) | — |
+| redis | — | **6379** | — |
+| auth-service | **4010** | **5010** | — |
+| customer-service | **4001** | **5001** | FR-01 |
+| driver-service | **4002** | **5002** | FR-02, FR-11 |
+| booking-service | **4003** | **5003** | FR-03, FR-04, FR-05, FR-24, FR-25 |
+| trip-service | **4011** | **5011** | FR-13, FR-14 + trip lifecycle |
+| dispatch-service | **4004** | **5004** | FR-06 → FR-09, FR-12 |
+| location-service | **4005** | **5005** | FR-10 |
+| pricing-service | **4006** | **5006** | FR-14 |
+| payment-service | **4007** | **5007** | FR-15, FR-16 |
+| notification-service | **4008** | **5008** | FR-17 → FR-19 |
+| admin-service | **4009** | **5009** | FR-20 → FR-23 |
 
 ### 2.3 Hai cơ chế giao tiếp
 
-#### Đồng bộ (Synchronous REST)
-Dùng khi cần kết quả ngay — service gọi trực tiếp HTTP đến service khác:
+#### Đồng bộ (gRPC)
+Dùng khi cần kết quả ngay — service gọi trực tiếp gRPC đến service khác:
 
 ```
-dispatch-service  → driver-service    (lấy danh sách tài xế available)
-dispatch-service  → location-service  (lấy tài xế gần điểm đón)
-payment-service   → trip-service      (lấy thông tin fare/trip)
-notification-svc  → trip-service      (lấy chi tiết chuyến để gửi thông báo)
-admin-service     → customer/driver/trip/payment-service (tổng hợp báo cáo)
-trip-service      → pricing-service   (tính phí khi hoàn thành chuyến)
+api-gateway   → tất cả 10 service       (xử lý request từ client)
+booking-svc   → pricing-svc             (ước tính estimatedFare khi tạo booking)
+trip-svc      → booking-svc             (GetBookingInternal — estimatedFare, customerId)
+trip-svc      → pricing-svc             (tính actualFare khi hoàn thành chuyến)
+dispatch-svc  → driver-svc              (GetAvailableDrivers)
+dispatch-svc  → location-svc            (GetNearbyDrivers)
+payment-svc   → booking-svc             (GetBookingInternal — amount, customerId)
+admin-svc     → customer-svc            (danh sách, disable)
+admin-svc     → driver-svc              (danh sách, disable, performance)
+admin-svc     → booking-svc             (danh sách, resolve)
+admin-svc     → trip-svc                (GetDriverTrips, GetDriverRatings — performance report)
+admin-svc     → payment-svc             (báo cáo doanh thu)
 ```
 
-> Các endpoint dành riêng cho service-to-service (ví dụ `GET /trips/:id/internal`)
-> đều **bỏ qua xác thực** (`// service-to-service: bỏ qua auth để đơn giản hóa demo`).
-> Điều này an toàn khi các service nằm trong mạng Docker nội bộ.
+> **Proto files**: `proto/*.proto` — mỗi service có 1 file định nghĩa message + service RPC.
+> Gateway load tất cả proto khi khởi động; `api-gateway/src/grpc/clients/index.js` khởi tạo stub client cho từng service.
 
-#### Bất đồng bộ (Async via RabbitMQ)
-Dùng cho luồng saga — không cần kết quả ngay, giao tiếp qua AMQP:
+#### Bất đồng bộ (RabbitMQ AMQP)
+Dùng cho luồng saga — không cần kết quả ngay:
 
 ```
-trip-service   → [TripRequested]      → dispatch-service
-dispatch-svc   → [DriverAssigned]     → trip-service, notification-service
-dispatch-svc   → [NoDriverFound]      → trip-service, notification-service
-trip-service   → [TripStatusChanged]  → notification-service
-trip-service   → [TripCompleted]      → notification-service
-trip-service   → [FareCalculated]     → payment-service (cache fare)
-trip-service   → [TripRated]          → (future: driver rating update)
-payment-svc    → [PaymentCompleted]   → notification-service
-payment-svc    → [PaymentFailed]      → notification-service
+booking-svc   → [BookingRequested]   → dispatch-service
+booking-svc   → [BookingCancelled]   → dispatch-service (hủy offer đang chờ)
+dispatch-svc  → [DriverAssigned]     → booking-svc, trip-svc, notification-svc
+dispatch-svc  → [NoDriverFound]      → booking-svc, notification-svc
+trip-svc      → [TripStatusChanged]  → notification-service
+trip-svc      → [FareCalculated]     → payment-service (cache fare)
+trip-svc      → [TripRated]          → (future: driver rating update)
+payment-svc   → [PaymentCompleted]   → notification-service
+payment-svc   → [PaymentFailed]      → notification-service
 ```
 
 ---
@@ -147,42 +181,31 @@ payment-svc    → [PaymentFailed]      → notification-service
 
 Hệ thống dùng **RabbitMQ** (`rabbitmq:3-management`) làm message broker thực sự qua thư viện `amqplib`.
 
-```
-Publisher                RabbitMQ              Subscribers
-   │                   (topic exchange)            │
-   │  ch.publish()         │                       │
-   │  event, payload  ──►  │ cab_events exchange   │
-   │  routing key = event  │                       │
-   │                       │  AMQP consumer        │
-   │                       │  exclusive queue  ──► │
-   │                       │  ch.ack(msg)          │
-```
-
 **Kiến trúc RabbitMQ:**
 - Exchange: `cab_events` (type: **topic**, durable: true)
 - Mỗi subscription tạo 1 **exclusive queue** tự động, bind với routing key = tên event
 - Exclusive queue tự xóa khi consumer disconnect (giữ RAM sạch)
 - Publisher kết nối một lần, dùng lại channel cho mọi lần publish
-- Subscriber tạo channel riêng để isolate error handling
 
-**File triển khai:** `services/*/src/utils/eventBusClient.js` — mỗi service có bản riêng (amqplib)
+**File triển khai:** `services/*/src/utils/eventBusClient.js` — mỗi service có bản riêng.
 
 **RabbitMQ Management UI:** `http://localhost:15672` (user: `guest` / pass: `guest`)
-- Xem exchanges, queues, bindings, messages in-flight
 
 ### 3.2 Catalog sự kiện
 
 | Sự kiện | Publisher | Subscribers | Payload chính |
 |---|---|---|---|
-| `TripRequested` | trip-service | dispatch-service | `tripId`, `pickupLocation`, `vehicleType` |
-| `DriverAssigned` | dispatch-service | trip-service, notification-service | `tripId`, `driverId`, `etaMinutes` |
-| `NoDriverFound` | dispatch-service | trip-service, notification-service | `tripId` |
-| `TripStatusChanged` | trip-service | notification-service | `tripId`, `status`, `actorRole` |
-| `TripCompleted` | trip-service | notification-service | `tripId`, `fareAmount` |
-| `FareCalculated` | trip-service | payment-service | `tripId`, `fareAmount` |
-| `TripRated` | trip-service | *(future)* | `tripId`, `score`, `driverId` |
-| `PaymentCompleted` | payment-service | notification-service | `paymentId`, `tripId`, `amount` |
-| `PaymentFailed` | payment-service | notification-service | `paymentId`, `tripId`, `reason` |
+| `BookingRequested` | booking-service | dispatch-service | `bookingId`, `customerId`, `pickupLocation`, `vehicleType`, `estimatedFare` |
+| `BookingCancelled` | booking-service | dispatch-service | `bookingId`, `cancelReason`, `timestamp` |
+| `DriverAssigned` | dispatch-service | booking-svc, trip-svc, notification-svc | `bookingId`, `driverId`, `etaMinutes` |
+| `NoDriverFound` | dispatch-service | booking-svc, notification-svc | `bookingId` |
+| `TripStatusChanged` | trip-service | notification-service | `bookingId`, `tripId`, `status`, `actorRole` |
+| `FareCalculated` | trip-service | payment-service | `bookingId`, `tripId`, `actualFare`, `estimatedFare`, `amount` |
+| `TripRated` | trip-service | *(future)* | `bookingId`, `tripId`, `score`, `driverId` |
+| `PaymentCompleted` | payment-service | notification-service | `paymentId`, `bookingId`, `amount` |
+| `PaymentFailed` | payment-service | notification-service | `paymentId`, `bookingId`, `reason` |
+
+> **BR-10 (estimatedFare):** `FareCalculated.amount = max(actualFare, estimatedFare)`. Giá ước tính khi đặt xe được tính bằng công thức đường thẳng (Haversine) + `Pricing.Calculate`, lưu trong booking, truyền qua `GetBookingInternal` khi trip-service tạo Trip. Khách không bao giờ phải trả ít hơn giá đã ước tính.
 
 ---
 
@@ -192,18 +215,27 @@ Publisher                RabbitMQ              Subscribers
 
 - **Thuật toán**: HS256, secret dùng chung `JWT_SECRET` trên **tất cả** services
 - **Thời hạn**: 7 ngày
-- **Payload**: `{ id: "<uuid>", role: "<role>" }`
+- **Payload**: `{ id: "<uuid>", role: "<role>" }` (register token) hoặc `{ id, role, sessionId: "<uuid>" }` (login token)
 - **Header**: `Authorization: Bearer <token>`
 
 ```
 ┌─────────────────────────────────────────────────┐
-│                   JWT Payload                   │
+│            JWT Payload (register token)         │
 │  {                                              │
 │    "id":   "550e8400-e29b-41d4-a716-...",       │
 │    "role": "customer" | "driver" |              │
 │            "ops_staff" | "ops_admin",           │
 │    "iat":  1234567890,                          │
 │    "exp":  1235172690                           │
+│  }                                              │
+├─────────────────────────────────────────────────┤
+│              JWT Payload (login token)          │
+│  {                                              │
+│    "id":        "550e8400-...",                 │
+│    "role":      "customer" | "driver" | ...,   │
+│    "sessionId": "a1b2c3d4-...",  ← revocable   │
+│    "iat":       1234567890,                     │
+│    "exp":       1235172690                      │
 │  }                                              │
 └─────────────────────────────────────────────────┘
 ```
@@ -229,14 +261,25 @@ requireRole("driver")
 requireRole("customer")
 ```
 
-### 4.4 Tạo token Ops (không có Staff Service)
+### 4.4 Thu hồi token (Logout)
+
+```
+POST /api/v1/auth/logout   Authorization: Bearer <login_token>
+→ Auth Service: ghi revoked=1 vào Redis Hash cab:session:{sessionId}
+→ Auth Service: xóa ngay cab:token_cache:{sessionId} (revocation tức thời)
+→ ValidateToken sau đó trả về lỗi → gateway từ chối 401
+```
+
+> **Chỉ login token có sessionId mới revocable.** Register token không qua session nên không thể thu hồi.
+
+### 4.5 Tạo token Ops (không có Staff Service)
 
 ```bash
 node scripts/generate-staff-token.js ops_admin  staff-001
 node scripts/generate-staff-token.js ops_staff  staff-002
 ```
 
-> **Hạn chế**: không có đăng nhập/đăng xuất, không có revocation — dành riêng cho demo.
+> Token ops không có sessionId, không revocable — dành riêng cho demo.
 
 ---
 
@@ -246,47 +289,101 @@ node scripts/generate-staff-token.js ops_staff  staff-002
 
 **Port**: 3000 | **File chính**: [api-gateway/src/routes/gateway.routes.js](api-gateway/src/routes/gateway.routes.js)
 
-Đóng vai trò **reverse proxy thuần** — không có business logic, không parse body (không dùng `express.json()`), forward nguyên vẹn request đến service đích.
+Đóng vai trò **gRPC client hub** — nhận HTTP từ client, gọi gRPC đến service tương ứng, chuyển đổi response về JSON.
 
-#### Route mapping
+> **Rate limiting (Redis-backed)**: `tripLimiter` dùng `RedisStore` (thư viện `rate-limit-redis`) với prefix `cab:ratelimit:`, giới hạn 30 request/giây/userId. Khi scale nhiều Gateway instance, quota được chia sẻ chính xác qua Redis.
 
-| Path prefix | Chuyển đến | Ghi chú |
+#### Route mapping (gRPC)
+
+| Method/Path | gRPC Client → Method | Mô tả |
 |---|---|---|
-| `/api/v1/customers/me/trips` | trip-service:4003 | ⚠️ Phải khai báo **trước** rule customer |
-| `/api/v1/customers/me/payments` | payment-service:4007 | ⚠️ Phải khai báo trước |
-| `/api/v1/drivers/:id/ratings` | trip-service:4003 | ⚠️ Phải khai báo trước |
-| `/api/v1/customers` | customer-service:4001 | |
-| `/api/v1/drivers` | driver-service:4002 | |
-| `/api/v1/trips` | trip-service:4003 | |
-| `/api/v1/dispatch` | dispatch-service:4004 | |
-| `/api/v1/locations` | location-service:4005 | |
-| `/api/v1/pricing` | pricing-service:4006 | |
-| `/api/v1/payments` | payment-service:4007 | |
-| `/api/v1/notifications` | notification-service:4008 | |
-| `/api/v1/admin` | admin-service:4009 | |
+| `POST /api/v1/customers/register` | authClient.Register | Đăng ký khách hàng |
+| `POST /api/v1/customers/login` | authClient.Login | Đăng nhập khách hàng |
+| `POST /api/v1/drivers/register` | authClient.RegisterDriver | Đăng ký tài xế |
+| `POST /api/v1/drivers/login` | authClient.LoginDriver | Đăng nhập tài xế |
+| `POST /api/v1/auth/logout` | authClient.Logout | Thu hồi session (logout) |
+| `GET /api/v1/bookings` | bookingClient.ListAll | Danh sách tất cả booking (ops_staff+) |
+| `GET /api/v1/customers/me/bookings` | bookingClient.GetCustomerBookings | Lịch sử booking của khách |
+| `GET /api/v1/customers/me/trips` | tripClient.GetCustomerTrips | Lịch sử trip của khách |
+| `GET /api/v1/drivers/me/trips` | tripClient.GetDriverTrips | Lịch sử trip của tài xế |
+| `GET /api/v1/drivers/:id/ratings` | tripClient.GetDriverRatings | Rating của tài xế |
+| `POST /api/v1/bookings` | bookingClient.CreateBooking | Đặt xe |
+| `GET /api/v1/bookings/:id` | bookingClient.GetBookingById | Xem booking |
+| `POST /api/v1/bookings/:id/cancel` | bookingClient.CancelBooking | Hủy booking |
+| `GET /api/v1/trips/:id` | tripClient.GetTripByBookingId | Xem trip theo bookingId |
+| `PATCH /api/v1/trips/:id/status` | tripClient.UpdateTripStatus | Cập nhật trạng thái trip |
+| `POST /api/v1/trips/:id/rating` | tripClient.AddRating | Đánh giá |
+| `POST /api/v1/dispatch/:id/accept` | dispatchClient.AcceptOffer | Tài xế chấp nhận |
+| `POST /api/v1/dispatch/:id/decline` | dispatchClient.DeclineOffer | Tài xế từ chối |
 
-> **Lưu ý**: Thứ tự route khai báo rất quan trọng — `/customers/me/trips` phải đứng trước `/customers` vì cùng prefix.
+#### Route proxy thuần (REST, không gRPC)
 
-#### Endpoint đặc biệt
-
-| Method | Path | Mô tả |
+| Method/Path | Target | Ghi chú |
 |---|---|---|
-| `GET` | `/health` | Health check của gateway |
+| `POST /api/v1/bookings/events/driver-assigned` | booking-service:4003 | Webhook nội bộ |
+| `POST /api/v1/bookings/events/no-driver-found` | booking-service:4003 | Webhook nội bộ |
+| `POST /api/v1/trips/events/driver-assigned` | trip-service:4011 | Webhook test bypass |
+| `GET /api/v1/trips/:id/internal` | trip-service:4011 | Service-to-service |
+
+> **Lưu ý thứ tự**: các route cụ thể (`/customers/me/trips`, `/trips/events/driver-assigned`) phải khai báo **trước** các route có wildcard (`/trips/:id`).
 
 ---
 
-### 5.2 Customer Service
+### 5.2 Auth Service
 
-**Port**: 4001 | **FR**: FR-01 | **DB**: `customer_db`
+**Port**: 4010 | **gRPC Port**: 5010 | **DB**: `auth_db`
+
+Xử lý đăng ký/đăng nhập, cấp JWT, quản lý session và thu hồi token. Lưu thông tin xác thực tách biệt khỏi profile.
+
+#### Model dữ liệu
+
+```javascript
+Credential {
+  _id:          String (= userId),   // MongoDB — auth_db
+  email:        String,
+  role:         String,
+  passwordHash: String
+}
+
+// Session lưu trong Redis (không còn MongoDB)
+// cab:session:{sessionId}  →  Hash { userId, role, revoked:"0"|"1" }  TTL=7 ngày
+// cab:user_sessions:{userId}  →  Set<sessionId>  (phục vụ revokeAll)
+// cab:token_cache:{sessionId}  →  "{userId}|{role}" | "revoked"  TTL=60s
+```
+
+> **Thiết kế token**: Token từ `/register` do customer-service ký trực tiếp — **không có sessionId**, không revocable. Token từ `/login` do auth-service cấp — **có sessionId**, lưu session vào Redis, bị blacklist khi logout (revoked=1 + token cache bị xóa ngay lập tức).
+
+#### API Endpoints (HTTP)
+
+| Method | Path | Auth | Mô tả |
+|---|---|---|---|
+| `POST` | `/auth/logout` | ✅ | Thu hồi session, blacklist token |
+| `GET` | `/health` | ❌ | Health check |
+
+#### API Endpoints (gRPC)
+
+| gRPC Method | Mô tả |
+|---|---|
+| `Register` | Đăng ký khách hàng, trả token + user (token không có sessionId) |
+| `Login` | Đăng nhập, tạo Session, trả token có sessionId |
+| `RegisterDriver` | Đăng ký tài xế |
+| `LoginDriver` | Đăng nhập tài xế, tạo Session |
+| `ValidateToken` | Xác thực JWT + kiểm tra session chưa bị revoke |
+
+---
+
+### 5.3 Customer Service
+
+**Port**: 4001 | **gRPC Port**: 5001 | **FR**: FR-01 | **DB**: `customer_db`
 
 #### Model dữ liệu
 
 ```javascript
 Customer {
-  _id:          String (UUID),     // alias: "id" trong response
+  _id:          String (UUID),
   fullName:     String (required),
   email:        String (unique, required),
-  passwordHash: String,            // ẩn khỏi response qua toPublicJSON()
+  passwordHash: String,
   phone:        String,
   active:       Boolean (default: true),
   createdAt:    Date
@@ -297,8 +394,6 @@ Customer {
 
 | Method | Path | Auth | Role | Mô tả |
 |---|---|---|---|---|
-| `POST` | `/customers/register` | ❌ | — | Đăng ký, trả về token |
-| `POST` | `/customers/login` | ❌ | — | Đăng nhập, trả về token |
 | `GET` | `/customers/me` | ✅ | customer | Xem thông tin bản thân |
 | `PUT` | `/customers/me` | ✅ | customer | Cập nhật thông tin |
 | `GET` | `/customers/all` | ✅ | ops_staff, ops_admin | Danh sách tất cả |
@@ -306,16 +401,11 @@ Customer {
 | `PATCH` | `/customers/:id/disable` | ✅ | ops_admin | Vô hiệu hóa tài khoản |
 | `GET` | `/health` | ❌ | — | Health check |
 
-#### Business rules
-- Email phải duy nhất; đăng ký trùng email → 409 `EMAIL_ALREADY_EXISTS`
-- Mật khẩu hash bằng `crypto.scrypt` với salt ngẫu nhiên, lưu dạng `salt:hash` hex
-- `active: false` không bị block đăng nhập trong code hiện tại (chỉ flag, chưa enforce)
-
 ---
 
-### 5.3 Driver Service
+### 5.4 Driver Service
 
-**Port**: 4002 | **FR**: FR-02, FR-11 | **DB**: `driver_db`
+**Port**: 4002 | **gRPC Port**: 5002 | **FR**: FR-02, FR-11 | **DB**: `driver_db`
 
 #### Model dữ liệu
 
@@ -326,11 +416,11 @@ Driver {
   email:          String (unique),
   passwordHash:   String,
   phone:          String,
-  status:         Enum ["offline", "available", "busy"],  // default: "offline"
+  status:         Enum ["offline", "available", "busy"],
   vehicle: {
     plate:  String,
     model:  String,
-    type:   String  // "4-seat", "7-seat", "bike", ...
+    type:   String  // "4-seat", "7-seat", "bike"
   },
   createdByStaff: Boolean (default: false),
   active:         Boolean (default: true),
@@ -342,98 +432,177 @@ Driver {
 
 | Method | Path | Auth | Role | Mô tả |
 |---|---|---|---|---|
-| `POST` | `/drivers/register` | ❌ | — | Tự đăng ký (createdByStaff=false) |
-| `POST` | `/drivers/login` | ❌ | — | Đăng nhập |
 | `POST` | `/drivers` | ✅ | ops_staff, ops_admin | Tạo tài xế (createdByStaff=true) |
-| `GET` | `/drivers` | ❌ | — | Danh sách (filter `?status=available`) — dùng nội bộ bởi dispatch |
-| `GET` | `/drivers/:id` | ❌ | — | Chi tiết theo ID — dùng nội bộ |
+| `GET` | `/drivers` | ❌ | — | Danh sách (filter `?status=available`) — nội bộ |
+| `GET` | `/drivers/:id` | ❌ | — | Chi tiết theo ID — nội bộ |
 | `GET` | `/drivers/me` | ✅ | driver | Xem thông tin bản thân |
 | `PUT` | `/drivers/me/vehicle` | ✅ | driver | Cập nhật xe |
-| `PATCH` | `/drivers/me/status` | ✅ | driver | Đổi trạng thái (offline/available/busy) |
+| `PATCH` | `/drivers/me/status` | ✅ | driver | Đổi trạng thái |
 | `GET` | `/drivers/all` | ✅ | ops_staff, ops_admin | Danh sách cho admin |
 | `PATCH` | `/drivers/:id/disable` | ✅ | ops_admin | Vô hiệu hóa |
 | `GET` | `/health` | ❌ | — | Health check |
 
 ---
 
-### 5.4 Trip Service
+### 5.5 Booking Service
 
-**Port**: 4003 | **FR**: FR-03, FR-04, FR-05, FR-13 | **DB**: `trip_db`
+**Port**: 4003 | **gRPC Port**: 5003 | **FR**: FR-03, FR-04, FR-05 | **DB**: `booking_db`
 
-Đây là **core domain service** — quản lý vòng đời toàn bộ chuyến đi.
+Quản lý vòng đời **từ phía khách hàng**: tạo booking, hủy, tra cứu trạng thái booking.
 
-#### State Machine
+#### State Machine (Booking)
 
 ```
-                    ┌─────────────┐
-             ┌─────►│  requested  │
-             │      └──────┬──────┘
-             │             │ (auto) publish TripRequested
+                    ┌──────────────┐
+             ┌─────►│  requested   │◄─── POST /bookings
+             │      └──────┬───────┘      → publish BookingRequested
+             │             │ (auto)         (với estimatedFare)
              │             ▼
              │      ┌──────────────────┐
-             │      │  finding_driver  │◄──── DriverAssigned / NoDriverFound
-             │      └──────┬─────┬─────┘       (webhook từ dispatch)
+             │      │  finding_driver  │◄── dispatch đang xử lý
+             │      └──────┬─────┬─────┘
              │             │     │
              │    [assign] │     │ [no driver]
              │             ▼     ▼
-             │   ┌─────────────┐  ┌────────────────┐
-             │   │driver_assign│  │no_driver_found │ (terminal)
-             │   └──────┬──────┘  └────────────────┘
-             │          │ driver PATCH /status
-             │          ▼
-             │      ┌─────────┐
-             │      │ arrived │
-             │      └────┬────┘
-             │           ▼
-             │     ┌──────────┐
-             │     │ picked_up│
-             │     └────┬─────┘
-             │          ▼
-             │    ┌────────────┐
-             │    │ in_progress│
-             │    └─────┬──────┘
-             │          │ submit distanceKm + durationMin
-             │          ▼
-             │     ┌───────────┐  → publish TripCompleted + FareCalculated
-             │     │ completed │  (terminal)
-             │     └───────────┘
+             │   ┌──────────────┐  ┌────────────────┐
+             │   │driver_assign │  │no_driver_found │◄──(hủy được)
+             │   └──────────────┘  └────────────────┘
              │
     ┌─────────────┐
-    │  cancelled  │  (terminal — từ: requested/finding_driver/driver_assigned)
+    │  cancelled  │  (terminal — từ: requested / finding_driver / no_driver_found)
     └─────────────┘
 ```
 
-**Transition rules**:
-- Tài xế chỉ được chuyển theo `DRIVER_TRANSITIONS` map (forward only)
-- Khách hàng chỉ được hủy từ các trạng thái `CANCELLABLE_STATUSES`
+**`CANCELLABLE_STATUSES`**: `["requested", "finding_driver", "no_driver_found"]`
+- Khi hủy: publish `BookingCancelled` → dispatch-service hủy offer đang chờ
+- `no_driver_found` cũng được hủy vì dispatch xử lý gần như ngay lập tức trong môi trường không có tài xế — khách cần có thể dismiss booking thất bại
+
+#### estimatedFare
+
+Khi tạo booking, service tự tính estimatedFare trước khi trả response:
+1. Tính khoảng cách đường thẳng (straight-line, Haversine) giữa pickup ↔ dropoff
+2. Ước tính thời gian: `max(5, round(distKm × 2))` phút
+3. Gọi gRPC `Pricing.Calculate(vehicleType, distKm, estMin)` → `amount`
+4. Lưu `estimatedFare` vào booking; dùng khi trip-service tính `amount` sau này
+
+#### Model dữ liệu
+
+```javascript
+Booking {
+  _id:             String (UUID),  // alias: "bookingId"
+  customerId:      String,
+  driverId:        String (nullable),
+  pickupLocation:  { lat: Number, lng: Number },
+  dropoffLocation: { lat: Number, lng: Number },
+  vehicleType:     String,
+  status:          Enum ["requested","finding_driver","no_driver_found","driver_assigned","cancelled"],
+  estimatedFare:   Number (nullable),
+  requestedAt:     Date,
+  updatedAt:       Date
+}
+```
+
+#### API Endpoints
+
+| Method | Path | Auth | Role | Mô tả |
+|---|---|---|---|---|
+| `POST` | `/bookings` | ✅ | customer | Đặt xe mới (tính estimatedFare) |
+| `GET` | `/bookings` | ✅ | ops_staff, ops_admin | Tất cả booking (admin) |
+| `GET` | `/bookings/:id` | ✅ | customer, driver, ops | Xem booking |
+| `GET` | `/bookings/:id/status` | ✅ | any | Trạng thái booking |
+| `POST` | `/bookings/:id/cancel` | ✅ | customer | Hủy booking |
+| `GET` | `/bookings/:id/internal` | ❌ | — | Service-to-service (trả estimatedFare, locations) |
+| `GET` | `/customers/me/bookings` | ✅ | customer | Lịch sử booking của khách |
+| `POST` | `/bookings/events/driver-assigned` | ❌ | — | Webhook từ dispatch/test |
+| `POST` | `/bookings/events/no-driver-found` | ❌ | — | Webhook từ dispatch/test |
+| `GET` | `/health` | ❌ | — | Health check |
+
+#### gRPC Methods (BookingService)
+
+| Method | Request | Mô tả |
+|---|---|---|
+| `CreateBooking` | vehicleType, locations, token | Đặt xe |
+| `GetBookingById` | bookingId | Xem booking |
+| `GetBookingStatus` | bookingId | Trạng thái |
+| `CancelBooking` | bookingId, token | Hủy |
+| `GetBookingInternal` | bookingId | Lấy estimatedFare + chi tiết (nội bộ) |
+| `GetCustomerBookings` | token, limit, page | Lịch sử booking |
+| `ListAll` | limit, page | Tất cả (admin) |
+
+---
+
+### 5.6 Trip Service
+
+**Port**: 4011 | **gRPC Port**: 5011 | **FR**: FR-13, FR-14 + trip lifecycle | **DB**: `trip_db`
+
+Quản lý vòng đời **từ phía tài xế** sau khi được gán: cập nhật trạng thái, tính cước, đánh giá.
+
+#### State Machine (Trip)
+
+```
+    ┌──────────────────┐
+    │  driver_assigned │◄── tạo tự động khi nhận DriverAssigned event
+    └────────┬─────────┘
+             │ PATCH /trips/:id/status {status: "arrived"}
+             ▼
+         ┌─────────┐
+         │ arrived │
+         └────┬────┘
+              │ PATCH ... {status: "picked_up"}
+              ▼
+        ┌──────────┐
+        │ picked_up│
+        └────┬─────┘
+             │ PATCH ... {status: "in_progress"}
+             ▼
+       ┌────────────┐
+       │ in_progress│
+       └─────┬──────┘
+             │ PATCH ... {status: "completed", distanceKm, durationMin}
+             ▼
+        ┌───────────┐  → publish FareCalculated (actualFare, estimatedFare, amount)
+        │ completed │  (terminal)
+        └───────────┘
+```
+
+**`DRIVER_TRANSITIONS`**: `driver_assigned→arrived→picked_up→in_progress→completed` (forward only)
+
+#### Tính cước phí (BR-10)
+
+Khi hoàn thành chuyến:
+1. Gọi gRPC `Pricing.Calculate(vehicleType, distanceKm, durationMin)` → `actualFare`
+2. Lấy `estimatedFare` từ Trip record (đã lấy từ booking qua `GetBookingInternal`)
+3. `amount = max(actualFare, estimatedFare)` — khách không trả ít hơn giá ước tính
+4. Publish `FareCalculated { bookingId, tripId, actualFare, estimatedFare, amount }`
 
 #### Model dữ liệu
 
 ```javascript
 Trip {
-  _id:              String (UUID),  // alias: "tripId"
-  customerId:       String,
-  driverId:         String (nullable),
-  pickupLocation:   { lat: Number, lng: Number, address: String },
-  dropoffLocation:  { lat: Number, lng: Number, address: String },
-  vehicleType:      String,
-  status:           Enum (xem state machine trên),
-  fareAmount:       Number (nullable — chỉ có khi completed),
-  distanceKm:       Number (nullable),
-  durationMin:      Number (nullable),
-  requestedAt:      Date,
-  completedAt:      Date (nullable),
-  cancelledAt:      Date (nullable),
-  cancelledBy:      String (nullable)
+  _id:             String (UUID),  // tripId nội bộ
+  bookingId:       String (unique),  // dùng làm identifier từ bên ngoài
+  driverId:        String,
+  customerId:      String,
+  vehicleType:     String,
+  pickupLocation:  { lat: Number, lng: Number },
+  dropoffLocation: { lat: Number, lng: Number },
+  status:          Enum ["driver_assigned","arrived","picked_up","in_progress","completed"],
+  estimatedFare:   Number (nullable),  // từ booking, lấy qua GetBookingInternal
+  distanceKm:      Number (nullable),
+  durationMin:     Number (nullable),
+  actualFare:      Number (nullable),
+  startedAt:       Date (nullable),
+  completedAt:     Date (nullable)
 }
 
 Rating {
-  _id:        String (= tripId),   // 1 rating / 1 trip
+  _id:        String (UUID),
   tripId:     String,
-  customerId: String,
+  bookingId:  String (unique),  // 1 rating / 1 booking
   driverId:   String,
+  customerId: String,
   score:      Number (1–5, integer),
-  comment:    String (optional),
+  comment:    String (nullable, HTML-escaped),
   createdAt:  Date
 }
 ```
@@ -442,60 +611,60 @@ Rating {
 
 | Method | Path | Auth | Role | Mô tả |
 |---|---|---|---|---|
-| `POST` | `/trips` | ✅ | customer | Đặt xe mới |
-| `GET` | `/trips` | ✅ | ops_staff, ops_admin | Tất cả chuyến (admin) |
-| `GET` | `/trips/:id` | ✅ | customer, driver, ops | Xem chuyến |
-| `GET` | `/trips/:id/internal` | ❌ | — | Service-to-service |
-| `PATCH` | `/trips/:id/status` | ✅ | driver (hoặc customer hủy) | Cập nhật trạng thái |
+| `GET` | `/trips/:id` | ✅ | any | Xem trip theo bookingId |
+| `PATCH` | `/trips/:id/status` | ✅ | driver | Cập nhật trạng thái |
 | `POST` | `/trips/:id/rating` | ✅ | customer | Đánh giá (sau completed) |
-| `GET` | `/trips/:id/rating` | ✅ | any | Xem đánh giá |
-| `GET` | `/customers/me/trips` | ✅ | customer | Lịch sử chuyến của khách |
-| `GET` | `/drivers/me/trips` | ✅ | driver | Lịch sử chuyến của tài xế |
-| `GET` | `/drivers/:id/ratings` | ✅ | ops | Tất cả rating của tài xế |
-| `POST` | `/webhooks/driver-assigned` | ❌ | — | Webhook từ dispatch |
-| `POST` | `/webhooks/no-driver-found` | ❌ | — | Webhook từ dispatch |
+| `GET` | `/trips/:id/internal` | ❌ | — | Service-to-service |
+| `GET` | `/customers/me/trips` | ✅ | customer | Lịch sử trip của khách |
+| `GET` | `/drivers/me/trips` | ✅ | driver | Lịch sử trip của tài xế |
+| `GET` | `/drivers/:id/ratings` | ❌ | — | Rating của tài xế (public) |
+| `POST` | `/trips/events/driver-assigned` | ❌ | — | Webhook test (bypass RabbitMQ) |
 | `GET` | `/health` | ❌ | — | Health check |
 
-#### Tính toán cước phí
+> **Lưu ý**: `:id` trong `/trips/:id` là `bookingId` (1:1 mapping), không phải `tripId` nội bộ. Điều này giúp client dùng cùng 1 identifier xuyên suốt luồng booking → trip.
 
-Khi hoàn thành chuyến (`status = completed`):
-1. Gọi `POST /pricing/calculate` với `{ distanceKm, durationMin, vehicleType }`
-2. Nếu tài xế không gửi `distanceKm`, dùng công thức Haversine giữa pickup/dropoff làm fallback
-3. Lưu `fareAmount` vào trip, publish `FareCalculated`
+#### gRPC Methods (TripService)
+
+| Method | Mô tả |
+|---|---|
+| `CreateTripInternal` | Tạo trip từ event (idempotent) |
+| `GetTripByBookingId` | Lấy trip theo bookingId |
+| `GetTripInternal` | Lấy trip nội bộ |
+| `UpdateTripStatus` | Cập nhật trạng thái |
+| `AddRating` | Thêm đánh giá |
+| `GetDriverRatings` | Lấy tất cả rating của tài xế |
+| `GetDriverTrips` | Lịch sử trip của tài xế (paged) |
+| `GetCustomerTrips` | Lịch sử trip của khách (paged) |
+
+#### Lỗi đặc trưng
+
+| Code | HTTP | Điều kiện |
+|---|---|---|
+| `TRIP_NOT_FOUND` | 404 | bookingId không có trip tương ứng |
+| `INVALID_TRANSITION` | 409 | Chuyển trạng thái không hợp lệ |
+| `NOT_YOUR_TRIP` | 403 | Tài xế không được gán vào trip này |
+| `TRIP_NOT_COMPLETED` | 409 | Đánh giá khi trip chưa hoàn thành |
+| `ALREADY_RATED` | 409 | Trip đã được đánh giá rồi |
 
 ---
 
-### 5.5 Dispatch Service
+### 5.7 Dispatch Service
 
-**Port**: 4004 | **FR**: FR-06 → FR-09, FR-12 | **DB**: `dispatch_db`
+**Port**: 4004 | **gRPC Port**: 5004 | **FR**: FR-06 → FR-09, FR-12 | **DB**: `dispatch_db`
 
 **Matching engine** — tìm và giao chuyến cho tài xế phù hợp.
-
-#### Model dữ liệu
-
-```javascript
-DispatchRecord {
-  _id:          String (= tripId),
-  tripId:       String,
-  candidateIds: [String],   // tất cả tài xế đã xét
-  declinedIds:  [String],   // đã từ chối
-  assignedDriverId: String (nullable),
-  status: Enum ["searching", "assigned", "no_driver_found"],
-  createdAt: Date
-}
-```
 
 #### Thuật toán matching
 
 ```
-[TripRequested] nhận được
+[BookingRequested] nhận được
     │
     ▼
-1. GET driver-service/drivers?status=available
+1. gRPC driver-service.GetAvailableDrivers
    → danh sách tài xế đang sẵn sàng
     │
     ▼
-2. GET location-service/locations/nearby-drivers
+2. gRPC location-service.GetNearbyDrivers
    ?lat=&lng=&radiusKm=10&driverIds=[...]
    → lọc + sắp xếp theo khoảng cách
     │
@@ -510,51 +679,44 @@ DispatchRecord {
 4. Hết candidate → publish NoDriverFound
 ```
 
+**Xử lý BookingCancelled**: khi nhận event này, dispatch dừng timer đang chờ, không giao thêm offer.
+
 **Cấu hình qua env**:
 
-| Biến | Mặc định | Dev (compose) | Prod (compose) |
-|---|---|---|---|
-| `DISPATCH_SEARCH_RADIUS_KM` | 10 | 10 | 10 |
-| `DISPATCH_OFFER_TIMEOUT_SEC` | 20 | 3 | 20 |
+| Biến | Mặc định | Docker dev |
+|---|---|---|
+| `DISPATCH_SEARCH_RADIUS_KM` | 10 | 10 |
+| `DISPATCH_OFFER_TIMEOUT_SEC` | 20 | 3 |
 
 #### API Endpoints
 
 | Method | Path | Auth | Role | Mô tả |
 |---|---|---|---|---|
-| `GET` | `/dispatch/drivers/me/pending` | ✅ | driver | Xem đề xuất đang chờ |
-| `POST` | `/dispatch/:tripId/accept` | ✅ | driver | Chấp nhận chuyến |
-| `POST` | `/dispatch/:tripId/decline` | ✅ | driver | Từ chối chuyến |
-| `GET` | `/dispatch/:tripId` | ✅ | ops | Xem trạng thái dispatch |
+| `GET` | `/dispatch/drivers/me/pending` | ✅ | driver | Xem offer đang chờ |
+| `POST` | `/dispatch/:bookingId/accept` | ✅ | driver | Chấp nhận chuyến |
+| `POST` | `/dispatch/:bookingId/decline` | ✅ | driver | Từ chối chuyến |
+| `GET` | `/dispatch/:bookingId` | ✅ | ops | Xem trạng thái dispatch |
 | `GET` | `/health` | ❌ | — | Health check |
 
 > **Hạn chế**: `pendingTimers` là `Map` in-memory. Restart service sẽ mất toàn bộ timer đang chờ.
 
 ---
 
-### 5.6 Location Service
+### 5.8 Location Service
 
-**Port**: 4005 | **FR**: FR-10 | **DB**: `location_db`
+**Port**: 4005 | **gRPC Port**: 5005 | **FR**: FR-10 | **DB**: `location_db`
 
-Lưu **vị trí hiện tại** của mỗi tài xế (1 bản ghi/tài xế, upsert — không giữ lịch sử).
+Lưu **vị trí hiện tại** của mỗi tài xế (1 bản ghi/tài xế, upsert).
 
 #### Model dữ liệu
 
 ```javascript
 LocationRecord {
-  _id:       String (= driverId),  // 1 record duy nhất / tài xế
+  _id:       String (= driverId),
   driverId:  String,
   lat:       Number,
   lng:       Number,
   updatedAt: Date
-}
-```
-
-#### Công thức Haversine (tính khoảng cách giữa 2 tọa độ)
-
-```javascript
-distanceKm(lat1, lng1, lat2, lng2) {
-  const R = 6371;  // bán kính Trái đất (km)
-  // ... công thức haversine chuẩn
 }
 ```
 
@@ -566,22 +728,13 @@ distanceKm(lat1, lng1, lat2, lng2) {
 | `GET` | `/locations/drivers/:id` | ❌ | — | Vị trí theo driverId (nội bộ) |
 | `GET` | `/locations/nearby-drivers` | ❌ | — | Tài xế gần điểm (nội bộ) |
 
-**Query params** của `/nearby-drivers`:
-
-| Param | Bắt buộc | Mô tả |
-|---|---|---|
-| `lat` | ✅ | Vĩ độ điểm trung tâm |
-| `lng` | ✅ | Kinh độ điểm trung tâm |
-| `radiusKm` | ✅ | Bán kính tìm kiếm (km) |
-| `driverIds` | ✅ | JSON array ID tài xế để lọc |
-
 ---
 
-### 5.7 Pricing Service
+### 5.9 Pricing Service
 
-**Port**: 4006 | **FR**: FR-14 | **DB**: `pricing_db`
+**Port**: 4006 | **gRPC Port**: 5006 | **FR**: FR-14 | **DB**: `pricing_db`
 
-**Stateless** — tính cước phí dựa trên rules cấu hình.
+**Stateless** — tính cước phí dựa trên rules cấu hình. Được gọi bởi cả booking-service (ước tính) và trip-service (thực tế).
 
 #### Công thức tính phí
 
@@ -595,7 +748,7 @@ fareAmount = round(baseFare + distanceKm × perKmRate + durationMin × perMinute
 PricingRule {
   _id:            String (UUID),
   vehicleType:    String (unique),  // "4-seat", "7-seat", "bike"
-  baseFare:       Number,           // đồng (VND)
+  baseFare:       Number,
   perKmRate:      Number,
   perMinuteRate:  Number,
   active:         Boolean
@@ -604,63 +757,56 @@ PricingRule {
 
 **Khởi động**: nếu collection trống, seed từ `services/pricing-service/data/pricingRules.json`.
 
-#### API Endpoints
+#### API Endpoints / gRPC
 
-| Method | Path | Auth | Role | Mô tả |
-|---|---|---|---|---|
-| `POST` | `/pricing/calculate` | ❌ | — | Tính phí (nội bộ — dùng bởi trip-service) |
-| `GET` | `/pricing/rules` | ✅ | ops_admin | Danh sách rule |
-| `POST` | `/pricing/rules` | ✅ | ops_admin | Tạo rule |
-| `PUT` | `/pricing/rules/:id` | ✅ | ops_admin | Cập nhật rule |
-| `GET` | `/health` | ❌ | — | Health check |
-
-**Request** `POST /pricing/calculate`:
-```json
-{ "vehicleType": "4-seat", "distanceKm": 5.2, "durationMin": 15 }
-```
+| Method/RPC | Auth | Mô tả |
+|---|---|---|
+| `POST /pricing/calculate` (REST) | ❌ | Tính phí — nội bộ |
+| `GET /pricing/rules` | ops_admin | Danh sách rule |
+| `POST /pricing/rules` | ops_admin | Tạo rule |
+| `PUT /pricing/rules/:id` | ops_admin | Cập nhật rule |
+| gRPC `Calculate` | — | `{ vehicleType, distanceKm, durationMin }` → `{ amount }` |
 
 ---
 
-### 5.8 Payment Service
+### 5.10 Payment Service
 
-**Port**: 4007 | **FR**: FR-15, FR-16 | **DB**: `payment_db`
+**Port**: 4007 | **gRPC Port**: 5007 | **FR**: FR-15, FR-16 | **DB**: `payment_db`
 
 #### Model dữ liệu
 
 ```javascript
 Payment {
-  _id:       String (UUID),
-  tripId:    String (unique),     // 1 payment / 1 trip
+  _id:        String (UUID),
+  bookingId:  String (unique),
   customerId: String,
-  amount:    Number,
-  method:    Enum ["cash", "card", "e-wallet"],
-  status:    Enum ["pending", "completed", "failed"],
+  amount:     Number,
+  method:     Enum ["cash", "card", "e-wallet"],
+  status:     Enum ["pending", "success", "failed"],
   retryCount: Number (default: 0),
-  createdAt: Date,
-  updatedAt: Date
+  createdAt:  Date,
+  updatedAt:  Date
 }
 
-FareCache {
-  _id:        String (= tripId),  // FareCalculated event populate đây
-  fareAmount: Number,
-  cachedAt:   Date
-}
+// FareCache lưu trong Redis (không còn MongoDB)
+// cab:fare:{bookingId}  →  amount (string số)  TTL=24h
+// Được populate từ sự kiện RabbitMQ FareCalculated
 ```
 
 #### Luồng xử lý thanh toán
 
 ```
-POST /payments (customer)
+POST /payments { bookingId, method }
     │
     ▼
-1. Lấy fareAmount:
-   ├─ Từ FareCache (FareCalculated event đã populate)
-   └─ Fallback: GET trip-service/:tripId/internal
+1. Lấy amount:
+   ├─ Từ FareCache (FareCalculated event populate: amount = max(actual, estimated))
+   └─ Fallback: gRPC booking-service.GetBookingInternal
     │
     ▼
 2. mockGateway.charge(method, amount):
    ├─ "cash"     → thành công 100%
-   ├─ "card"     → thành công 85% (Math.random())
+   ├─ "card"     → thành công 85%
    └─ "e-wallet" → thành công 85%
     │
     ├─► Thành công → publish PaymentCompleted
@@ -678,37 +824,13 @@ POST /payments (customer)
 | `POST` | `/payments/webhook` | ❌ | — | Callback từ cổng ngoài (demo) |
 | `GET` | `/health` | ❌ | — | Health check |
 
-> Retry chỉ được thực hiện khi `status = "failed"`. `PaymentCompleted` không được retry.
-
 ---
 
-### 5.9 Notification Service
+### 5.11 Notification Service
 
-**Port**: 4008 | **FR**: FR-17, FR-18, FR-19 | **DB**: `notification_db`
+**Port**: 4008 | **gRPC Port**: 5008 | **FR**: FR-17, FR-18, FR-19 | **DB**: `notification_db`
 
-**Pure event consumer** — không có logic chủ động. Lắng nghe 6 sự kiện, tạo thông báo, log ra console (không push/SMS thật).
-
-#### Model dữ liệu
-
-```javascript
-Notification {
-  _id:        String (UUID),
-  userId:     String,
-  userType:   Enum ["customer", "driver"],
-  tripId:     String (nullable),
-  event:      String,        // tên event gốc
-  message:    String,        // nội dung thông báo
-  channel:    String,        // "push" | "sms"
-  read:       Boolean (default: false),
-  createdAt:  Date
-}
-
-Channel {
-  _id:  String (UUID),
-  name: String,   // "push", "sms"
-  active: Boolean
-}
-```
+**Pure event consumer** — lắng nghe sự kiện, tạo thông báo, log ra console.
 
 #### Sự kiện xử lý
 
@@ -716,10 +838,10 @@ Channel {
 |---|---|
 | `DriverAssigned` | customer (tài xế đang đến), driver (bạn có chuyến mới) |
 | `NoDriverFound` | customer (không tìm được tài xế) |
-| `TripStatusChanged` | customer + driver (trạng thái đã thay đổi) |
-| `TripCompleted` | customer (chuyến hoàn thành, số tiền) |
+| `TripStatusChanged` | customer + driver |
+| `FareCalculated` | customer (chuyến hoàn thành, số tiền) |
 | `PaymentCompleted` | customer (thanh toán thành công) |
-| `PaymentFailed` | customer (thanh toán thất bại, hãy thử lại) |
+| `PaymentFailed` | customer (thanh toán thất bại) |
 
 #### API Endpoints
 
@@ -731,11 +853,11 @@ Channel {
 
 ---
 
-### 5.10 Admin Service
+### 5.12 Admin Service
 
-**Port**: 4009 | **FR**: FR-20, FR-21, FR-22, FR-23 | **DB**: `admin_db`
+**Port**: 4009 | **gRPC Port**: 5009 | **FR**: FR-20 → FR-23 | **DB**: `admin_db`
 
-**Pure aggregator** — không có domain data riêng (trừ `ResolvedIssue`). Tổng hợp dữ liệu từ tất cả services khác qua HTTP, forward `Authorization` header của caller.
+**Pure aggregator** — không có domain data riêng (trừ `ResolvedIssue`). Gọi gRPC đến các service khác.
 
 #### API Endpoints
 
@@ -745,23 +867,14 @@ Channel {
 | `PATCH` | `/admin/customers/:id/disable` | ✅ | ops_admin | Vô hiệu hóa khách hàng |
 | `GET` | `/admin/drivers` | ✅ | ops_staff, ops_admin | Danh sách tài xế |
 | `PATCH` | `/admin/drivers/:id/disable` | ✅ | ops_admin | Vô hiệu hóa tài xế |
-| `GET` | `/admin/trips` | ✅ | ops_staff, ops_admin | Danh sách chuyến |
-| `POST` | `/admin/trips/:id/resolve` | ✅ | ops_staff, ops_admin | Ghi nhận giải quyết vấn đề |
-| `GET` | `/admin/reports/trips` | ✅ | ops_admin | Báo cáo số chuyến theo khoảng thời gian |
+| `GET` | `/admin/bookings` | ✅ | ops_staff, ops_admin | Danh sách booking |
+| `POST` | `/admin/bookings/:id/resolve` | ✅ | ops_staff, ops_admin | Ghi nhận giải quyết vấn đề |
+| `GET` | `/admin/reports/trips` | ✅ | ops_admin | Báo cáo số chuyến |
 | `GET` | `/admin/reports/revenue` | ✅ | ops_admin | Báo cáo doanh thu |
-| `GET` | `/admin/reports/completion-rate` | ✅ | ops_admin | Tỷ lệ hoàn thành chuyến |
-| `GET` | `/admin/reports/cancellation-rate` | ✅ | ops_admin | Tỷ lệ hủy chuyến |
+| `GET` | `/admin/reports/completion-rate` | ✅ | ops_admin | Tỷ lệ hoàn thành |
+| `GET` | `/admin/reports/cancellation-rate` | ✅ | ops_admin | Tỷ lệ hủy |
 | `GET` | `/admin/reports/driver-performance` | ✅ | ops_admin | Hiệu suất tài xế |
 | `GET` | `/health` | ❌ | — | Health check |
-
-**Query params báo cáo**:
-
-| Param | Mô tả | Ví dụ |
-|---|---|---|
-| `from` | Từ ngày (ISO 8601) | `2025-01-01` |
-| `to` | Đến ngày (ISO 8601) | `2025-12-31` |
-
-> **Vấn đề hiệu năng**: các endpoint báo cáo fetch **toàn bộ** trip collection rồi filter in-memory. `driver-performance` gọi thêm 1 HTTP request/tài xế (N+1 pattern). Chấp nhận được cho demo, không scale được.
 
 ---
 
@@ -796,20 +909,43 @@ Models (*.model.js) — Mongoose schema + toJSON transform
 MongoDB
 ```
 
-### 6.2 Response format chuẩn
+### 6.2 gRPC Handler Pattern
 
-```javascript
-// Thành công — 1 item
-{ "data": { ...item } }
+Mỗi service có thêm lớp gRPC server:
 
-// Thành công — list
-{ "data": [...items], "meta": { "total": N } }
-
-// Lỗi
-{ "error": { "code": "ERROR_CODE", "message": "Human readable message" } }
+```
+gRPC Request
+  │
+  ▼
+grpc/handler.js — parse request, gọi repo/controller logic
+  │
+  ▼
+Repository — business logic (dùng chung với HTTP controller)
+  │
+  ▼
+DAO → MongoDB
 ```
 
-### 6.3 Mã lỗi phổ biến
+Handler dùng hàm `grpcResponse(call, callback, { data })` để chuẩn hóa response dạng `GrpcResponse { ok, data, error }`.
+
+### 6.3 Response format chuẩn
+
+```javascript
+// Thành công — 1 item (HTTP)
+{ "data": { ...item } }
+
+// Thành công — list (HTTP)
+{ "data": [...items], "meta": { "total": N } }
+
+// Lỗi (HTTP)
+{ "error": { "code": "ERROR_CODE", "message": "Human readable message" } }
+
+// gRPC response (JSON-serialized trong field `data`)
+{ ok: true, data: "{ \"bookingId\": \"...\", ... }" }
+{ ok: false, error: "{ \"code\": \"NOT_FOUND\", \"message\": \"...\" }" }
+```
+
+### 6.4 Mã lỗi phổ biến
 
 | Code | Status | Mô tả |
 |---|---|---|
@@ -817,42 +953,41 @@ MongoDB
 | `UNAUTHORIZED` | 401 | Thiếu hoặc sai token |
 | `FORBIDDEN` | 403 | Không có quyền |
 | `EMAIL_ALREADY_EXISTS` | 409 | Email trùng |
-| `INVALID_STATUS_TRANSITION` | 400 | Chuyển trạng thái không hợp lệ |
-| `TRIP_NOT_COMPLETED` | 400 | Thao tác yêu cầu trip đã hoàn thành |
+| `INVALID_TRANSITION` | 409 | Chuyển trạng thái không hợp lệ |
+| `NOT_CANCELLABLE` | 409 | Booking không thể hủy ở trạng thái hiện tại |
+| `TRIP_NOT_COMPLETED` | 409 | Thao tác yêu cầu trip đã hoàn thành |
 | `ALREADY_RATED` | 409 | Trip đã được đánh giá |
-| `PAYMENT_ALREADY_EXISTS` | 409 | Đã có payment cho trip này |
+| `NOT_YOUR_TRIP` | 403 | Tài xế không được gán vào trip này |
+| `PAYMENT_ALREADY_EXISTS` | 409 | Đã có payment cho booking này |
 | `PAYMENT_NOT_FAILED` | 400 | Retry khi payment không ở trạng thái failed |
 
-### 6.4 AppError
-
-```javascript
-throw new AppError(statusCode, "ERROR_CODE", "message cho user");
-// errorMiddleware bắt → { "error": { "code", "message" } }
-```
-
 ### 6.5 UUID làm Primary Key
-
-Mọi entity dùng `uuid` (v4) làm `_id` (kiểu String trong Mongoose). `toJSON`/`toObject` transform đổi tên:
 
 | Entity | `_id` trong DB | Alias trong response |
 |---|---|---|
 | Customer | `_id` | `id` |
 | Driver | `_id` | `id` |
-| Trip | `_id` | `tripId` |
+| Booking | `_id` | `bookingId` |
+| Trip | `_id` | `tripId`; bookingId dùng làm route param |
 | Payment | `_id` | `id` |
-| Notification | `_id` | `id` |
+
+### 6.6 XSS Protection
+
+Trường `comment` trong Rating được escape HTML trước khi lưu (`&lt;script&gt;` thay cho `<script>`), ngăn Stored XSS khi dữ liệu trả về client.
 
 ---
 
-## 7. Cơ sở dữ liệu
+## 7. Cơ sở dữ liệu & Cache
 
 ### 7.1 Kiến trúc "Database per Service"
 
 ```
 MongoDB container (port 27017)
+├── auth_db
 ├── customer_db
 ├── driver_db
-├── trip_db
+├── booking_db        ← mới (tách từ trip_db cũ)
+├── trip_db           ← mới (chỉ chứa Trip + Rating)
 ├── dispatch_db
 ├── location_db
 ├── pricing_db
@@ -866,13 +1001,7 @@ Cùng 1 MongoDB container nhưng **tách biệt hoàn toàn về schema/collecti
 ### 7.2 Kết nối
 
 ```bash
-# Mỗi service có MONGO_URI riêng trong .env
-MONGO_URI=mongodb://localhost:27017/customer_db
-```
-
-Trong Docker Compose, `localhost` được thay bằng service name `mongodb`:
-```yaml
-MONGO_URI: mongodb://mongodb:27017/customer_db
+MONGO_URI=mongodb://mongodb:27017/<service>_db
 ```
 
 ### 7.3 Seed data
@@ -883,36 +1012,40 @@ MONGO_URI: mongodb://mongodb:27017/customer_db
 | notification-service | ✅ | Hard-code trong `server.js` (channels: push, sms) |
 | Các service còn lại | ❌ | Không seed |
 
+### 7.4 Redis Key Space
+
+| Key pattern | Type | TTL | Service | Mục đích |
+|---|---|---|---|---|
+| `cab:session:{sessionId}` | Hash `{userId, role, revoked}` | 7 ngày | auth-service | Lưu trạng thái session đăng nhập |
+| `cab:user_sessions:{userId}` | Set `<sessionId>` | 7 ngày | auth-service | Index sessionId theo userId (revokeAll) |
+| `cab:token_cache:{sessionId}` | String `"{userId}\|{role}"` hoặc `"revoked"` | 60s | auth-service | Cache kết quả validateToken |
+| `cab:ratelimit:{userId}` | String (counter) | windowMs | api-gateway | Rate limiting per-user (RedisStore) |
+| `cab:fare:{bookingId}` | String (amount số) | 24h | payment-service | Cache cước phí từ FareCalculated event |
+
 ---
 
 ## 8. Docker & Deployment
 
-### 8.1 File cấu hình
-
-| File | Mục đích |
-|---|---|
-| `docker-compose.yml` | Development — build từ source code |
-| `docker-compose-prod.yaml` | Production — pull images từ Docker Hub |
-
-### 8.2 Thứ tự khởi động (depends_on)
+### 8.1 Thứ tự khởi động (depends_on — 15 container)
 
 ```
-mongodb
-  └─► event-bus-service
-        ├─► customer-service
-        ├─► driver-service
-        ├─► location-service
-        ├─► pricing-service
-        │     └─► trip-service ──────────────────────────┐
-        │           ├─► payment-service                  │
-        │           ├─► notification-service             │
-        │           └─► admin-service                    │
-        └─► dispatch-service ◄───────────────────────────┘
-              (phụ thuộc: event-bus + driver + location + trip)
-                    └─► api-gateway (chờ TẤT CẢ service healthy)
+mongodb + rabbitmq + redis (parallel)
+  ├─► auth-service          (phụ thuộc: mongodb + redis)
+  │     ├─► customer-service
+  │     └─► driver-service
+  ├─► location-service
+  ├─► pricing-service
+  │     ├─► booking-service
+  │     │     └─► trip-service ─────────────────────┐
+  │     │           ├─► payment-service (mongodb+redis)│
+  │     │           ├─► notification-service         │
+  │     │           └─► admin-service                │
+  │     └─► dispatch-service ◄──────────────────────┘
+  │           (phụ thuộc: rabbitmq + driver + location)
+  └─► api-gateway (chờ TẤT CẢ service healthy, phụ thuộc: redis)
 ```
 
-### 8.3 Healthcheck
+### 8.2 Healthcheck
 
 Mỗi container khai báo healthcheck:
 ```yaml
@@ -924,39 +1057,38 @@ healthcheck:
   start_period: 15s
 ```
 
-`docker compose up --wait` sẽ chờ đến khi tất cả healthy trước khi trả về.
+`docker compose up --wait` chờ đến khi tất cả healthy.
 
-### 8.4 Images Docker Hub
-
-```
-thinhpvt/cab-event-bus:latest
-thinhpvt/cab-customer:latest
-thinhpvt/cab-driver:latest
-thinhpvt/cab-trip:latest
-thinhpvt/cab-dispatch:latest
-thinhpvt/cab-location:latest
-thinhpvt/cab-pricing:latest
-thinhpvt/cab-payment:latest
-thinhpvt/cab-notification:latest
-thinhpvt/cab-admin:latest
-thinhpvt/cab-gateway:latest
-```
-
-### 8.5 CI/CD (.github/workflows/ci.yml)
+### 8.3 Images Docker Hub
 
 ```
-Push / PR to main
-    │
-    ├─► Build & Test job:
-    │     docker compose up --build -d --wait
-    │     cd testcase && npm test
-    │     (dump logs on failure)
-    │     docker compose down
-    │
-    └─► Build & Push job (chỉ push to main):
-          docker build + push tất cả 11 images
-          Tag: <commit-sha> và latest
+thinhpvt/cab-auth-service:latest
+thinhpvt/cab-customer-service:latest
+thinhpvt/cab-driver-service:latest
+thinhpvt/cab-booking-service:latest
+thinhpvt/cab-trip-service:latest
+thinhpvt/cab-dispatch-service:latest
+thinhpvt/cab-location-service:latest
+thinhpvt/cab-pricing-service:latest
+thinhpvt/cab-payment-service:latest
+thinhpvt/cab-notification-service:latest
+thinhpvt/cab-admin-service:latest
+thinhpvt/cab-api-gateway:latest
 ```
+
+### 8.4 Biến môi trường quan trọng
+
+| Biến | Mô tả | Mặc định |
+|---|---|---|
+| `JWT_SECRET` | Secret ký JWT (dùng chung) | `dev-secret-change-me` |
+| `PORT` | HTTP port của service | per-service |
+| `GRPC_PORT` | gRPC port của service | per-service |
+| `MONGO_URI` | MongoDB connection string | `mongodb://localhost:27017/<db>` |
+| `RABBITMQ_URL` | RabbitMQ AMQP URL | `amqp://localhost:5672` |
+| `REDIS_URL` | Redis connection URL (auth, payment, api-gateway) | `redis://localhost:6379` |
+| `PRICING_GRPC_URL` | URL gRPC pricing-service | `localhost:5006` |
+| `BOOKING_GRPC_URL` | URL gRPC booking-service | `localhost:5003` |
+| `DISPATCH_OFFER_TIMEOUT_SEC` | Timeout tài xế quyết định | `20` (dev: `3`) |
 
 ---
 
@@ -965,57 +1097,64 @@ Push / PR to main
 ### 9.1 Đặt xe → Hoàn thành (Happy path)
 
 ```
-Khách hàng                Gateway    Trip-svc   Event-bus  Dispatch   Driver-svc  Location-svc  Pricing-svc  Payment-svc
-    │                        │           │           │          │           │            │              │            │
-    │─POST /trips ──────────►│           │           │          │           │            │              │            │
-    │                        │──────────►│           │          │           │            │              │            │
-    │                        │     Create trip       │          │           │            │              │            │
-    │                        │     status=requested  │          │           │            │              │            │
-    │                        │           │─publish──►│          │           │            │              │            │
-    │                        │           │ TripReq.  │──────────►           │            │              │            │
-    │◄200 {tripId}───────────│◄──────────│           │   GET /drivers?status=available  │              │            │
-    │                        │           │           │          │──────────────────────►│              │            │
-    │                        │           │           │          │◄──[driver list]────────│              │            │
-    │                        │           │           │          │ GET /nearby-drivers?...│──────────────►│            │
-    │                        │           │           │          │◄──[sorted by dist]─────│──────────────│            │
-    │                        │           │           │          │                        │              │            │
-    │                        │           │           │ Offer driver (setTimeout 3s/20s) │              │            │
-    │                        │           │           │          │                        │              │            │
-Tài xế─GET /dispatch/me/pending─────────────────────────────────►                       │              │            │
-    │◄─{tripId, pickup, ...}──────────────────────────────────────                       │              │            │
-Tài xế─POST /dispatch/:id/accept────────────────────────────────►                       │              │            │
-    │                        │           │           │◄publish──│                        │              │            │
-    │                        │           │◄──────────│ DriverAssigned                   │              │            │
-    │                        │      Update trip      │          │                        │              │            │
-    │                        │      status=driver_assigned                               │              │            │
-    │                        │           │           │          │                        │              │            │
-    │                        │           │ [Tài xế cập nhật trạng thái tuần tự]         │              │            │
-    │                        │           │   arrived → picked_up → in_progress          │              │            │
-    │                        │           │           │          │                        │              │            │
-Tài xế─PATCH /trips/:id/status {completed, distanceKm, durationMin}                    │              │            │
-    │                        │──────────►│           │          │            POST /pricing/calculate───►│            │
-    │                        │           │◄──────────────────────────────────────────────── fareAmount──│            │
-    │                        │     status=completed  │          │                        │              │            │
-    │                        │     fareAmount saved  │          │                        │              │            │
-    │                        │           │─publish──►│──────────────────────────────────────────────────────────────►│
-    │                        │           │ TripComp. │          │                        │              │ FareCached │
-    │                        │           │─publish──►│──────────────────────────────────────────────────────────────►│
-    │                        │           │ FareCal.  │          │                        │              │            │
-    │                        │           │           │          │                        │              │            │
-Khách─POST /payments {tripId, method: "cash"}────────────────────────────────────────────────────────────────────────►│
-    │                        │           │           │          │                        │              │     Process│
-    │◄200 {paymentId, status: "completed"}────────────────────────────────────────────────────────────────────────────│
+Khách hàng                Gateway    Booking-svc  RabbitMQ   Dispatch   Trip-svc   Pricing-svc  Payment-svc
+    │                        │            │            │          │          │            │            │
+    │─POST /bookings─────────►            │            │          │          │            │            │
+    │                        │─gRPC──────►│            │          │          │            │            │
+    │                        │     gRPC Pricing.Calculate (estimatedFare)───►│            │            │
+    │                        │     Create Booking                 │          │            │            │
+    │                        │     status=requested               │          │            │            │
+    │                        │            │─publish BookingReq──►│          │            │            │
+    │◄201 {bookingId, estimatedFare}◄─────│            │──────────►          │            │            │
+    │                        │            │            │   gRPC GetAvailableDrivers        │            │
+    │                        │            │            │   gRPC GetNearbyDrivers           │            │
+    │                        │            │            │   Offer driver (setTimeout)       │            │
+    │                        │            │            │          │          │            │            │
+Tài xế─GET /dispatch/me/pending──────────────────────────────────►          │            │            │
+Tài xế─POST /dispatch/:id/accept─────────────────────────────────►          │            │            │
+    │                        │            │◄─DriverAssigned──────│          │            │            │
+    │                        │     booking status=driver_assigned │          │            │            │
+    │                        │            │            │          │◄DriverAssigned        │            │
+    │                        │            │            │          │  gRPC GetBookingInternal           │
+    │                        │            │            │          │  Create Trip record   │            │
+    │                        │            │            │          │  status=driver_assigned            │
+    │                        │            │            │          │            │            │            │
+Tài xế─PATCH /trips/:id/status {arrived}────────────────────────────────────►│            │            │
+Tài xế─PATCH /trips/:id/status {picked_up}──────────────────────────────────►│            │            │
+Tài xế─PATCH /trips/:id/status {in_progress}────────────────────────────────►│            │            │
+Tài xế─PATCH /trips/:id/status {completed, distanceKm, durationMin}──────────►│            │            │
+    │                        │            │            │          │  gRPC Pricing.Calculate────────────►│
+    │                        │            │            │          │◄─actualFare────────────────────────│
+    │                        │            │            │          │  amount=max(actual,estimated)       │
+    │                        │            │            │◄FareCal.─│            │            │            │
+    │                        │            │            │          │            │            │  FareCached│
+    │                        │            │            │          │            │            │            │
+Khách─POST /payments {bookingId, method: "cash"}──────────────────────────────────────────────────────►│
+    │◄201 {status: "success", amount}─────────────────────────────────────────────────────────────────│
+    │                        │            │            │          │            │            │            │
+Khách─POST /trips/:id/rating {score: 5}────────────────────────────────────────►│            │            │
+    │◄201 {rating}───────────────────────────────────────────────────────────────│            │            │
 ```
 
-### 9.2 Không tìm được tài xế
+### 9.2 Hủy booking
 
 ```
-Dispatch: hết danh sách candidate (tất cả timeout/decline)
+Khách─POST /bookings/:id/cancel
     │
+    ▼
+booking-service: kiểm tra CANCELLABLE_STATUSES ["requested","finding_driver","no_driver_found"]
+    ├─ OK → status=cancelled, publish BookingCancelled
+    │         └─► dispatch-service: hủy timer đang chờ, không giao offer nữa
+    └─ Fail (driver_assigned, cancelled) → 409 NOT_CANCELLABLE
+```
+
+### 9.3 Không tìm được tài xế
+
+```
+Dispatch: hết danh sách candidate
     └─► publish NoDriverFound
-            │
-            ├─► trip-service: cập nhật status = "no_driver_found"
-            └─► notification-service: gửi thông báo cho khách
+            ├─► booking-service: status = "no_driver_found"
+            └─► notification-service: thông báo cho khách
 ```
 
 ---
@@ -1026,117 +1165,121 @@ Dispatch: hết danh sách candidate (tất cả timeout/decline)
 
 ```
 testcase/
-├── .env                    # BASE_URL, JWT_SECRET
-├── package.json            # jest --runInBand (chạy tuần tự)
+├── .env                    # BASE_URL=http://localhost:3000/api/v1, JWT_SECRET
+├── package.json            # jest --runInBand (tuần tự, tránh race condition)
 ├── tests/
-│   ├── helpers.js          # req(), randEmail(), signStaffToken(), ...
+│   ├── helpers.js          # req(), signCustomerToken(), signDriverToken(), uuid()
 │   ├── admin/              # TC-ADMIN-01..XX
-│   ├── customer/           # TC-CUST-01..21
+│   ├── auth/               # TC-AUTH-01..06  (JWT validation + logout revocation)
+│   ├── booking/            # TC-BOOK-01..11  (vòng đời booking qua API Gateway)
+│   ├── customer/           # TC-CUST-01..22
 │   ├── dispatch/           # TC-DISP-01..XX
 │   ├── driver/             # TC-DRV-01..XX
-│   ├── gateway/            # TC-GATE-01..03 ← MỚI (chưa commit)
+│   ├── gateway/            # TC-GATE-01..03
 │   ├── location/           # TC-LOC-01..21
 │   ├── notification/       # TC-NOTIF-01..XX
 │   ├── payment/            # TC-PAY-01..XX
 │   ├── pricing/            # TC-PRIC-01..XX
 │   └── trip/               # TC-TRIP-01..22
-│       └── _setup.js       # fixture builder (không phải test)
+│       └── _setup.js       # fixture builder (createAssignedTrip, createCompletedTrip, ...)
 ```
-
-**Jest config**: `--runInBand` (không parallel) để tránh race condition trên shared MongoDB.
 
 ### 10.2 Helpers quan trọng
 
 ```javascript
 // helpers.js
-req(method, path, body?, token?)    // fetch wrapper → { status, json }
-randEmail()                         // tạo email ngẫu nhiên tránh duplicate
-signStaffToken(role, id)            // tạo JWT ops trực tiếp (bypass login)
-signCustomerToken(id)               // tạo JWT customer trực tiếp
-signDriverToken(id)                 // tạo JWT driver trực tiếp
+req(method, path, {token?, body?})  // fetch → { status, json }
+randEmail(prefix)                   // email ngẫu nhiên tránh trùng
+signCustomerToken(id)               // JWT customer trực tiếp (bypass auth-service)
+signDriverToken(id)                 // JWT driver trực tiếp
+signStaffToken(role, id)            // JWT ops trực tiếp
 
 // trip/_setup.js
-advanceTripTo(tripId, targetStatus, driverToken)   // fast-forward qua state machine
-registerAvailableDriver()                          // tạo + set available driver
-pollForOffer(driverToken, tripId, maxRetries)       // chờ dispatch giao chuyến
+createAssignedTrip()
+  // → tạo booking + gọi /bookings/events/driver-assigned + /trips/events/driver-assigned
+  // → trả { bookingId, customerId, driverId, customerToken, driverToken }
+
+createCompletedTrip()
+  // → gọi createAssignedTrip() + PATCH /trips/:id/status qua 4 bước
+
+advanceTripTo(bookingId, driverToken, targetStatus)
+  // → PATCH /trips/:id/status từng bước cho đến targetStatus
+
+registerAvailableDriver(plateSuffix)
+  // → đăng ký + set available + POST /locations
+  // → cần Dispatch thật chạy (TC-TRIP-15)
+
+pollForOffer(driverToken, {timeoutMs})
+  // → polling GET /dispatch/drivers/me/pending cho đến khi có offer
 ```
 
-### 10.3 Test files mới (chưa commit — cần implement)
+### 10.3 Vì sao dùng webhook `/trips/events/driver-assigned`?
 
-| Test file | Tính năng cần implement |
-|---|---|
-| `gateway/TC-GATE-01.test.js` | `GET /ready` và `GET /health/services` trên API Gateway |
-| `gateway/TC-GATE-02.test.js` | Aggregated health check |
-| `gateway/TC-GATE-03.test.js` | Route không tồn tại → 404 |
-| `location/TC-LOC-21.test.js` | Pagination `?limit&page` cho `/nearby-drivers` |
-| `trip/TC-TRIP-13..22.test.js` | Mở rộng coverage trip (ownership, pagination lịch sử chuyến) |
-| `customer/TC-CUST-21.test.js` | Kiểm tra mật khẩu không lưu plaintext (kết nối trực tiếp MongoDB) |
+Trong môi trường test, không cần bật cả RabbitMQ + Dispatch. Thay vào đó:
+1. Test gọi `POST /bookings/events/driver-assigned` → booking-service cập nhật booking status
+2. Test gọi `POST /trips/events/driver-assigned` → trip-service tạo Trip record
+3. Hàm `createTripFromEvent` trong trip-service là **idempotent** — gọi nhiều lần với cùng bookingId chỉ tạo 1 Trip
 
 ### 10.4 Chạy test
 
 ```bash
-# Đảm bảo toàn bộ stack đang chạy (docker compose up -d hoặc manual)
+# Bảo đảm stack đang chạy
+docker compose up -d --wait
+
 cd testcase
-npm test                           # chạy tất cả
-npx jest tests/trip/               # chỉ trip tests
-npx jest tests/trip/TC-TRIP-01     # 1 test cụ thể
+npm test                              # tất cả — kỳ vọng: 100 suites, 105 tests PASS
+npx jest tests/auth/                  # 6 TC auth
+npx jest tests/booking/               # 11 TC booking
+npx jest tests/trip/                  # chỉ trip tests
+npx jest tests/trip/TC-TRIP-07        # 1 test cụ thể
+```
+
+**Kết quả kỳ vọng khi chạy toàn bộ:**
+
+```
+Test Suites: 100 passed, 100 total
+Tests:       105 passed, 105 total
+Time:        ~45–60 s
 ```
 
 ---
 
 ## 11. Cài đặt & Chạy
 
-### 11.1 Cài đặt local (Node.js)
+### 11.1 Chạy với Docker (khuyến nghị)
 
 ```bash
-# Yêu cầu: Node.js >= 18, MongoDB running
 git clone <repo>
 cd 23658751_PhamVoTruongThinh_CABSYSTEM
-cp .env.example .env
-# Sửa JWT_SECRET và MONGO_URI trong .env nếu cần
-npm install                # npm workspaces — cài cho tất cả service
-```
 
-### 11.2 Chạy với Docker (khuyến nghị)
-
-```bash
 # Development (build từ source)
 docker compose up --build -d --wait
-# Hoặc production (pull từ Docker Hub)
-docker compose -f docker-compose-prod.yaml up -d --wait
 
 # Kiểm tra
 curl http://localhost:3000/health
+
+# RabbitMQ UI
+open http://localhost:15672  # guest/guest
 ```
 
-### 11.3 Chạy thủ công từng service
+### 11.2 Thứ tự chạy thủ công
 
 ```bash
-# Thứ tự bắt buộc: event-bus trước
-npm run start:event-bus
-npm run start:customer
-npm run start:driver
-npm run start:trip
-npm run start:dispatch
-npm run start:location
-npm run start:pricing
-npm run start:payment
-npm run start:notification
-npm run start:admin
-npm run start:gateway
+# Bắt buộc: MongoDB + RabbitMQ trước
+# Sau đó theo thứ tự:
+node services/auth-service/src/server.js
+node services/customer-service/src/server.js
+node services/driver-service/src/server.js
+node services/pricing-service/src/server.js
+node services/booking-service/src/server.js
+node services/trip-service/src/server.js
+node services/location-service/src/server.js
+node services/dispatch-service/src/server.js
+node services/payment-service/src/server.js
+node services/notification-service/src/server.js
+node services/admin-service/src/server.js
+node api-gateway/src/server.js
 ```
-
-### 11.4 Biến môi trường
-
-| Biến | Mô tả | Mặc định |
-|---|---|---|
-| `JWT_SECRET` | Secret ký JWT (dùng chung mọi service) | `dev-secret-change-me` |
-| `PORT` | Port của service | per-service (4001–4009) |
-| `MONGO_URI` | MongoDB connection string | `mongodb://localhost:27017/<db>` |
-| `EVENT_BUS_URL` | URL của event-bus-service | `http://localhost:4000` |
-| `DISPATCH_SEARCH_RADIUS_KM` | Bán kính tìm tài xế (km) | `10` |
-| `DISPATCH_OFFER_TIMEOUT_SEC` | Thời gian tài xế quyết định (giây) | `20` |
-| `*_SERVICE_URL` | URL của từng service | `http://localhost:<port>` |
 
 ---
 
@@ -1146,24 +1289,31 @@ npm run start:gateway
 
 | Vấn đề | Mô tả | Giải pháp đề xuất |
 |---|---|---|
-| **Không có Staff/Ops Service** | Token ops tạo bằng script CLI, không có login/logout, không revoke được | Xây dựng ops-account-service tương tự customer-service |
-| **Event Bus in-memory** | Mất tất cả subscriber khi restart; không có retry khi delivery fail | Thay bằng RabbitMQ/Kafka thật |
-| **Dispatch timers in-memory** | Mất timer khi restart dispatch-service | Dùng Redis TTL hoặc job queue (Bull/BullMQ) |
-| **Mock payment gateway** | 15% thất bại ngẫu nhiên; không có webhook signature verification | Tích hợp cổng thanh toán thật (VNPay, Momo) |
-| **Notification chỉ log** | Không push/SMS thật | Tích hợp Firebase FCM, Twilio SMS |
-| **Admin báo cáo N+1** | Fetch toàn bộ dữ liệu rồi filter in-memory | Thêm query params để filter phía MongoDB; dùng aggregation pipeline |
-| **Không có real-time** | Client phải polling | Thêm WebSocket (Socket.io) hoặc SSE |
-| **Không có rate limiting** | Dễ bị abuse | Thêm express-rate-limit ở Gateway |
-| **Haversine duplicate** | Công thức copy ở 2 service | Tạo shared utility package hoặc npm package nội bộ |
+| **Không có Staff/Ops Service** | Token ops tạo bằng script CLI | Xây dựng ops-account-service |
+| **Dispatch timers in-memory** | Mất timer khi restart service | Bull/BullMQ với Redis persistence |
+| **Mock payment gateway** | 15% thất bại ngẫu nhiên; không verify signature | Tích hợp VNPay/Momo |
+| **Notification chỉ log** | Không push/SMS thật | Firebase FCM, Twilio SMS |
+| **Admin báo cáo in-memory** | Fetch toàn bộ dữ liệu rồi filter | MongoDB aggregation pipeline |
+| **Không có real-time** | Client phải polling | WebSocket (Socket.io) hoặc SSE |
 
 ### 12.2 Vấn đề bảo mật đã biết (chấp nhận cho demo)
 
 | Vấn đề | Ghi chú |
 |---|---|
-| Internal endpoints không auth | An toàn trong Docker network; cần mTLS/API key nếu expose ra ngoài |
+| Internal endpoints không auth | An toàn trong Docker network |
 | JWT_SECRET dùng chung | Một secret lộ → toàn bộ hệ thống bị compromise |
 | Payment webhook không verify signature | Demo simplification |
-| `active: false` không block đăng nhập | Customer bị disable vẫn đăng nhập được — cần fix |
+| `active: false` không block đăng nhập | Customer bị disable vẫn đăng nhập được |
+
+**Đã sửa:**
+
+| Vấn đề | Fix |
+|---|---|
+| `GET /api/v1/bookings` không có middleware phân quyền | Thêm `requireStaff` — customer không thể xem danh sách tất cả booking |
+| `CANCELLABLE_STATUSES` thiếu `no_driver_found` | Booking ở trạng thái `no_driver_found` nay có thể hủy |
+| **Không có rate limiting** | Tích hợp Redis-backed rate limiter (`rate-limit-redis` + RedisStore) vào api-gateway — 30 req/s/userId, chính xác khi scale nhiều instance |
+| **Session lưu MongoDB, không thu hồi tức thời** | Chuyển sang Redis Hash với TTL — logout xóa token cache ngay, revocation có hiệu lực < 1s |
+| **FareCache là MongoDB collection** | Chuyển sang Redis String với TTL 24h — tự dọn dẹp, không cần TTL index MongoDB |
 
 ### 12.3 Mapping Functional Requirements
 
@@ -1171,9 +1321,9 @@ npm run start:gateway
 |---|---|---|---|
 | FR-01 | Quản lý tài khoản khách hàng | customer-service | ✅ |
 | FR-02 | Quản lý tài khoản tài xế | driver-service | ✅ |
-| FR-03 | Đặt xe | trip-service | ✅ |
-| FR-04 | Theo dõi trạng thái chuyến | trip-service | ✅ |
-| FR-05 | Hủy chuyến | trip-service | ✅ |
+| FR-03 | Đặt xe | booking-service | ✅ |
+| FR-04 | Theo dõi trạng thái booking | booking-service | ✅ |
+| FR-05 | Hủy chuyến | booking-service | ✅ |
 | FR-06 | Tìm tài xế | dispatch-service | ✅ |
 | FR-07 | Giao chuyến cho tài xế | dispatch-service | ✅ |
 | FR-08 | Tài xế nhận/từ chối chuyến | dispatch-service | ✅ |
@@ -1182,18 +1332,20 @@ npm run start:gateway
 | FR-11 | Quản lý phương tiện tài xế | driver-service | ✅ |
 | FR-12 | Ước tính ETA | dispatch-service | ✅ (heuristic) |
 | FR-13 | Đánh giá chuyến | trip-service | ✅ |
-| FR-14 | Tính cước phí | pricing-service | ✅ |
+| FR-14 | Tính cước phí | pricing-service (gọi bởi booking + trip) | ✅ |
 | FR-15 | Xử lý thanh toán | payment-service | ✅ (mock) |
 | FR-16 | Retry thanh toán | payment-service | ✅ |
 | FR-17 | Thông báo DriverAssigned/NoDriverFound | notification-service | ✅ (log) |
 | FR-18 | Thông báo thay đổi trạng thái | notification-service | ✅ (log) |
 | FR-19 | Thông báo thanh toán | notification-service | ✅ (log) |
 | FR-20 | Quản lý tài khoản (admin) | admin-service | ✅ |
-| FR-21 | Xem danh sách chuyến (admin) | admin-service | ✅ |
-| FR-22 | Giải quyết vấn đề chuyến đi | admin-service | ✅ |
+| FR-21 | Xem danh sách booking (admin) | admin-service | ✅ |
+| FR-22 | Giải quyết vấn đề | admin-service | ✅ |
 | FR-23 | Báo cáo vận hành | admin-service | ✅ (in-memory agg) |
+| FR-24 | Lịch sử booking khách hàng | booking-service | ✅ |
+| FR-25 | Lịch sử trip tài xế | trip-service | ✅ |
 
 ---
 
 *Tài liệu này được tổng hợp từ việc đọc toàn bộ source code thực tế của hệ thống.*  
-*Cập nhật lần cuối: 2026-10-01*
+*Cập nhật lần cuối: 2026-10-09 — tích hợp Redis 7 (session store, token cache, rate limiting, FareCache)*

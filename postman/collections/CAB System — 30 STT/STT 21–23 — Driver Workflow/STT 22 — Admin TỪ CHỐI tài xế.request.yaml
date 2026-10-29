@@ -1,0 +1,13 @@
+$kind: http-request
+description: Dùng DRIVER_ID_2 — driver khác vừa đăng ký
+url: "{{BASE}}/drivers/{{DRIVER_ID_2}}/reject"
+method: PATCH
+headers:
+  Authorization: Bearer {{ADMIN_TOKEN}}
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', () => pm.response.to.have.status(200));
+      pm.test('approvalStatus = rejected', () => pm.expect(pm.response.json().data.approvalStatus).to.eql('rejected'));
+    language: text/javascript
+order: 2000

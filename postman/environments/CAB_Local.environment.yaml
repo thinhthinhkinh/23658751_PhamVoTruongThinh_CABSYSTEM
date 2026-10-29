@@ -1,0 +1,10 @@
+name: CAB_Local
+values:
+  - key: STAFF_TOKEN
+    secret: true
+  - key: ADMIN_TOKEN
+    secret: true
+  - key: CUSTOMER_ID
+    value: ''
+  - key: CUSTOMER_TOKEN
+    value: ''

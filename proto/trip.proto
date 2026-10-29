@@ -2,48 +2,45 @@ syntax = "proto3";
 package cab.trip;
 
 service TripService {
-  rpc CreateTrip       (CreateTripRequest)    returns (GrpcResponse);
-  rpc ListAll          (AuthCtxRequest)       returns (GrpcResponse);
-  rpc GetTripById      (TripIdRequest)        returns (GrpcResponse);
-  rpc GetTripStatus    (TripIdRequest)        returns (GrpcResponse);
-  rpc UpdateStatus     (UpdateStatusRequest)  returns (GrpcResponse);
-  rpc CancelTrip       (TripIdRequest)        returns (GrpcResponse);
-  rpc AddRating        (AddRatingRequest)     returns (GrpcResponse);
-  rpc GetTripInternal  (TripIdRequest)        returns (GrpcResponse);
-  rpc GetCustomerTrips (PaginatedRequest)     returns (GrpcResponse);
-  rpc GetDriverTrips   (PaginatedRequest)     returns (GrpcResponse);
-  rpc GetDriverRatings (UserIdRequest)        returns (GrpcResponse);
+  rpc CreateTripInternal  (CreateTripInternalRequest) returns (GrpcResponse);
+  rpc GetTripByBookingId  (BookingIdRequest)          returns (GrpcResponse);
+  rpc GetTripInternal     (BookingIdRequest)          returns (GrpcResponse);
+  rpc UpdateTripStatus    (UpdateTripStatusRequest)   returns (GrpcResponse);
+  rpc AddRating           (AddRatingRequest)          returns (GrpcResponse);
+  rpc GetDriverRatings    (UserIdRequest)             returns (GrpcResponse);
+  rpc GetDriverTrips      (PaginatedRequest)          returns (GrpcResponse);
+  rpc GetCustomerTrips    (PaginatedRequest)          returns (GrpcResponse);
 }
 
-message CreateTripRequest {
-  string customerId       = 1;
-  double pickupLat        = 2;
-  double pickupLng        = 3;
-  double dropoffLat       = 4;
-  double dropoffLng       = 5;
-  string vehicleType      = 6;
+message CreateTripInternalRequest {
+  string bookingId     = 1;
+  string driverId      = 2;
+  string customerId    = 3;
+  string vehicleType   = 4;
+  double pickupLat     = 5;
+  double pickupLng     = 6;
+  double dropoffLat    = 7;
+  double dropoffLng    = 8;
+  double estimatedFare = 9;
 }
 
-message AuthCtxRequest {
-  string callerId   = 1;
-  string callerRole = 2;
-}
-
-message TripIdRequest {
-  string tripId     = 1;
+message BookingIdRequest {
+  string bookingId  = 1;
   string callerId   = 2;
   string callerRole = 3;
 }
 
-message UpdateStatusRequest {
-  string tripId     = 1;
-  string status     = 2;
-  string callerId   = 3;
-  string callerRole = 4;
+message UpdateTripStatusRequest {
+  string bookingId   = 1;
+  string status      = 2;
+  string callerId    = 3;
+  string callerRole  = 4;
+  double distanceKm  = 5;
+  double durationMin = 6;
 }
 
 message AddRatingRequest {
-  string tripId     = 1;
+  string bookingId  = 1;
   string customerId = 2;
   int32  score      = 3;
   string comment    = 4;

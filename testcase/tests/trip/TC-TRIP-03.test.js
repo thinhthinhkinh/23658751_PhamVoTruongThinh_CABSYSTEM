@@ -1,9 +1,9 @@
-// TC-TRIP-03 | Negative | Tài xế cố tạo yêu cầu đặt xe
+﻿// TC-TRIP-03 | Negative | Tài xế cố tạo yêu cầu đặt xe
 const { req, signDriverToken, uuid } = require("../helpers");
 
 test("TC-TRIP-03 | Negative | Tài xế cố tạo yêu cầu đặt xe", async () => {
   const driverToken = signDriverToken(uuid());
-  const { status } = await req("POST", "/trips", {
+  const { status } = await req("POST", "/bookings", {
     token: driverToken,
     body: {
       pickupLocation: { lat: 10.77, lng: 106.7 },

@@ -1,4 +1,4 @@
-// TC-TRIP-18 | Negative | Bấm đặt xe nhiều lần liên tiếp chỉ tạo một chuyến
+﻿// TC-TRIP-18 | Negative | Bấm đặt xe nhiều lần liên tiếp chỉ tạo một chuyến
 // Dự kiến FAIL cho tới khi POST /trips xử lý idempotent (khóa theo khách hoặc unique index).
 const { req, signCustomerToken, uuid } = require("../helpers");
 
@@ -11,9 +11,9 @@ test.failing("TC-TRIP-18 | Negative | Bấm đặt xe nhiều lần liên tiếp
   };
 
   const results = await Promise.all([
-    req("POST", "/trips", { token: customerToken, body }),
-    req("POST", "/trips", { token: customerToken, body }),
-    req("POST", "/trips", { token: customerToken, body }),
+    req("POST", "/bookings", { token: customerToken, body }),
+    req("POST", "/bookings", { token: customerToken, body }),
+    req("POST", "/bookings", { token: customerToken, body }),
   ]);
 
   const created = results.filter((r) => r.status === 201);

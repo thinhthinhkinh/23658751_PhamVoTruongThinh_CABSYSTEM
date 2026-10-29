@@ -1,7 +1,7 @@
-// Helper riêng cho Dispatch Service test — đây là service DUY NHẤT thực sự cần bật
-// gần trọn cụm (Event Bus, Driver Service, Location Service, Trip Service, Dispatch
-// Service) vì logic matching/retry là hành vi liên-service thật, không thể giả lập
-// bằng JWT tự ký như các service khác.
+﻿// Helper riêng cho Dispatch Service test — đây là service DUY NHẤT thực sự cần bật
+// gần trọn cụm (RabbitMQ, Driver Service, Location Service, Trip Service, Dispatch
+// Service) vì logic matching/retry là hành vi liên-service thật qua gRPC + RabbitMQ,
+// không thể giả lập bằng JWT tự ký như các service khác.
 const { req, signCustomerToken, randEmail, uuid } = require("../helpers");
 
 async function registerAvailableDriver(lat, lng) {
@@ -16,8 +16,8 @@ async function registerAvailableDriver(lat, lng) {
 
 async function createTripRequest(pickup, dropoff, vehicleType = "4-seat") {
   const customerToken = signCustomerToken(uuid());
-  const tripRes = await req("POST", "/trips", { token: customerToken, body: { pickupLocation: pickup, dropoffLocation: dropoff, vehicleType } });
-  return { tripId: tripRes.json.data.id, customerToken };
+  const tripRes = await req("POST", "/bookings", { token: customerToken, body: { pickupLocation: pickup, dropoffLocation: dropoff, vehicleType } });
+  return { bookingId: tripRes.json.data.bookingId, customerToken };
 }
 
 function sleep(ms) {

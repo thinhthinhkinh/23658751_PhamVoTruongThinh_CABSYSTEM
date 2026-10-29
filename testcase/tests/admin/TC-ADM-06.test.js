@@ -11,7 +11,7 @@ test("TC-ADM-06 | Positive | Báo cáo hiệu quả tài xế tính đúng compl
   expect(status).toBe(200);
   const perf = json.data.find((d) => d.driverId === driverId);
   expect(perf).toBeDefined();
-  expect(perf.totalTrips).toBe(1);
+  expect(perf.totalBookings).toBe(1);
   expect(perf.completionRate).toBe(1);
   expect(perf.averageRating).toBe(5);
 });

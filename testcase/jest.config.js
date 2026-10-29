@@ -3,4 +3,5 @@ module.exports = {
   moduleNameMapper: {
     '^mongodb$': '<rootDir>/mongodb-jest-compat.js',
   },
+  maxWorkers: 1,
 };

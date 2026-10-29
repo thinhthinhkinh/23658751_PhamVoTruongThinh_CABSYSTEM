@@ -1,0 +1,10 @@
+$kind: http-request
+url: "{{BASE}}/trips/{{TRIP_ID}}/status"
+method: PATCH
+headers:
+  Authorization: Bearer {{DRIVER_TOKEN}}
+  Content-Type: application/json
+body:
+  type: text
+  content: '{ "status": "in_progress" }'
+order: 2000

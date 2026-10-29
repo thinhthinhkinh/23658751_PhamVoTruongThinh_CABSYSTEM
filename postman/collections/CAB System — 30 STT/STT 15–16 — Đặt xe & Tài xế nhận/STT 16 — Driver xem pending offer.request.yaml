@@ -1,0 +1,12 @@
+$kind: http-request
+url: "{{BASE}}/dispatch/drivers/me/pending"
+method: GET
+headers:
+  Authorization: Bearer {{DRIVER_TOKEN}}
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', () => pm.response.to.have.status(200));
+      console.log('Pending offer:', JSON.stringify(pm.response.json().data));
+    language: text/javascript
+order: 6000

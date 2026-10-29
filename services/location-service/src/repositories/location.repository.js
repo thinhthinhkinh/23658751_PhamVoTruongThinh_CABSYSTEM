@@ -24,17 +24,19 @@ async function getByDriverId(driverId) {
 // FR-06: tìm tài xế gần 1 tọa độ, lọc theo driverIds nếu có, sắp xếp theo khoảng cách.
 // Chỉ xét bản ghi được cập nhật trong LOCATION_STALE_SEC giây gần nhất để tránh
 // dữ liệu cũ từ các phiên test trước làm nhiễu kết quả dispatch.
-async function findNearby({ lat, lng, radiusKm = 5, driverIds }) {
+async function findNearby({ lat, lng, radiusKm = 5, driverIds, limit = 20, page = 1 }) {
   const filter = driverIds && driverIds.length > 0 ? { _id: { $in: driverIds } } : {};
   if (LOCATION_STALE_SEC > 0) {
     filter.updatedAt = { $gt: new Date(Date.now() - LOCATION_STALE_SEC * 1000) };
   }
   const records = await dao.findAll(filter);
-  return records
+  const sorted = records
     .map((r) => r.toObject())
     .map((c) => ({ ...c, distanceKm: distanceKm(lat, lng, c.lat, c.lng) }))
     .filter((c) => c.distanceKm <= radiusKm)
     .sort((a, b) => a.distanceKm - b.distanceKm);
+  const skip = (page - 1) * limit;
+  return sorted.slice(skip, skip + limit);
 }
 
 module.exports = { reportLocation, getByDriverId, findNearby };

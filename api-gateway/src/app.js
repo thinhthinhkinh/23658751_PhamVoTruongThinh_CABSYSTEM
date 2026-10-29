@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const rateLimit = require("express-rate-limit");
+const { RedisStore } = require("rate-limit-redis");
+const redis = require("./config/redis");
 const { registerRoutes, targets } = require("./routes/gateway.routes");
 
 const app = express();
@@ -35,28 +37,34 @@ app.get("/health/services", async (req, res) => {
   });
 });
 
-// ── Rate limiting — STT 29: chống spam POST /trips ───────────────────────────
-// Key = JWT user ID thay vì IP để mỗi customer có quota riêng (30 req/giây).
-// TC-GATE-03 dùng 1 token duy nhất cho 100 req → 70 nhận 429.
-// Các test sequence dùng token khác nhau → quota riêng biệt, không bị ảnh hưởng.
+// ── Rate limiting — STT 29: chống spam POST /bookings ───────────────────────────
+// Key = JWT user ID để mỗi customer có quota riêng (30 req/giây).
+// Store = Redis: quota chia sẻ chính xác kể cả khi scale nhiều gateway instance.
+// TC-GATE-03: 1 token, 100 req → 70 nhận 429. Tokens khác → quota độc lập.
+function extractUserId(req) {
+  try {
+    const auth = req.headers.authorization;
+    if (auth && auth.startsWith("Bearer ")) {
+      const payload = JSON.parse(Buffer.from(auth.slice(7).split(".")[1], "base64url").toString());
+      if (payload.id) return payload.id;
+    }
+  } catch {}
+  return req.ip;
+}
+
 const tripLimiter = rateLimit({
   windowMs: 1 * 1000,
   max: 30,
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: { code: "RATE_LIMIT_EXCEEDED", message: "Quá nhiều yêu cầu, vui lòng thử lại sau" } },
-  keyGenerator: (req) => {
-    try {
-      const auth = req.headers.authorization;
-      if (auth && auth.startsWith("Bearer ")) {
-        const payload = JSON.parse(Buffer.from(auth.slice(7).split(".")[1], "base64url").toString());
-        if (payload.id) return payload.id;
-      }
-    } catch {}
-    return req.ip;
-  },
+  keyGenerator: extractUserId,
+  store: new RedisStore({
+    sendCommand: (...args) => redis.call(...args),
+    prefix: "cab:ratelimit:",
+  }),
 });
-app.use("/api/v1/trips", tripLimiter);
+app.use("/api/v1/bookings", tripLimiter);
 
 registerRoutes(app);
 

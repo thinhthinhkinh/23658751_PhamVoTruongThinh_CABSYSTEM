@@ -1,11 +1,11 @@
-// TC-TRIP-05 | Negative | Tài xế cập nhật trạng thái sai thứ tự
+﻿// TC-TRIP-05 | Negative | Tài xế cập nhật trạng thái sai thứ tự
 const { req } = require("../helpers");
 const { createAssignedTrip } = require("./_setup");
 
 test("TC-TRIP-05 | Negative | Tài xế cập nhật trạng thái sai thứ tự (bỏ qua arrived, picked_up)", async () => {
-  const { tripId, driverToken } = await createAssignedTrip(); // status hiện tại: driver_assigned
+  const { bookingId, driverToken } = await createAssignedTrip(); // status hiện tại: driver_assigned
 
-  const { status, json } = await req("PATCH", `/trips/${tripId}/status`, {
+  const { status, json } = await req("PATCH", `/trips/${bookingId}/status`, {
     token: driverToken,
     body: { status: "in_progress" }, // nhảy cóc, không hợp lệ
   });

@@ -10,6 +10,18 @@ services:
       timeout: 5s
       retries: 10
 
+  redis:
+    image: redis:7-alpine
+    ports: ["6379:6379"]
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
   rabbitmq:
     image: rabbitmq:3-management
     ports:
@@ -22,12 +34,23 @@ services:
       start_period: 40s
       retries: 10
 
-  event-bus-service:
-    build: ./event-bus-service
-    image: thinhpvt/cab-event-bus-service:${TAG:-latest}
-    ports: ["4000:4000"]
+  auth-service:
+    build: ./services/auth-service
+    image: thinhpvt/cab-auth-service:${TAG:-latest}
+    command: node src/server.js
+    volumes:
+      - ./proto:/proto
+    environment:
+      JWT_SECRET: ${JWT_SECRET}
+      MONGO_URI: mongodb://mongodb:27017/auth_db
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:4000/health"]
+      test: ["CMD", "wget", "-qO-", "http://localhost:4010/health"]
       interval: 10s
       timeout: 5s
       start_period: 15s
@@ -36,13 +59,20 @@ services:
   customer-service:
     build: ./services/customer-service
     image: thinhpvt/cab-customer-service:${TAG:-latest}
-    ports:
-      - "4001:4001"
-      - "5001:5001"
+    command: node src/server.js
+    volumes:
+      - ./proto:/proto
     environment:
       JWT_SECRET: ${JWT_SECRET}
+      AUTH_GRPC_URL: auth-service:5010
+      RABBITMQ_URL: amqp://rabbitmq:5672
+      SERVICE_NAME: customer-service
       MONGO_URI: mongodb://mongodb:27017/customer_db
     depends_on:
+      auth-service:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
       mongodb:
         condition: service_healthy
     healthcheck:
@@ -55,14 +85,18 @@ services:
   driver-service:
     build: ./services/driver-service
     image: thinhpvt/cab-driver-service:${TAG:-latest}
-    ports:
-      - "4002:4002"
-      - "5002:5002"
+    command: node src/server.js
+    volumes:
+      - ./proto:/proto
     environment:
       JWT_SECRET: ${JWT_SECRET}
+      AUTH_GRPC_URL: auth-service:5010
       RABBITMQ_URL: amqp://rabbitmq:5672
+      SERVICE_NAME: driver-service
       MONGO_URI: mongodb://mongodb:27017/driver_db
     depends_on:
+      auth-service:
+        condition: service_healthy
       rabbitmq:
         condition: service_healthy
       mongodb:
@@ -77,13 +111,18 @@ services:
   location-service:
     build: ./services/location-service
     image: thinhpvt/cab-location-service:${TAG:-latest}
-    ports:
-      - "4005:4005"
-      - "5005:5005"
+    command: node src/server.js
+    volumes:
+      - ./proto:/proto
     environment:
       JWT_SECRET: ${JWT_SECRET}
+      RABBITMQ_URL: amqp://rabbitmq:5672
+      SERVICE_NAME: location-service
       MONGO_URI: mongodb://mongodb:27017/location_db
+      LOCATION_STALE_SEC: "0"
     depends_on:
+      rabbitmq:
+        condition: service_healthy
       mongodb:
         condition: service_healthy
     healthcheck:
@@ -96,13 +135,17 @@ services:
   pricing-service:
     build: ./services/pricing-service
     image: thinhpvt/cab-pricing-service:${TAG:-latest}
-    ports:
-      - "4006:4006"
-      - "5006:5006"
+    command: node src/server.js
+    volumes:
+      - ./proto:/proto
     environment:
       JWT_SECRET: ${JWT_SECRET}
+      RABBITMQ_URL: amqp://rabbitmq:5672
+      SERVICE_NAME: pricing-service
       MONGO_URI: mongodb://mongodb:27017/pricing_db
     depends_on:
+      rabbitmq:
+        condition: service_healthy
       mongodb:
         condition: service_healthy
     healthcheck:
@@ -112,18 +155,20 @@ services:
       start_period: 15s
       retries: 5
 
-  trip-service:
-    build: ./services/trip-service
-    image: thinhpvt/cab-trip-service:${TAG:-latest}
-    ports:
-      - "4003:4003"
-      - "5003:5003"
+  booking-service:
+    build: ./services/booking-service
+    image: thinhpvt/cab-booking-service:${TAG:-latest}
+    command: node src/server.js
+    volumes:
+      - ./proto:/proto
     environment:
       JWT_SECRET: ${JWT_SECRET}
-      TRIP_SERVICE_URL: http://trip-service:4003
+      BOOKING_SERVICE_URL: http://booking-service:4003
       RABBITMQ_URL: amqp://rabbitmq:5672
+      SERVICE_NAME: booking-service
       PRICING_SERVICE_URL: http://pricing-service:4006
-      MONGO_URI: mongodb://mongodb:27017/trip_db
+      PRICING_GRPC_URL: pricing-service:5006
+      MONGO_URI: mongodb://mongodb:27017/booking_db
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -138,19 +183,49 @@ services:
       start_period: 15s
       retries: 5
 
+  trip-service:
+    build: ./services/trip-service
+    image: thinhpvt/cab-trip-service:${TAG:-latest}
+    command: node src/server.js
+    volumes:
+      - ./proto:/proto
+    environment:
+      JWT_SECRET: ${JWT_SECRET}
+      RABBITMQ_URL: amqp://rabbitmq:5672
+      SERVICE_NAME: trip-service
+      PRICING_GRPC_URL: pricing-service:5006
+      BOOKING_GRPC_URL: booking-service:5003
+      MONGO_URI: mongodb://mongodb:27017/trip_db
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      booking-service:
+        condition: service_healthy
+      pricing-service:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4011/health"]
+      interval: 10s
+      timeout: 5s
+      start_period: 15s
+      retries: 5
+
   dispatch-service:
     build: ./services/dispatch-service
     image: thinhpvt/cab-dispatch-service:${TAG:-latest}
-    ports:
-      - "4004:4004"
-      - "5004:5004"
+    command: node src/server.js
+    volumes:
+      - ./proto:/proto
     environment:
       JWT_SECRET: ${JWT_SECRET}
-      DISPATCH_OFFER_TIMEOUT_SEC: "3"
+      DISPATCH_OFFER_TIMEOUT_SEC: "300"
       DISPATCH_SERVICE_URL: http://dispatch-service:4004
       RABBITMQ_URL: amqp://rabbitmq:5672
-      DRIVER_SERVICE_URL: http://driver-service:4002
-      LOCATION_SERVICE_URL: http://location-service:4005
+      SERVICE_NAME: dispatch-service
+      DRIVER_GRPC_URL: driver-service:5002
+      LOCATION_GRPC_URL: location-service:5005
       MONGO_URI: mongodb://mongodb:27017/dispatch_db
     depends_on:
       rabbitmq:
@@ -171,22 +246,26 @@ services:
   payment-service:
     build: ./services/payment-service
     image: thinhpvt/cab-payment-service:${TAG:-latest}
-    ports:
-      - "4007:4007"
-      - "5007:5007"
+    command: node src/server.js
+    volumes:
+      - ./proto:/proto
     environment:
       JWT_SECRET: ${JWT_SECRET}
       PAYMENT_SERVICE_URL: http://payment-service:4007
       RABBITMQ_URL: amqp://rabbitmq:5672
-      TRIP_SERVICE_URL: http://trip-service:4003
-      TRIP_GRPC_URL: trip-service:5003
+      SERVICE_NAME: payment-service
+      BOOKING_SERVICE_URL: http://booking-service:4003
+      BOOKING_GRPC_URL: booking-service:5003
       MONGO_URI: mongodb://mongodb:27017/payment_db
+      REDIS_URL: redis://redis:6379
     depends_on:
       rabbitmq:
         condition: service_healthy
-      trip-service:
+      booking-service:
         condition: service_healthy
       mongodb:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:4007/health"]
@@ -198,19 +277,21 @@ services:
   notification-service:
     build: ./services/notification-service
     image: thinhpvt/cab-notification-service:${TAG:-latest}
-    ports:
-      - "4008:4008"
-      - "5008:5008"
+    command: node src/server.js
+    volumes:
+      - ./proto:/proto
     environment:
       JWT_SECRET: ${JWT_SECRET}
       NOTIFICATION_SERVICE_URL: http://notification-service:4008
       RABBITMQ_URL: amqp://rabbitmq:5672
-      TRIP_SERVICE_URL: http://trip-service:4003
+      SERVICE_NAME: notification-service
+      BOOKING_SERVICE_URL: http://booking-service:4003
+      BOOKING_GRPC_URL: booking-service:5003
       MONGO_URI: mongodb://mongodb:27017/notification_db
     depends_on:
       rabbitmq:
         condition: service_healthy
-      trip-service:
+      booking-service:
         condition: service_healthy
       mongodb:
         condition: service_healthy
@@ -224,22 +305,27 @@ services:
   admin-service:
     build: ./services/admin-service
     image: thinhpvt/cab-admin-service:${TAG:-latest}
-    ports:
-      - "4009:4009"
-      - "5009:5009"
+    command: node src/server.js
+    volumes:
+      - ./proto:/proto
     environment:
       JWT_SECRET: ${JWT_SECRET}
+      SERVICE_NAME: admin-service
       CUSTOMER_SERVICE_URL: http://customer-service:4001
       DRIVER_SERVICE_URL: http://driver-service:4002
-      TRIP_SERVICE_URL: http://trip-service:4003
+      BOOKING_SERVICE_URL: http://booking-service:4003
       PAYMENT_SERVICE_URL: http://payment-service:4007
+      CUSTOMER_GRPC_URL: customer-service:5001
+      DRIVER_GRPC_URL: driver-service:5002
+      BOOKING_GRPC_URL: booking-service:5003
+      PAYMENT_GRPC_URL: payment-service:5007
       MONGO_URI: mongodb://mongodb:27017/admin_db
     depends_on:
       customer-service:
         condition: service_healthy
       driver-service:
         condition: service_healthy
-      trip-service:
+      booking-service:
         condition: service_healthy
       payment-service:
         condition: service_healthy
@@ -255,12 +341,19 @@ services:
   api-gateway:
     build: ./api-gateway
     image: thinhpvt/cab-api-gateway:${TAG:-latest}
+    command: node src/server.js
     ports: ["3000:3000"]
+    volumes:
+      - ./proto:/proto
     environment:
+      JWT_SECRET: ${JWT_SECRET}
+      REDIS_URL: redis://redis:6379
       # REST URLs (for /health/services aggregation)
+      AUTH_SERVICE_URL:         http://auth-service:4010
       CUSTOMER_SERVICE_URL:     http://customer-service:4001
       DRIVER_SERVICE_URL:       http://driver-service:4002
-      TRIP_SERVICE_URL:         http://trip-service:4003
+      BOOKING_SERVICE_URL:      http://booking-service:4003
+      TRIP_SERVICE_URL:         http://trip-service:4011
       DISPATCH_SERVICE_URL:     http://dispatch-service:4004
       LOCATION_SERVICE_URL:     http://location-service:4005
       PRICING_SERVICE_URL:      http://pricing-service:4006
@@ -268,9 +361,11 @@ services:
       NOTIFICATION_SERVICE_URL: http://notification-service:4008
       ADMIN_SERVICE_URL:        http://admin-service:4009
       # gRPC URLs (gateway → services)
+      AUTH_GRPC_URL:            auth-service:5010
       CUSTOMER_GRPC_URL:        customer-service:5001
       DRIVER_GRPC_URL:          driver-service:5002
-      TRIP_GRPC_URL:            trip-service:5003
+      BOOKING_GRPC_URL:         booking-service:5003
+      TRIP_GRPC_URL:            trip-service:5011
       DISPATCH_GRPC_URL:        dispatch-service:5004
       LOCATION_GRPC_URL:        location-service:5005
       PRICING_GRPC_URL:         pricing-service:5006
@@ -278,9 +373,15 @@ services:
       NOTIFICATION_GRPC_URL:    notification-service:5008
       ADMIN_GRPC_URL:           admin-service:5009
     depends_on:
+      redis:
+        condition: service_healthy
+      auth-service:
+        condition: service_healthy
       customer-service:
         condition: service_healthy
       driver-service:
+        condition: service_healthy
+      booking-service:
         condition: service_healthy
       trip-service:
         condition: service_healthy
@@ -305,3 +406,4 @@ services:
 
 volumes:
   mongodb-data:
+  redis-data:

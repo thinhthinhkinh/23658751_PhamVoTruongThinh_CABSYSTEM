@@ -1,0 +1,14 @@
+$kind: http-request
+description: MongoDB + Mongoose không execute operator trong string field → trả lỗi validation, không login được
+url: "{{BASE}}/customers/login"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: '{ "email": { "$gt": "" }, "password": { "$gt": "" } }'
+scripts:
+  - type: afterResponse
+    code: pm.test('Không bị bypass auth (401 hoặc 400, không phải 200)', () => pm.expect(pm.response.code).to.not.eql(200));
+    language: text/javascript
+order: 2000

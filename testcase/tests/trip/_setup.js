@@ -1,4 +1,4 @@
-// Helper riêng cho Trip Service test: tạo 1 chuyến rồi "giả lập" Dispatch Service
+﻿// Helper riêng cho Trip Service test: tạo 1 chuyến rồi "giả lập" Dispatch Service
 // đã gán tài xế, bằng cách gọi thẳng webhook nội bộ /trips/events/driver-assigned
 // — tránh phải bật cả Dispatch + Location + Event Bus chỉ để test Trip Service.
 const { req, signCustomerToken, signDriverToken, randEmail, uuid } = require("../helpers");
@@ -9,7 +9,7 @@ async function createAssignedTrip() {
   const customerToken = signCustomerToken(customerId);
   const driverToken = signDriverToken(driverId);
 
-  const tripRes = await req("POST", "/trips", {
+  const tripRes = await req("POST", "/bookings", {
     token: customerToken,
     body: {
       pickupLocation: { lat: 10.7769, lng: 106.7009 },
@@ -17,13 +17,18 @@ async function createAssignedTrip() {
       vehicleType: "4-seat",
     },
   });
-  const tripId = tripRes.json.data.id;
+  const bookingId = tripRes.json.data.bookingId;
 
-  await req("POST", "/trips/events/driver-assigned", {
-    body: { event: "DriverAssigned", payload: { tripId, driverId, eta: 5 } },
+  await req("POST", "/bookings/events/driver-assigned", {
+    body: { event: "DriverAssigned", payload: { bookingId, driverId, eta: 5 } },
   });
 
-  return { tripId, customerId, driverId, customerToken, driverToken };
+  // Also create Trip record in trip-service (bypasses RabbitMQ)
+  await req("POST", "/trips/events/driver-assigned", {
+    body: { event: "DriverAssigned", payload: { bookingId, driverId, eta: 5 } },
+  });
+
+  return { bookingId, customerId, driverId, customerToken, driverToken };
 }
 
 // MỚI: đưa 1 chuyến đã gán tài xế đi qua các bước trạng thái hợp lệ cho tới đúng
@@ -32,14 +37,14 @@ async function createAssignedTrip() {
 // lặp lại tay từng bước PATCH như createCompletedTrip().
 const STATUS_SEQUENCE = ["driver_assigned", "arrived", "picked_up", "in_progress", "completed"];
 
-async function advanceTripTo(tripId, driverToken, targetStatus) {
+async function advanceTripTo(bookingId, driverToken, targetStatus) {
   const targetIndex = STATUS_SEQUENCE.indexOf(targetStatus);
   if (targetIndex < 0) throw new Error(`advanceTripTo: targetStatus không hợp lệ: ${targetStatus}`);
 
   for (let i = 1; i <= targetIndex; i++) {
     const status = STATUS_SEQUENCE[i];
     const body = status === "completed" ? { status, distanceKm: 5, durationMin: 15 } : { status };
-    const res = await req("PATCH", `/trips/${tripId}/status`, { token: driverToken, body });
+    const res = await req("PATCH", `/trips/${bookingId}/status`, { token: driverToken, body });
     if (res.status !== 200) {
       throw new Error(`advanceTripTo: PATCH sang ${status} thất bại (status ${res.status}): ${JSON.stringify(res.json)}`);
     }
@@ -48,11 +53,11 @@ async function advanceTripTo(tripId, driverToken, targetStatus) {
 
 async function createCompletedTrip() {
   const assigned = await createAssignedTrip();
-  const { tripId, driverToken } = assigned;
-  await req("PATCH", `/trips/${tripId}/status`, { token: driverToken, body: { status: "arrived" } });
-  await req("PATCH", `/trips/${tripId}/status`, { token: driverToken, body: { status: "picked_up" } });
-  await req("PATCH", `/trips/${tripId}/status`, { token: driverToken, body: { status: "in_progress" } });
-  await req("PATCH", `/trips/${tripId}/status`, {
+  const { bookingId, driverToken } = assigned;
+  await req("PATCH", `/trips/${bookingId}/status`, { token: driverToken, body: { status: "arrived" } });
+  await req("PATCH", `/trips/${bookingId}/status`, { token: driverToken, body: { status: "picked_up" } });
+  await req("PATCH", `/trips/${bookingId}/status`, { token: driverToken, body: { status: "in_progress" } });
+  await req("PATCH", `/trips/${bookingId}/status`, {
     token: driverToken,
     body: { status: "completed", distanceKm: 5, durationMin: 15 },
   });

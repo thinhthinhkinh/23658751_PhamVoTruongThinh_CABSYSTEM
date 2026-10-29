@@ -1,0 +1,16 @@
+$kind: http-request
+url: "{{BASE}}/drivers/me/status"
+method: PATCH
+headers:
+  Authorization: Bearer {{DRIVER_TOKEN}}
+  Content-Type: application/json
+body:
+  type: text
+  content: '{ "status": "offline" }'
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', () => pm.response.to.have.status(200));
+      pm.test('status = offline', () => pm.expect(pm.response.json().data.status).to.eql('offline'));
+    language: text/javascript
+order: 4000

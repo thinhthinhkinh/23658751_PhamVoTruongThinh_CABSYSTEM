@@ -1,4 +1,4 @@
-// TC-GATE-03 | Negative | Spam API liên tục phải được giới hạn tần suất (rate limit)
+﻿// TC-GATE-03 | Negative | Spam API liên tục phải được giới hạn tần suất (rate limit)
 // Bảng chấm thực hành, mục 29: attacker gửi >1000 request/giây tới POST /booking (ở đây là
 // POST /trips) -> kỳ vọng 429 Too Many Requests, hệ thống không sập.
 //
@@ -23,14 +23,14 @@ test(
 
     const N = 100;
     const results = await Promise.all(
-      Array.from({ length: N }, () => req("POST", "/trips", { token: customerToken, body }))
+      Array.from({ length: N }, () => req("POST", "/bookings", { token: customerToken, body }))
     );
 
     const rateLimitedCount = results.filter((r) => r.status === 429).length;
     expect(rateLimitedCount).toBeGreaterThan(0);
 
     // Hệ thống phải vẫn phản hồi bình thường ngay sau đợt spam, không bị sập (500 hoặc không phản hồi).
-    const after = await req("POST", "/trips", { token: customerToken, body });
+    const after = await req("POST", "/bookings", { token: customerToken, body });
     expect([200, 201, 429]).toContain(after.status);
   },
   30000 // burst 100 request cần thời gian hơn một test thông thường

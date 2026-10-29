@@ -1,0 +1,37 @@
+name: CAB System — Local
+values:
+  - key: BASE
+    value: 'http://localhost:3000/api/v1'
+  - key: GW
+    value: 'http://localhost:3000'
+  - key: ADMIN_TOKEN
+    value: ''
+    description: |-
+      Tạo bằng lệnh:
+      cd testcase && node -e "const jwt=require('jsonwebtoken');console.log(jwt.sign({id:'admin-001',role:'ops_admin'},'cab-system-super-secret-key-change-me',{expiresIn:'1d'}));"
+  - key: CUSTOMER_TOKEN
+    value: ''
+    description: Tự động điền sau khi chạy request 'Đăng ký Customer'
+  - key: CUSTOMER_ID
+    value: ''
+  - key: CUSTOMER_EMAIL
+    value: ''
+    description: Điền email đã dùng khi đăng ký
+  - key: DRIVER_TOKEN
+    value: ''
+    description: Tự động điền sau khi chạy request 'Đăng ký Driver'
+  - key: DRIVER_ID
+    value: ''
+  - key: DRIVER_ID_2
+    value: ''
+    description: Driver thứ 2 (để test reject)
+  - key: TRIP_ID
+    value: ''
+    description: Tự động điền sau khi tạo trip
+  - key: TRIP_ID_2
+    value: ''
+    description: Trip thứ 2 (để test e-wallet)
+  - key: PAYMENT_ID
+    value: ''
+  - key: TRIP_STATUS
+    value: ''

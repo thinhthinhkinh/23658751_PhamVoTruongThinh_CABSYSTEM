@@ -1,0 +1,47 @@
+syntax = "proto3";
+package cab.booking;
+
+service BookingService {
+  rpc CreateBooking       (CreateBookingRequest) returns (GrpcResponse);
+  rpc ListAll             (AuthCtxRequest)       returns (GrpcResponse);
+  rpc GetBookingById      (BookingIdRequest)     returns (GrpcResponse);
+  rpc GetBookingStatus    (BookingIdRequest)     returns (GrpcResponse);
+  rpc CancelBooking       (BookingIdRequest)     returns (GrpcResponse);
+  rpc GetBookingInternal  (BookingIdRequest)     returns (GrpcResponse);
+  rpc GetCustomerBookings (PaginatedRequest)     returns (GrpcResponse);
+}
+
+message CreateBookingRequest {
+  string customerId  = 1;
+  double pickupLat   = 2;
+  double pickupLng   = 3;
+  double dropoffLat  = 4;
+  double dropoffLng  = 5;
+  string vehicleType = 6;
+}
+
+message AuthCtxRequest {
+  string callerId   = 1;
+  string callerRole = 2;
+}
+
+message BookingIdRequest {
+  string bookingId  = 1;
+  string callerId   = 2;
+  string callerRole = 3;
+}
+
+message PaginatedRequest {
+  string userId     = 1;
+  string callerRole = 2;
+  int32  page       = 3;
+  int32  limit      = 4;
+}
+
+message GrpcResponse {
+  bool   success       = 1;
+  string json          = 2;
+  string error_code    = 3;
+  string error_message = 4;
+  int32  http_status   = 5;
+}

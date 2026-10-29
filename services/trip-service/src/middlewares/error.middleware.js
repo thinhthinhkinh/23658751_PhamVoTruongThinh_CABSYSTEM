@@ -1,4 +1,3 @@
-// Middleware xử lý lỗi tập trung — luôn đặt sau cùng trong app.js.
 function errorMiddleware(err, req, res, next) {
   console.error(err);
   const status = err.status || 500;

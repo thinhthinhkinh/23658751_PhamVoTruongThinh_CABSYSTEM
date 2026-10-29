@@ -12,17 +12,17 @@ router.get("/customers", ctrl.listCustomers);
 router.get("/drivers", ctrl.listDrivers);
 router.get("/vehicles", ctrl.listVehicles);
 
-// FR-22 — chỉ ops_admin (kiểm tra thêm ở đây dù Customer Service cũng enforce lại)
+// FR-22 — chỉ ops_admin
 router.delete("/customers/:id", requireRole("ops_admin"), ctrl.disableCustomer);
 
 // FR-21
-router.get("/trips", ctrl.listTrips);
+router.get("/bookings", ctrl.listBookings);
 router.get("/drivers/:id/status", ctrl.getDriverStatus);
 router.get("/transactions", ctrl.listTransactions);
-router.post("/trips/:id/resolve", ctrl.resolveTrip);
+router.post("/bookings/:id/resolve", ctrl.resolveBooking);
 
 // FR-23 — chỉ ops_admin
-router.get("/reports/trips", requireRole("ops_admin"), ctrl.reportTrips);
+router.get("/reports/bookings", requireRole("ops_admin"), ctrl.reportBookings);
 router.get("/reports/revenue", requireRole("ops_admin"), ctrl.reportRevenue);
 router.get("/reports/completion-rate", requireRole("ops_admin"), ctrl.reportCompletionRate);
 router.get("/reports/cancellation-rate", requireRole("ops_admin"), ctrl.reportCancellationRate);

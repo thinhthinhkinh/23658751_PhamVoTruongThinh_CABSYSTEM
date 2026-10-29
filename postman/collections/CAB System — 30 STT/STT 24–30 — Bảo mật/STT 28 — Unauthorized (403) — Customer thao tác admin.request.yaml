@@ -1,0 +1,11 @@
+$kind: http-request
+description: Customer không có quyền approve driver → 403
+url: "{{BASE}}/drivers/{{DRIVER_ID}}/approve"
+method: PATCH
+headers:
+  Authorization: Bearer {{CUSTOMER_TOKEN}}
+scripts:
+  - type: afterResponse
+    code: pm.test('Status 403', () => pm.response.to.have.status(403));
+    language: text/javascript
+order: 5000

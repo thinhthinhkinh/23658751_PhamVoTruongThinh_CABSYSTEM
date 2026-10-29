@@ -1,0 +1,12 @@
+$kind: http-request
+url: "{{BASE}}/dispatch/{{TRIP_ID}}/accept"
+method: POST
+headers:
+  Authorization: Bearer {{DRIVER_TOKEN}}
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Accept thành công', () => pm.response.to.have.status(200));
+      console.log('Accept response:', JSON.stringify(pm.response.json()));
+    language: text/javascript
+order: 7000

@@ -1,6 +1,5 @@
 const { verifyToken } = require("../utils/jwt.util");
 
-// Kiểm tra Bearer token, gắn req.user = { id, role, ... } nếu hợp lệ.
 function authRequired(req, res, next) {
   const header = req.headers.authorization || "";
   const [scheme, token] = header.split(" ");

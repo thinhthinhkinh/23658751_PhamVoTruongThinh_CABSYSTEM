@@ -5,35 +5,33 @@ const gateway = require("../utils/mockGateway");
 const eventBus = require("../utils/eventBusClient");
 const AppError = require("../utils/AppError");
 
-const TRIP_SERVICE_URL = process.env.TRIP_SERVICE_URL || "http://localhost:4003";
+const { grpcCall, bookingClient } = require("../utils/grpcClient");
 const VALID_METHODS = ["cash", "e-wallet", "card"];
 
-async function resolveAmount(tripId) {
-  const cached = await fareCacheDao.findByTripId(tripId);
+async function resolveAmount(bookingId) {
+  const cached = await fareCacheDao.findByBookingId(bookingId);
   if (cached) return cached.amount;
 
-  const res = await fetch(`${TRIP_SERVICE_URL}/trips/${tripId}/internal`);
-  if (!res.ok) {
-    throw new AppError(400, "FARE_NOT_AVAILABLE", "Chưa xác định được số tiền cần thanh toán cho chuyến này");
-  }
-  const body = await res.json();
+  const body = await grpcCall(bookingClient, "GetBookingInternal", { bookingId }).catch(() => {
+    throw new AppError(400, "FARE_NOT_AVAILABLE", "Chưa xác định được số tiền cần thanh toán cho booking này");
+  });
   const amount = body?.data?.fareAmount;
   if (typeof amount !== "number") {
-    throw new AppError(400, "FARE_NOT_AVAILABLE", "Chuyến chưa được tính cước");
+    throw new AppError(400, "FARE_NOT_AVAILABLE", "Booking chưa được tính cước");
   }
   return amount;
 }
 
-async function createAndProcess({ tripId, method }) {
-  if (!tripId || !VALID_METHODS.includes(method)) {
+async function createAndProcess({ bookingId, method }) {
+  if (!bookingId || !VALID_METHODS.includes(method)) {
     throw new AppError(400, "INVALID_INPUT", `method phải thuộc [${VALID_METHODS.join(", ")}]`);
   }
-  if (await dao.findByTripId(tripId)) {
-    throw new AppError(409, "PAYMENT_ALREADY_EXISTS", "Chuyến này đã có giao dịch thanh toán");
+  if (await dao.findByBookingId(bookingId)) {
+    throw new AppError(409, "PAYMENT_ALREADY_EXISTS", "Booking này đã có giao dịch thanh toán");
   }
 
-  const amount = await resolveAmount(tripId);
-  const payment = await dao.insert({ _id: uuidv4(), tripId, method, amount });
+  const amount = await resolveAmount(bookingId);
+  const payment = await dao.insert({ _id: uuidv4(), bookingId, method, amount });
 
   return settle(payment);
 }
@@ -43,12 +41,12 @@ async function settle(payment) {
 
   if (result.success) {
     const updated = await dao.update(payment.id, { status: "success", providerRef: result.providerRef, failReason: null });
-    await eventBus.publish("PaymentCompleted", { tripId: updated.tripId, paymentId: updated.id, method: updated.method });
+    await eventBus.publish("PaymentCompleted", { bookingId: updated.bookingId, paymentId: updated.id, method: updated.method });
     return updated;
   }
 
   const updated = await dao.update(payment.id, { status: "failed", failReason: result.reason });
-  await eventBus.publish("PaymentFailed", { tripId: updated.tripId, paymentId: updated.id, reason: result.reason });
+  await eventBus.publish("PaymentFailed", { bookingId: updated.bookingId, paymentId: updated.id, reason: result.reason });
   return updated;
 }
 
@@ -71,20 +69,20 @@ async function handleWebhook({ paymentId, status, providerRef }) {
   const patch = status === "success" ? { status: "success", providerRef } : { status: "failed", failReason: "Cổng thanh toán báo thất bại" };
   const updated = await dao.update(payment.id, patch);
   const eventName = status === "success" ? "PaymentCompleted" : "PaymentFailed";
-  await eventBus.publish(eventName, { tripId: updated.tripId, paymentId: updated.id, method: updated.method });
+  await eventBus.publish(eventName, { bookingId: updated.bookingId, paymentId: updated.id, method: updated.method });
   return updated;
 }
 
-async function listByTripIds(tripIds) {
-  return dao.findByCustomerTripIds(tripIds);
+async function listByBookingIds(bookingIds) {
+  return dao.findByCustomerBookingIds(bookingIds);
 }
 
 async function listAll() {
   return dao.findAll();
 }
 
-async function cacheFare(tripId, amount) {
-  return fareCacheDao.upsert(tripId, amount);
+async function cacheFare(bookingId, amount) {
+  return fareCacheDao.upsert(bookingId, amount);
 }
 
-module.exports = { createAndProcess, getById, retry, handleWebhook, listByTripIds, listAll, cacheFare };
+module.exports = { createAndProcess, getById, retry, handleWebhook, listByBookingIds, listAll, cacheFare };

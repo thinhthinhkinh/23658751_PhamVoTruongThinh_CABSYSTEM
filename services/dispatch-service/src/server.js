@@ -18,7 +18,7 @@ function startGrpcServer() {
   const pkg = grpc.loadPackageDefinition(pkgDef);
   const handler = require("./grpc/dispatch.handler");
   const server = new grpc.Server();
-  server.addService(pkg["cab.dispatch"].DispatchService.service, handler);
+  server.addService(pkg.cab.dispatch.DispatchService.service, handler);
   server.bindAsync(`0.0.0.0:${GRPC_PORT}`, grpc.ServerCredentials.createInsecure(), (err, port) => {
     if (err) { console.error("[dispatch-service] gRPC bind error:", err.message); return; }
     console.log(`[dispatch-service] gRPC đang lắng nghe tại port ${port}`);
@@ -31,7 +31,7 @@ mongoose
     console.log("[dispatch-service] đã kết nối MongoDB");
     app.listen(PORT, async () => {
       console.log(`[dispatch-service] REST đang chạy tại http://localhost:${PORT}`);
-      await eventBus.subscribe("TripRequested", (payload) => dispatchRepo.handleTripRequested(payload));
+      await eventBus.subscribe("BookingRequested", (payload) => dispatchRepo.handleBookingRequested(payload));
     });
     startGrpcServer();
   })

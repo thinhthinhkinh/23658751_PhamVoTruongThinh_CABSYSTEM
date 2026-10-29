@@ -12,4 +12,10 @@ localResources:
     - ../api-specification/notification.yaml
     - ../api-specification/payment.yaml
     - ../api-specification/pricing.yaml
-    - ../api-specification/trip.yaml
+    - ../api-specification/booking.yaml
+
+# Each entry here maps a local resource to one or more corresponding objects in Postman Cloud
+
+cloudResources:
+  collections:
+    ../postman/collections/CAB System — 30 STT: cab-system-23658751

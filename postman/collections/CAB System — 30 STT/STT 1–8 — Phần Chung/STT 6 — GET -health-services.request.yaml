@@ -1,0 +1,13 @@
+$kind: http-request
+name: STT 6 — GET /health/services
+url: "{{GW}}/health/services"
+method: GET
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', () => pm.response.to.have.status(200));
+      const r = pm.response.json();
+      pm.test('Có danh sách services', () => pm.expect(r.services).to.be.an('array'));
+      pm.test('Ít nhất 5 service', () => pm.expect(r.services.length).to.be.gte(5));
+    language: text/javascript
+order: 6000

@@ -1,0 +1,7 @@
+$kind: http-request
+description: |-
+  Kiểm tra thủ công: mở SYSTEM-DOCUMENTATION.md
+  Verify: có mô tả layered architecture, 10 services, event-driven pattern
+url: "{{GW}}/health"
+method: GET
+order: 1000

@@ -1,7 +1,7 @@
 const { DispatchRecord } = require("../models/dispatch.model");
 
-function findByTripId(tripId) {
-  return DispatchRecord.findById(tripId);
+function findByBookingId(bookingId) {
+  return DispatchRecord.findById(bookingId);
 }
 
 function findPendingByDriverId(driverId) {
@@ -11,14 +11,14 @@ function findPendingByDriverId(driverId) {
   });
 }
 
-async function insert({ tripId, pickupLocation, vehicleType, candidates }) {
-  const record = new DispatchRecord({ _id: tripId, pickupLocation, vehicleType, candidates });
+async function insert({ bookingId, pickupLocation, vehicleType, candidates }) {
+  const record = new DispatchRecord({ _id: bookingId, pickupLocation, vehicleType, candidates });
   await record.save();
   return record;
 }
 
-function update(tripId, patch) {
-  return DispatchRecord.findByIdAndUpdate(tripId, patch, { new: true });
+function update(bookingId, patch) {
+  return DispatchRecord.findByIdAndUpdate(bookingId, patch, { new: true });
 }
 
-module.exports = { findByTripId, findPendingByDriverId, insert, update };
+module.exports = { findByBookingId, findPendingByDriverId, insert, update };

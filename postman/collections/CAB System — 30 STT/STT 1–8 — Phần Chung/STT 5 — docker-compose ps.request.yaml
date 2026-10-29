@@ -1,0 +1,8 @@
+$kind: http-request
+description: |-
+  Chạy trong terminal:
+    docker-compose ps
+  Kỳ vọng: 13 container (healthy) bao gồm rabbitmq
+url: "{{GW}}/health"
+method: GET
+order: 3000

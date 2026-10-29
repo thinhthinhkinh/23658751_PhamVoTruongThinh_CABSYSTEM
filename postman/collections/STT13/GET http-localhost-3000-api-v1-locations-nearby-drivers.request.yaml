@@ -1,0 +1,38 @@
+$kind: http-request
+name: GET http://localhost:3000/api/v1/locations/nearby-drivers
+description: STT13
+url: GET http://localhost:3000/api/v1/locations/nearby-drivers?lat=10.762622&lng=106.660172&radiusKm=1&limit=5&page=1
+method: GET
+queryParams:
+  lat: "10.762622"
+  lng: "106.660172"
+  radiusKm: "1"
+  limit: "5"
+  page: "1"
+body:
+  type: json
+  content: "{\r
+
+    \    \"fullName\":\"ThinhPVT\",\r
+
+    \    \"email\":\"driver@test.com\",\r
+
+    \    \"password\":\"123456\",\r
+
+    \    \"licensePlate\":\"50A-12345\",\r
+
+    \    \"vehicleType\":\"sedan\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{json_web_token_03zt}}"
+scripts:
+  - type: beforeRequest
+    code: ""
+    language: text/javascript
+  - type: afterResponse
+    code: ""
+    language: text/javascript
+order: 1000

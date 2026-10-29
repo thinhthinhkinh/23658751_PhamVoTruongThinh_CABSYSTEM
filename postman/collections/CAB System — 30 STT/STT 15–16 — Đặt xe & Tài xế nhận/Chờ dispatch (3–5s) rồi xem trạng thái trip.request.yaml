@@ -1,0 +1,18 @@
+$kind: http-request
+description: |-
+  Chờ 3–5 giây sau khi tạo trip, rồi gửi request này.
+  Status kỳ vọng: 'driver_assigned' hoặc 'no_driver_found'
+url: "{{BASE}}/trips/{{TRIP_ID}}"
+method: GET
+headers:
+  Authorization: Bearer {{CUSTOMER_TOKEN}}
+scripts:
+  - type: afterResponse
+    code: |-
+      const r = pm.response.json();
+      pm.test('Status 200', () => pm.response.to.have.status(200));
+      console.log('Trip status:', r.data.status);
+      pm.environment.set('TRIP_STATUS', r.data.status);
+      if(r.data.driverId) pm.environment.set('ASSIGNED_DRIVER_ID', r.data.driverId);
+    language: text/javascript
+order: 5000

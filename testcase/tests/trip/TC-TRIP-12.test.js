@@ -1,8 +1,8 @@
-// TC-TRIP-12 | Positive | Service khác tra cứu trip qua endpoint nội bộ
+﻿// TC-TRIP-12 | Positive | Service khác tra cứu trip qua endpoint nội bộ
 const { req, signCustomerToken, uuid } = require("../helpers");
 
 test("TC-TRIP-12 | Positive | Service khác tra cứu trip qua endpoint nội bộ (không token)", async () => {
-  const tripRes = await req("POST", "/trips", {
+  const tripRes = await req("POST", "/bookings", {
     token: signCustomerToken(uuid()),
     body: {
       pickupLocation: { lat: 10.77, lng: 106.7 },
@@ -10,10 +10,10 @@ test("TC-TRIP-12 | Positive | Service khác tra cứu trip qua endpoint nội b�
       vehicleType: "4-seat",
     },
   });
-  const tripId = tripRes.json.data.id;
+  const bookingId = tripRes.json.data.bookingId;
 
-  const { status, json } = await req("GET", `/trips/${tripId}/internal`); // không có Authorization header
+  const { status, json } = await req("GET", `/bookings/${bookingId}/internal`); // không có Authorization header
 
   expect(status).toBe(200);
-  expect(json.data.id).toBe(tripId);
+  expect(json.data.bookingId).toBe(bookingId);
 });

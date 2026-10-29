@@ -1,0 +1,11 @@
+$kind: http-request
+name: STT 6 — GET /health
+url: "{{GW}}/health"
+method: GET
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', () => pm.response.to.have.status(200));
+      pm.test('status = ok', () => pm.expect(pm.response.json().status).to.eql('ok'));
+    language: text/javascript
+order: 4000

@@ -52,8 +52,10 @@ async function grpcRequest(res, client, method, request) {
   }
 }
 
-// Extract auth info from request (JWT already verified by gateway middleware)
+// Extract auth info from request — prefers context set by auth-service middleware,
+// falls back to local JWT decode when auth-service was unreachable during middleware.
 function authCtx(req) {
+  if (req._authContext) return req._authContext;
   const auth = req.headers.authorization;
   if (!auth || !auth.startsWith("Bearer ")) return { callerId: "", callerRole: "" };
   try {

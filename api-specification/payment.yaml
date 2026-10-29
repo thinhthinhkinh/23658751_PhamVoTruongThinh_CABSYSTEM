@@ -137,7 +137,7 @@ components:
         id:
           type: string
           format: uuid
-        tripId:
+        bookingId:
           type: string
           format: uuid
         method:
@@ -164,10 +164,10 @@ components:
     PaymentCreateRequest:
       type: object
       required:
-        - tripId
+        - bookingId
         - method
       properties:
-        tripId:
+        bookingId:
           type: string
           format: uuid
         method:

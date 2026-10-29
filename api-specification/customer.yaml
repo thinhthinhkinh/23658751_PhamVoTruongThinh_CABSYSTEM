@@ -100,13 +100,32 @@ paths:
     get:
       tags:
         - Customer
-      summary: Tra cứu hồ sơ khách hàng (nội bộ)
+      summary: Tra cứu hồ sơ khách hàng (ops_staff/ops_admin)
       x-fr: FR-01
       parameters:
         - $ref: '#/components/parameters/IdParam'
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerEnvelope'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+  /customers/{id}/disable:
+    patch:
+      tags:
+        - Customer
+      summary: Khóa tài khoản khách hàng (ops_staff/ops_admin)
+      x-fr: FR-22
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Đã khóa, active = false
           content:
             application/json:
               schema:
@@ -146,6 +165,9 @@ components:
         phone:
           type: string
           nullable: true
+        active:
+          type: boolean
+          description: false khi tài khoản bị khóa bởi admin; khách hàng bị khóa không thể đăng nhập
         createdAt:
           type: string
           format: date-time

@@ -1,4 +1,4 @@
-// TC-DISP-04 | Positive | Tài xế từ chối, hệ thống tự chuyển tài xế khác
+﻿// TC-DISP-04 | Positive | Tài xế từ chối, hệ thống tự chuyển tài xế khác
 const { req } = require("../helpers");
 const { registerAvailableDriver, createTripRequest, sleep } = require("./_setup");
 
@@ -7,13 +7,13 @@ test("TC-DISP-04 | Positive | Tài xế từ chối, hệ thống tự chuyển 
   const driverA = await registerAvailableDriver(22.771, 106.70);
   const driverB = await registerAvailableDriver(22.79, 106.70);
 
-  const { tripId } = await createTripRequest(pickup, { lat: 22.78, lng: 106.69 });
+  const { bookingId } = await createTripRequest(pickup, { lat: 22.78, lng: 106.69 });
   await sleep(2500);
 
-  const declineRes = await req("POST", `/dispatch/${tripId}/decline`, { token: driverA.driverToken });
+  const declineRes = await req("POST", `/dispatch/${bookingId}/decline`, { token: driverA.driverToken });
   expect(declineRes.status).toBe(200);
 
   await sleep(2000);
   const offerB = await req("GET", "/dispatch/drivers/me/pending", { token: driverB.driverToken });
-  expect(offerB.json.data?.tripId).toBe(tripId);
+  expect(offerB.json.data?.bookingId).toBe(bookingId);
 }, 15000);

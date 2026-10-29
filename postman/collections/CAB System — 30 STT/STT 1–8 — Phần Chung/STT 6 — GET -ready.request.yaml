@@ -1,0 +1,11 @@
+$kind: http-request
+name: STT 6 — GET /ready
+url: "{{GW}}/ready"
+method: GET
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', () => pm.response.to.have.status(200));
+      pm.test('status = ready', () => pm.expect(pm.response.json().status).to.eql('ready'));
+    language: text/javascript
+order: 5000

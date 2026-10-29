@@ -1,7 +1,7 @@
 const { Rating } = require("../models/trip.model");
 
-function findByTripId(tripId) {
-  return Rating.findById(tripId);
+function findByBookingId(bookingId) {
+  return Rating.findOne({ bookingId });
 }
 
 function findByDriverId(driverId) {
@@ -14,4 +14,4 @@ async function insert(ratingData) {
   return rating;
 }
 
-module.exports = { findByTripId, findByDriverId, insert };
+module.exports = { findByBookingId, findByDriverId, insert };

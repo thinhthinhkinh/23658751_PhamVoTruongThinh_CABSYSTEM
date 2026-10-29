@@ -11,10 +11,10 @@
 //                                    -> 201 {data:{token, driver:{id,...}}}
 //   PATCH /drivers/me/status        body {status:"available"} -> 200
 //   POST /locations                  body {lat,lng} -> 200
-//   GET /dispatch/drivers/me/pending -> 200 {data: null | {tripId,...}}
-//   POST /dispatch/{tripId}/accept   -> 200
-//   POST /payments                   body {tripId, method:"cash"} -> 201 {data:{status,amount,...}}
-//   GET /customers/me/trips, GET /drivers/me/trips -> 200 {data:[...]}
+//   GET /dispatch/drivers/me/pending -> 200 {data: null | {bookingId,...}}
+//   POST /dispatch/{bookingId}/accept   -> 200
+//   POST /payments                   body {bookingId, method:"cash"} -> 201 {data:{status,amount,...}}
+//   GET /customers/me/bookings, GET /drivers/me/trips -> 200 {data:[...]}
 //
 // Nếu Dispatch của bạn không có endpoint polling kiểu "pending", mà đẩy offer qua
 // WebSocket/push, thay pollForOffer() trong _setup.js bằng cách lắng nghe tương ứng.
@@ -30,26 +30,26 @@ test(
     const { driverId, token: driverToken } = await registerAvailableDriver("15");
 
     // 1. Khách đặt xe
-    const tripRes = await req("POST", "/trips", {
+    const tripRes = await req("POST", "/bookings", {
       token: customerToken,
       body: { pickupLocation: PICKUP, dropoffLocation: DROPOFF, vehicleType: "4-seat" },
     });
     expect(tripRes.status).toBe(201);
-    const tripId = tripRes.json.data.id;
+    const bookingId = tripRes.json.data.bookingId;
 
     // 2. Tài xế nhận offer và accept
     const offer = await pollForOffer(driverToken);
-    expect(offer.tripId ?? offer.id).toBe(tripId);
-    const acceptRes = await req("POST", `/dispatch/${tripId}/accept`, { token: driverToken });
+    expect(offer.bookingId ?? offer.id).toBe(bookingId);
+    const acceptRes = await req("POST", `/dispatch/${bookingId}/accept`, { token: driverToken });
     expect(acceptRes.status).toBe(200);
 
     // 3. Tài xế cập nhật đủ 4 mốc trạng thái
     for (const status of ["arrived", "picked_up", "in_progress"]) {
-      const r = await req("PATCH", `/trips/${tripId}/status`, { token: driverToken, body: { status } });
+      const r = await req("PATCH", `/trips/${bookingId}/status`, { token: driverToken, body: { status } });
       expect(r.status).toBe(200);
       expect(r.json.data.status).toBe(status);
     }
-    const completeRes = await req("PATCH", `/trips/${tripId}/status`, {
+    const completeRes = await req("PATCH", `/trips/${bookingId}/status`, {
       token: driverToken,
       body: { status: "completed", distanceKm: 5, durationMin: 15 },
     });
@@ -57,24 +57,24 @@ test(
     expect(completeRes.json.data.status).toBe("completed");
     // 15000 + 5*9500 + 15*500 = 70000 theo đơn giá xe 4 chỗ hiện tại (Pricing Service) — nếu bảng giá
     // đã đổi, chỉ cần so > 0 vẫn đúng tinh thần test, đổi lại toBe(70000) nếu muốn khớp chặt.
-    expect(completeRes.json.data.fareAmount).toBeGreaterThan(0);
-    const fareAmount = completeRes.json.data.fareAmount;
+    expect(completeRes.json.data.actualFare).toBeGreaterThan(0);
+    const actualFare = completeRes.json.data.actualFare;
 
     // 4. Khách thanh toán tiền mặt
-    const payRes = await req("POST", "/payments", { token: customerToken, body: { tripId, method: "cash" } });
+    const payRes = await req("POST", "/payments", { token: customerToken, body: { bookingId, method: "cash" } });
     expect(payRes.status).toBe(201);
     expect(payRes.json.data.status).toBe("success");
-    expect(payRes.json.data.amount).toBe(fareAmount);
+    expect(payRes.json.data.amount).toBe(actualFare);
 
     // 5. Khách đánh giá 5 sao
-    const ratingRes = await req("POST", `/trips/${tripId}/rating`, { token: customerToken, body: { score: 5 } });
+    const ratingRes = await req("POST", `/trips/${bookingId}/rating`, { token: customerToken, body: { score: 5 } });
     expect(ratingRes.status).toBe(201);
 
     // 6. Lịch sử hiển thị đúng ở cả hai phía
-    const custHistory = await req("GET", "/customers/me/trips", { token: customerToken });
+    const custHistory = await req("GET", "/customers/me/bookings", { token: customerToken });
     const driverHistory = await req("GET", "/drivers/me/trips", { token: driverToken });
-    expect(custHistory.json.data.some((t) => t.id === tripId)).toBe(true);
-    expect(driverHistory.json.data.some((t) => t.id === tripId)).toBe(true);
+    expect(custHistory.json.data.some((t) => t.bookingId === bookingId)).toBe(true);
+    expect(driverHistory.json.data.some((t) => t.bookingId === bookingId)).toBe(true);
   },
   20000 // timeout riêng cho test này: đủ thời gian cho bước polling offer
 );

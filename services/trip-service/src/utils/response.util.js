@@ -1,7 +1,3 @@
-// Chuẩn hóa format response theo quy ước chung trong tài liệu API Design:
-// thành công  -> { data }  hoặc { data, meta }
-// thất bại    -> { error: { code, message } }
-
 function ok(res, data, status = 200) {
   return res.status(status).json({ data });
 }

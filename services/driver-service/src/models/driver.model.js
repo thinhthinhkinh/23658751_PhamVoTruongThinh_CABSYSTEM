@@ -47,9 +47,10 @@ const driverSchema = new mongoose.Schema(
 
 const Driver = mongoose.model("Driver", driverSchema);
 
-function toPublicJSON(driver) {
+function toPublicJSON(driver, { includeHash = false } = {}) {
   const obj = driver.toObject ? driver.toObject() : driver;
   const { passwordHash, ...rest } = obj;
+  if (includeHash) rest.passwordHash = passwordHash;
   return rest;
 }
 

@@ -1,4 +1,4 @@
-// TC-TRIP-19 | Negative | Hủy chuyến thu hồi offer đang mở và lưu lại lịch sử hủy
+﻿// TC-TRIP-19 | Negative | Hủy chuyến thu hồi offer đang mở và lưu lại lịch sử hủy
 // Dự kiến FAIL cho tới khi Trip Service phát sự kiện thu hồi offer sang Dispatch khi hủy.
 // Dùng chung registerAvailableDriver()/pollForOffer() với TC-TRIP-15 — xem ghi chú endpoint
 // giả định ở đầu file đó (POST /drivers/register, GET /dispatch/drivers/me/pending, ...).
@@ -14,17 +14,17 @@ test.failing(
     const customerToken = signCustomerToken(customerId);
     const { token: driverToken } = await registerAvailableDriver("19");
 
-    const tripRes = await req("POST", "/trips", {
+    const tripRes = await req("POST", "/bookings", {
       token: customerToken,
       body: { pickupLocation: PICKUP, dropoffLocation: DROPOFF, vehicleType: "4-seat" },
     });
-    const tripId = tripRes.json.data.id;
+    const bookingId = tripRes.json.data.bookingId;
 
     // đợi tài xế thật sự nhận được offer trước khi hủy, để phép thử có ý nghĩa
     await pollForOffer(driverToken);
 
     // 1. Khách hủy chuyến khi offer đang mở, kèm lý do bắt buộc (BA v1.5)
-    const cancelRes = await req("POST", `/trips/${tripId}/cancel`, {
+    const cancelRes = await req("POST", `/bookings/${bookingId}/cancel`, {
       token: customerToken,
       body: { reason: "Khách yêu cầu hủy vì lý do cá nhân" },
     });
@@ -36,8 +36,8 @@ test.failing(
     expect(pendingRes.json.data).toBeNull();
 
     // 3. Lịch sử của khách hiển thị đúng chuyến này đã hủy, kèm đúng lý do
-    const historyRes = await req("GET", "/customers/me/trips", { token: customerToken });
-    const found = historyRes.json.data.find((t) => t.id === tripId);
+    const historyRes = await req("GET", "/customers/me/bookings", { token: customerToken });
+    const found = historyRes.json.data.find((t) => t.bookingId === bookingId);
     expect(found).toBeDefined();
     expect(found.status).toBe("cancelled");
     expect(found.cancelReason ?? found.reason).toBe("Khách yêu cầu hủy vì lý do cá nhân");

@@ -1,4 +1,4 @@
-// TC-DISP-06 | Positive | Tài xế chấp nhận chuyến thành công
+﻿// TC-DISP-06 | Positive | Tài xế chấp nhận chuyến thành công
 const { req } = require("../helpers");
 const { registerAvailableDriver, createTripRequest, sleep } = require("./_setup");
 
@@ -6,16 +6,16 @@ test("TC-DISP-06 | Positive | Tài xế chấp nhận chuyến thành công", as
   const pickup = { lat: 24.77, lng: 106.70 };
   const driver = await registerAvailableDriver(24.771, 106.70);
 
-  const { tripId, customerToken } = await createTripRequest(pickup, { lat: 24.78, lng: 106.69 });
+  const { bookingId, customerToken } = await createTripRequest(pickup, { lat: 24.78, lng: 106.69 });
   await sleep(2500);
 
-  const acceptRes = await req("POST", `/dispatch/${tripId}/accept`, { token: driver.driverToken });
+  const acceptRes = await req("POST", `/dispatch/${bookingId}/accept`, { token: driver.driverToken });
   expect(acceptRes.status).toBe(200);
   expect(acceptRes.json.data.driverId).toBe(driver.driverId);
   expect(typeof acceptRes.json.data.eta).toBe("number");
 
   await sleep(1500);
-  const tripRes = await req("GET", `/trips/${tripId}`, { token: customerToken });
+  const tripRes = await req("GET", `/bookings/${bookingId}`, { token: customerToken });
   expect(tripRes.json.data.status).toBe("driver_assigned");
   expect(tripRes.json.data.driverId).toBe(driver.driverId);
 }, 15000);

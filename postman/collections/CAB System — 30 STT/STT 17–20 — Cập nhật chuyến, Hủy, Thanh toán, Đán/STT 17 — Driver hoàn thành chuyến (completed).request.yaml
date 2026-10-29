@@ -1,0 +1,16 @@
+$kind: http-request
+url: "{{BASE}}/trips/{{TRIP_ID}}/status"
+method: PATCH
+headers:
+  Authorization: Bearer {{DRIVER_TOKEN}}
+  Content-Type: application/json
+body:
+  type: text
+  content: '{ "status": "completed", "distanceKm": 3.5, "durationMin": 12 }'
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', () => pm.response.to.have.status(200));
+      pm.test('status = completed', () => pm.expect(pm.response.json().data.status).to.eql('completed'));
+    language: text/javascript
+order: 3000

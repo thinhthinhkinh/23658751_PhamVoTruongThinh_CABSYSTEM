@@ -1,0 +1,11 @@
+$kind: http-request
+name: STT 24 — Mật khẩu hash (đăng ký rồi xem DB không có plaintext)
+description: |-
+  Kiểm tra thủ công:
+  docker exec <mongodb_container> mongosh customer_db --eval "db.customers.findOne({},{password:1})"
+  → Kỳ vọng: password là chuỗi hex dài (salt:hash), KHÔNG phải 'matkhau123'
+url: "{{BASE}}/customers/me"
+method: GET
+headers:
+  Authorization: Bearer {{CUSTOMER_TOKEN}}
+order: 1000

@@ -1,4 +1,4 @@
-// TC-TRIP-21 | Negative | Bình luận đánh giá chứa script không được lưu/trả về nguyên trạng
+﻿// TC-TRIP-21 | Negative | Bình luận đánh giá chứa script không được lưu/trả về nguyên trạng
 // Bảng chấm thực hành, mục 26: gửi <script>alert('hack')</script> vào 1 trường input, kỳ vọng
 // script không thực thi và output được escape.
 //
@@ -17,10 +17,10 @@ const { req } = require("../helpers");
 const { createCompletedTrip } = require("./_setup");
 
 test("TC-TRIP-21 | Negative | Bình luận đánh giá chứa script không được lưu/trả về nguyên trạng", async () => {
-  const { tripId, customerToken, driverId } = await createCompletedTrip();
+  const { bookingId, customerToken, driverId } = await createCompletedTrip();
   const xssPayload = "<script>alert('hack')</script>";
 
-  const ratingRes = await req("POST", `/trips/${tripId}/rating`, {
+  const ratingRes = await req("POST", `/trips/${bookingId}/rating`, {
     token: customerToken,
     body: { score: 5, comment: xssPayload },
   });
@@ -29,7 +29,7 @@ test("TC-TRIP-21 | Negative | Bình luận đánh giá chứa script không đư
   const listRes = await req("GET", `/drivers/${driverId}/ratings`, { token: customerToken });
   expect(listRes.status).toBe(200);
 
-  const saved = (listRes.json.data.ratings ?? listRes.json.data).find((r) => r.tripId === tripId);
+  const saved = (listRes.json.data.ratings ?? listRes.json.data).find((r) => r.bookingId === bookingId);
   expect(saved).toBeDefined();
 
   // Không được còn nguyên thẻ <script> thực thi được — phải escape hoặc đã bị loại bỏ.

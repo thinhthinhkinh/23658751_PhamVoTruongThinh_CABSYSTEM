@@ -1,15 +1,19 @@
-const { FareCache } = require("../models/payment.model");
+const redis = require("../config/redis");
 
-function findByTripId(tripId) {
-  return FareCache.findById(tripId);
+// cab:fare:{bookingId} → giá trị cước (số, dạng string) với TTL 24h
+// Được populate từ sự kiện RabbitMQ FareCalculated, phục vụ payment khi POST /payments
+
+const FARE_CACHE_TTL = 24 * 60 * 60; // 24 giờ
+
+async function findByBookingId(bookingId) {
+  const val = await redis.get(`cab:fare:${bookingId}`);
+  if (val === null) return null;
+  return { bookingId, amount: parseFloat(val) };
 }
 
-function upsert(tripId, amount) {
-  return FareCache.findOneAndUpdate(
-    { _id: tripId },
-    { amount, cachedAt: new Date() },
-    { upsert: true, new: true, setDefaultsOnInsert: true }
-  );
+async function upsert(bookingId, amount) {
+  await redis.setex(`cab:fare:${bookingId}`, FARE_CACHE_TTL, String(amount));
+  return { bookingId, amount };
 }
 
-module.exports = { findByTripId, upsert };
+module.exports = { findByBookingId, upsert };

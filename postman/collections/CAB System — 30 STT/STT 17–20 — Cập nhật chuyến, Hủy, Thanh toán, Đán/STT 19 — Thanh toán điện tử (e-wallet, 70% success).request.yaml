@@ -1,0 +1,21 @@
+$kind: http-request
+description: Cần TRIP_ID_2 khác với TRIP_ID — tạo thêm 1 trip completed trước khi dùng request này
+url: "{{BASE}}/payments"
+method: POST
+headers:
+  Authorization: Bearer {{CUSTOMER_TOKEN}}
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "tripId": "{{TRIP_ID_2}}",
+      "method": "e-wallet"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      console.log('Payment status:', pm.response.json().data?.status);
+      pm.test('Status 201', () => pm.response.to.have.status(201));
+    language: text/javascript
+order: 6000

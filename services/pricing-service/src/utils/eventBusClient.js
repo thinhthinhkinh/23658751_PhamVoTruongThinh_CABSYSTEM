@@ -1,30 +1,72 @@
-const EVENT_BUS_URL = process.env.EVENT_BUS_URL || "http://localhost:4000";
+const amqp = require("amqplib");
 
-// Phát 1 sự kiện lên event bus. Fire-and-forget: publisher không chờ subscriber
-// xử lý xong, tránh việc 1 service lỗi làm ảnh hưởng luồng chính.
+const RABBITMQ_URL = process.env.RABBITMQ_URL || "amqp://localhost:5672";
+const SERVICE_NAME = process.env.SERVICE_NAME || "service";
+const EXCHANGE = "cab_events";
+
+let _conn = null;
+let _pubCh = null;
+const _subs = []; // { event, handler, queueName }
+
+async function _connect() {
+  const conn = await amqp.connect(RABBITMQ_URL);
+  conn.on("error", () => { _conn = null; _pubCh = null; _scheduleReconnect(); });
+  conn.on("close", () => { _conn = null; _pubCh = null; _scheduleReconnect(); });
+  _conn = conn;
+  return conn;
+}
+
+function _scheduleReconnect() {
+  setTimeout(() => _reconnect().catch(() => _scheduleReconnect()), 3000);
+}
+
+async function _reconnect() {
+  const conn = await _connect();
+  for (const s of _subs) await _doSubscribe(conn, s.event, s.handler, s.queueName);
+}
+
+async function _doSubscribe(conn, event, handler, queueName) {
+  const ch = await conn.createChannel();
+  await ch.assertExchange(EXCHANGE, "topic", { durable: true });
+  await ch.assertQueue(queueName, { durable: true });
+  await ch.bindQueue(queueName, EXCHANGE, event);
+  await ch.consume(queueName, async (msg) => {
+    if (!msg) return;
+    try {
+      const { payload } = JSON.parse(msg.content.toString());
+      if (typeof handler === "function") await handler(payload);
+      ch.ack(msg);
+    } catch (err) {
+      console.error(`[rabbitmq] handler "${event}" lỗi:`, err.message);
+      ch.nack(msg, false, false);
+    }
+  });
+  console.log(`[rabbitmq] subscribed "${event}" (queue: ${queueName})`);
+}
+
 async function publish(event, payload) {
   try {
-    await fetch(`${EVENT_BUS_URL}/publish`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ event, payload }),
-    });
+    if (!_conn) await _connect();
+    if (!_pubCh) {
+      _pubCh = await _conn.createChannel();
+      await _pubCh.assertExchange(EXCHANGE, "topic", { durable: true });
+    }
+    _pubCh.publish(EXCHANGE, event, Buffer.from(JSON.stringify({ event, payload })), { persistent: true });
+    console.log(`[rabbitmq] published "${event}"`);
   } catch (err) {
-    console.error(`[event-bus-client] publish "${event}" thất bại:`, err.message);
+    console.error(`[rabbitmq] publish "${event}" lỗi:`, err.message);
+    _pubCh = null;
   }
 }
 
-// Đăng ký nhận 1 loại sự kiện, kèm webhook nội bộ của chính service này.
-async function subscribe(event, webhookUrl) {
+async function subscribe(event, handler) {
   try {
-    await fetch(`${EVENT_BUS_URL}/subscribe`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ event, webhookUrl }),
-    });
-    console.log(`[event-bus-client] đã subscribe "${event}" -> ${webhookUrl}`);
+    const queueName = `${SERVICE_NAME}.${event}`;
+    _subs.push({ event, handler, queueName });
+    if (!_conn) await _connect();
+    await _doSubscribe(_conn, event, handler, queueName);
   } catch (err) {
-    console.error(`[event-bus-client] subscribe "${event}" thất bại:`, err.message);
+    console.error(`[rabbitmq] subscribe "${event}" lỗi:`, err.message);
   }
 }
 

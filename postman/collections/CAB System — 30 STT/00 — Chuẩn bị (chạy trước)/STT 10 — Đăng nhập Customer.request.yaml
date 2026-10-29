@@ -1,0 +1,21 @@
+$kind: http-request
+url: "{{BASE}}/customers/login"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "email": "{{CUSTOMER_EMAIL}}",
+      "password": "matkhau123"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      const r = pm.response.json();
+      pm.test('Status 200', () => pm.response.to.have.status(200));
+      pm.test('Có token', () => pm.expect(r.data.token).to.be.a('string'));
+      pm.environment.set('CUSTOMER_TOKEN', r.data.token);
+    language: text/javascript
+order: 3000

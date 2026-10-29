@@ -187,7 +187,7 @@ paths:
     get:
       tags:
         - Driver
-      summary: Tra cứu hồ sơ tài xế (nội bộ)
+      summary: Tra cứu hồ sơ tài xế
       x-fr: FR-02
       parameters:
         - $ref: '#/components/parameters/IdParam'
@@ -200,6 +200,57 @@ paths:
                 $ref: '#/components/schemas/DriverEnvelope'
         '404':
           $ref: '#/components/responses/NotFoundError'
+  /drivers/{id}/approve:
+    patch:
+      tags:
+        - Driver
+      summary: Duyệt tài xế (ops_staff/ops_admin)
+      x-fr: FR-02
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Đã duyệt, approvalStatus = approved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverEnvelope'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+  /drivers/{id}/reject:
+    patch:
+      tags:
+        - Driver
+      summary: Từ chối tài xế (ops_staff/ops_admin)
+      x-fr: FR-02
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Đã từ chối, approvalStatus = rejected
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverEnvelope'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+  /drivers/{id}/disable:
+    patch:
+      tags:
+        - Driver
+      summary: Khóa tài khoản tài xế (ops_staff/ops_admin)
+      x-fr: FR-22
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Đã khóa, active = false
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverEnvelope'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
 components:
   securitySchemes:
     bearerAuth:
@@ -229,6 +280,15 @@ components:
             - offline
             - available
             - busy
+        approvalStatus:
+          type: string
+          enum:
+            - pending_approval
+            - approved
+            - rejected
+        active:
+          type: boolean
+          description: false khi tài khoản bị khóa bởi admin; tài xế bị khóa không thể đăng nhập
         createdByStaff:
           type: boolean
     DriverAuthResponse:

@@ -1,0 +1,10 @@
+$kind: http-request
+url: "{{BASE}}/customers/me"
+method: GET
+headers:
+  Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImhhY2tlciIsInJvbGUiOiJvcHNfYWRtaW4ifQ.INVALID_SIGNATURE_HERE
+scripts:
+  - type: afterResponse
+    code: pm.test('Status 401', () => pm.response.to.have.status(401));
+    language: text/javascript
+order: 4000

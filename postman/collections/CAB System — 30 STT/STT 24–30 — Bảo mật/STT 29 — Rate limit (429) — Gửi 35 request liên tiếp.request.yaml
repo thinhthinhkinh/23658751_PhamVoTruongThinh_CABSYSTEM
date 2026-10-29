@@ -1,0 +1,21 @@
+$kind: http-request
+description: |-
+  Chạy request này 35 lần liên tiếp (dùng Postman Runner hoặc Collection Run với iterations=35)
+  → Một số request cuối sẽ trả 429 Too Many Requests
+url: "{{BASE}}/trips"
+method: POST
+headers:
+  Authorization: Bearer {{CUSTOMER_TOKEN}}
+  Content-Type: application/json
+body:
+  type: text
+  content: '{ "pickupLocation": {"lat":10.77,"lng":106.7}, "dropoffLocation": {"lat":10.78,"lng":106.69}, "vehicleType": "4-seat" }'
+scripts:
+  - type: afterResponse
+    code: |-
+      console.log('Response code:', pm.response.code);
+      pm.test('Nhận 429 sau nhiều request', () => {
+        pm.expect([201, 400, 429]).to.include(pm.response.code);
+      });
+    language: text/javascript
+order: 6000

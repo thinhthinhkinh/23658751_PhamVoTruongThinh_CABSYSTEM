@@ -1,0 +1,22 @@
+name: cab env
+values:
+  - key: BASE
+    value: ''
+  - key: JWT_SECRET
+    value: ''
+  - key: CUSTOMER_TOKEN
+    value: ''
+  - key: CUSTOMER_ID
+    value: ''
+  - key: DRIVER_TOKEN
+    value: ''
+  - key: DRIVER_ID
+    value: ''
+  - key: TRIP_ID
+    value: ''
+  - key: PAYMENT_ID
+    value: ''
+  - key: STAFF_TOKEN
+    value: ''
+  - key: ADMIN_TOKEN
+    value: ''

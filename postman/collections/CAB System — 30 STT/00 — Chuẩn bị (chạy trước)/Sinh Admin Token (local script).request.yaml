@@ -1,0 +1,15 @@
+$kind: http-request
+url: "{{GW}}/health"
+method: GET
+scripts:
+  - type: beforeRequest
+    code: |-
+      // Tạo JWT ops_admin không cần server
+      const secret = 'cab-system-super-secret-key-change-me';
+      const header = btoa(JSON.stringify({alg:'HS256',typ:'JWT'})).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
+      const now = Math.floor(Date.now()/1000);
+      const payload = btoa(JSON.stringify({id:'admin-001',role:'ops_admin',iat:now,exp:now+86400})).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
+      // NOTE: Postman không thể ký HMAC — dùng lệnh dưới trong Tests tab để lấy token thật
+      console.log('Dùng lệnh bash để lấy ADMIN_TOKEN rồi set vào Environment');
+    language: text/javascript
+order: 1000

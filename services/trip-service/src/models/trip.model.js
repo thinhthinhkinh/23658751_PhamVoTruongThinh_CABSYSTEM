@@ -5,64 +5,63 @@ const geoPointSchema = new mongoose.Schema(
   { _id: false }
 );
 
-const STATUSES = [
-  "requested",
-  "finding_driver",
-  "no_driver_found",
+const TRIP_STATUSES = [
   "driver_assigned",
   "arrived",
   "picked_up",
   "in_progress",
   "completed",
-  "cancelled",
 ];
 
 const DRIVER_TRANSITIONS = {
   driver_assigned: ["arrived"],
-  arrived: ["picked_up"],
-  picked_up: ["in_progress"],
-  in_progress: ["completed"],
+  arrived:         ["picked_up"],
+  picked_up:       ["in_progress"],
+  in_progress:     ["completed"],
 };
-
-const CANCELLABLE_STATUSES = ["requested", "finding_driver", "driver_assigned"];
 
 const tripSchema = new mongoose.Schema(
   {
-    _id: { type: String },
-    customerId: { type: String, required: true },
-    driverId: { type: String, default: null },
-    pickupLocation: { type: geoPointSchema, required: true },
+    _id:             { type: String },
+    bookingId:       { type: String, required: true, unique: true },
+    driverId:        { type: String, required: true },
+    customerId:      { type: String, required: true },
+    vehicleType:     { type: String, required: true },
+    pickupLocation:  { type: geoPointSchema, required: true },
     dropoffLocation: { type: geoPointSchema, required: true },
-    vehicleType: { type: String, required: true },
-    status: { type: String, enum: STATUSES, default: "requested" },
-    distanceKm: { type: Number, default: null },
-    durationMin: { type: Number, default: null },
-    fareAmount: { type: Number, default: null },
+    status:          { type: String, enum: TRIP_STATUSES, default: "driver_assigned" },
+    estimatedFare:   { type: Number, default: null },
+    distanceKm:      { type: Number, default: null },
+    durationMin:     { type: Number, default: null },
+    actualFare:      { type: Number, default: null },
+    startedAt:       { type: Date, default: null },
+    completedAt:     { type: Date, default: null },
   },
   {
     timestamps: true,
-    toObject: { transform: (doc, ret) => { ret.id = ret._id; delete ret._id; delete ret.__v; } },
-    toJSON: { transform: (doc, ret) => { ret.id = ret._id; delete ret._id; delete ret.__v; } },
+    toObject: { transform: (doc, ret) => { ret.tripId = ret._id; delete ret._id; delete ret.__v; } },
+    toJSON:   { transform: (doc, ret) => { ret.tripId = ret._id; delete ret._id; delete ret.__v; } },
   }
 );
 
-// Rating dùng chính tripId làm _id — đúng bất biến nghiệp vụ "mỗi chuyến chỉ 1 đánh giá"
 const ratingSchema = new mongoose.Schema(
   {
-    _id: { type: String },
-    driverId: { type: String, required: true },
-    customerId: { type: String, required: true },
-    score: { type: Number, required: true },
-    comment: { type: String, default: null },
+    _id:       { type: String },
+    tripId:    { type: String, required: true },
+    bookingId: { type: String, required: true, unique: true },
+    driverId:  { type: String, required: true },
+    customerId:{ type: String, required: true },
+    score:     { type: Number, required: true },
+    comment:   { type: String, default: null },
   },
   {
     timestamps: { createdAt: true, updatedAt: false },
-    toObject: { transform: (doc, ret) => { ret.tripId = ret._id; delete ret._id; delete ret.__v; } },
-    toJSON: { transform: (doc, ret) => { ret.tripId = ret._id; delete ret._id; delete ret.__v; } },
+    toObject: { transform: (doc, ret) => { ret.ratingId = ret._id; delete ret._id; delete ret.__v; } },
+    toJSON:   { transform: (doc, ret) => { ret.ratingId = ret._id; delete ret._id; delete ret.__v; } },
   }
 );
 
-const Trip = mongoose.model("Trip", tripSchema);
+const Trip   = mongoose.model("Trip",   tripSchema);
 const Rating = mongoose.model("Rating", ratingSchema);
 
 function straightLineDistanceKm(a, b) {
@@ -76,11 +75,4 @@ function straightLineDistanceKm(a, b) {
   return R * 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x));
 }
 
-module.exports = {
-  Trip,
-  Rating,
-  STATUSES,
-  DRIVER_TRANSITIONS,
-  CANCELLABLE_STATUSES,
-  straightLineDistanceKm,
-};
+module.exports = { Trip, Rating, TRIP_STATUSES, DRIVER_TRANSITIONS, straightLineDistanceKm };

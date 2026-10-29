@@ -1,0 +1,25 @@
+$kind: http-request
+name: STT 15 — Customer tạo chuyến (→ TripRequested → dispatch)
+url: "{{BASE}}/trips"
+method: POST
+headers:
+  Authorization: Bearer {{CUSTOMER_TOKEN}}
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "pickupLocation": { "lat": 10.776, "lng": 106.700, "address": "Ngã tư A" },
+      "dropoffLocation": { "lat": 10.785, "lng": 106.695, "address": "Chợ B" },
+      "vehicleType": "4-seat"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 201', () => pm.response.to.have.status(201));
+      const r = pm.response.json();
+      pm.test('Có tripId', () => pm.expect(r.data.id).to.be.ok);
+      pm.environment.set('TRIP_ID', r.data.id);
+      console.log('TRIP_ID:', r.data.id);
+    language: text/javascript
+order: 4000

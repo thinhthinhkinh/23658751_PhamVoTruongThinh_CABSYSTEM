@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const resolvedIssueSchema = new mongoose.Schema(
   {
     _id: { type: String },
-    tripId: { type: String, required: true },
+    bookingId: { type: String, required: true },
     resolutionNote: { type: String, required: true },
     resolvedBy: { type: String, required: true },
     resolvedAt: { type: Date, default: Date.now },

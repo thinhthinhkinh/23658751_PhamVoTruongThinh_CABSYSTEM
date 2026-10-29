@@ -8,12 +8,12 @@ function findById(id) {
   return Payment.findById(id);
 }
 
-function findByTripId(tripId) {
-  return Payment.findOne({ tripId });
+function findByBookingId(bookingId) {
+  return Payment.findOne({ bookingId });
 }
 
-function findByCustomerTripIds(tripIds) {
-  return Payment.find({ tripId: { $in: tripIds } });
+function findByCustomerBookingIds(bookingIds) {
+  return Payment.find({ bookingId: { $in: bookingIds } });
 }
 
 async function insert(paymentData) {
@@ -26,4 +26,4 @@ function update(id, patch) {
   return Payment.findByIdAndUpdate(id, patch, { new: true });
 }
 
-module.exports = { findAll, findById, findByTripId, findByCustomerTripIds, insert, update };
+module.exports = { findAll, findById, findByBookingId, findByCustomerBookingIds, insert, update };

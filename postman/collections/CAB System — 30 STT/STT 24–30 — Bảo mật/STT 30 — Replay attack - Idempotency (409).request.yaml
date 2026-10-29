@@ -1,0 +1,20 @@
+$kind: http-request
+name: STT 30 — Replay attack / Idempotency (409)
+description: Gửi lần 2 cùng tripId → 409 PAYMENT_ALREADY_EXISTS (idempotent)
+url: "{{BASE}}/payments"
+method: POST
+headers:
+  Authorization: Bearer {{CUSTOMER_TOKEN}}
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "tripId": "{{TRIP_ID}}",
+      "method": "cash"
+    }
+scripts:
+  - type: afterResponse
+    code: pm.test('Status 409 (đã tồn tại)', () => pm.response.to.have.status(409));
+    language: text/javascript
+order: 7000

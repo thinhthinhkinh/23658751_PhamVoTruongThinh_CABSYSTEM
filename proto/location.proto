@@ -14,11 +14,12 @@ message ReportLocationRequest {
 }
 
 message NearbyRequest {
-  double lat      = 1;
-  double lng      = 2;
-  double radiusKm = 3;
-  int32  limit    = 4;
-  int32  page     = 5;
+  double lat       = 1;
+  double lng       = 2;
+  double radiusKm  = 3;
+  int32  limit     = 4;
+  int32  page      = 5;
+  string driverIds = 6;
 }
 
 message DriverIdRequest {

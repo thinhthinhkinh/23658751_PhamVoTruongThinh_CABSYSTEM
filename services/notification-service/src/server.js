@@ -29,7 +29,7 @@ function startGrpcServer() {
   const pkg = grpc.loadPackageDefinition(pkgDef);
   const handler = require("./grpc/notification.handler");
   const server = new grpc.Server();
-  server.addService(pkg["cab.notification"].NotificationService.service, handler);
+  server.addService(pkg.cab.notification.NotificationService.service, handler);
   server.bindAsync(`0.0.0.0:${GRPC_PORT}`, grpc.ServerCredentials.createInsecure(), (err, port) => {
     if (err) { console.error("[notification-service] gRPC bind error:", err.message); return; }
     console.log(`[notification-service] gRPC đang lắng nghe tại port ${port}`);
@@ -46,8 +46,8 @@ mongoose
       await Promise.all([
         eventBus.subscribe("DriverAssigned", (p) => notifRepo.onDriverAssigned(p)),
         eventBus.subscribe("NoDriverFound", (p) => notifRepo.onNoDriverFound(p)),
-        eventBus.subscribe("TripStatusChanged", (p) => notifRepo.onTripStatusChanged(p)),
-        eventBus.subscribe("TripCompleted", (p) => notifRepo.onTripCompleted(p)),
+        eventBus.subscribe("TripStatusChanged", (p) => notifRepo.onBookingStatusChanged(p)),
+        eventBus.subscribe("TripCompleted", (p) => notifRepo.onBookingCompleted(p)),
         eventBus.subscribe("PaymentCompleted", (p) => notifRepo.onPaymentCompleted(p)),
         eventBus.subscribe("PaymentFailed", (p) => notifRepo.onPaymentFailed(p)),
       ]);

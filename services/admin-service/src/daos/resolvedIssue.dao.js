@@ -1,7 +1,7 @@
 const { ResolvedIssue } = require("../models/resolvedIssue.model");
 
-function findByTripId(tripId) {
-  return ResolvedIssue.find({ tripId });
+function findByBookingId(bookingId) {
+  return ResolvedIssue.find({ bookingId });
 }
 
 async function insert(recordData) {
@@ -10,4 +10,4 @@ async function insert(recordData) {
   return record;
 }
 
-module.exports = { findByTripId, insert };
+module.exports = { findByBookingId, insert };

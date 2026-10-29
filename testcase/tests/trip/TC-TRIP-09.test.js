@@ -1,11 +1,11 @@
-// TC-TRIP-09 | Negative | Đánh giá tài xế khi chuyến chưa hoàn thành
+﻿// TC-TRIP-09 | Negative | Đánh giá tài xế khi chuyến chưa hoàn thành
 const { req } = require("../helpers");
 const { createAssignedTrip } = require("./_setup");
 
 test("TC-TRIP-09 | Negative | Đánh giá tài xế khi chuyến chưa hoàn thành", async () => {
-  const { tripId, customerToken } = await createAssignedTrip(); // vẫn ở driver_assigned, chưa completed
+  const { bookingId, customerToken } = await createAssignedTrip(); // vẫn ở driver_assigned, chưa completed
 
-  const { status, json } = await req("POST", `/trips/${tripId}/rating`, {
+  const { status, json } = await req("POST", `/trips/${bookingId}/rating`, {
     token: customerToken,
     body: { score: 5 },
   });

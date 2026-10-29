@@ -2,7 +2,7 @@ const repo = require("../repositories/payment.repository");
 const { ok, okList } = require("../utils/response.util");
 const asyncHandler = require("../utils/asyncHandler");
 
-const TRIP_SERVICE_URL = process.env.TRIP_SERVICE_URL || "http://localhost:4003";
+const BOOKING_SERVICE_URL = process.env.BOOKING_SERVICE_URL || "http://localhost:4003";
 
 const create = asyncHandler(async (req, res) => {
   const payment = await repo.createAndProcess(req.body);
@@ -25,18 +25,18 @@ const webhook = asyncHandler(async (req, res) => {
 });
 
 const getMyPayments = asyncHandler(async (req, res) => {
-  const tripRes = await fetch(`${TRIP_SERVICE_URL}/customers/me/trips`, {
+  const bookingRes = await fetch(`${BOOKING_SERVICE_URL}/customers/me/bookings`, {
     headers: { Authorization: req.headers.authorization },
   });
-  const tripBody = await tripRes.json();
-  const tripIds = (tripBody?.data || []).map((t) => t.id);
-  const payments = await repo.listByTripIds(tripIds);
+  const bookingBody = await bookingRes.json();
+  const bookingIds = (bookingBody?.data || []).map((b) => b.bookingId || b.id);
+  const payments = await repo.listByBookingIds(bookingIds);
   return okList(res, payments);
 });
 
 const onFareCalculated = asyncHandler(async (req, res) => {
   const { payload } = req.body;
-  await repo.cacheFare(payload.tripId, payload.amount);
+  await repo.cacheFare(payload.bookingId, payload.amount);
   return res.status(200).json({ received: true });
 });
 

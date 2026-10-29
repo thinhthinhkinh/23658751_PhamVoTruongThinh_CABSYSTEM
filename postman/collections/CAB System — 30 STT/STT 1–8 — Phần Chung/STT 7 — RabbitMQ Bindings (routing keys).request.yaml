@@ -1,0 +1,19 @@
+$kind: http-request
+url: http://localhost:15672/api/exchanges/%2F/cab_events/bindings/source
+method: GET
+auth:
+  type: basic
+  credentials:
+    username: guest
+    password: guest
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', () => pm.response.to.have.status(200));
+      const bindings = pm.response.json();
+      const keys = bindings.map(b => b.routing_key);
+      pm.test('Có binding TripRequested', () => pm.expect(keys).to.include('TripRequested'));
+      pm.test('Có binding DriverAssigned', () => pm.expect(keys).to.include('DriverAssigned'));
+      pm.test('Có binding FareCalculated', () => pm.expect(keys).to.include('FareCalculated'));
+    language: text/javascript
+order: 8000

@@ -1,10 +1,10 @@
-// TC-PAY-08 | Positive | Khách hàng chỉ xem được thanh toán của chính mình
+﻿// TC-PAY-08 | Positive | Khách hàng chỉ xem được thanh toán của chính mình
 // ⚠️ Cần Trip Service đang chạy: Payment Service forward Authorization header sang
-// GET /customers/me/trips của Trip Service để lấy danh sách tripId của khách hàng.
+// GET /customers/me/trips của Trip Service để lấy danh sách bookingId của khách hàng.
 const { req, signCustomerToken, uuid } = require("../helpers");
 
 async function createTripAndPayment(customerToken) {
-  const tripRes = await req("POST", "/trips", {
+  const tripRes = await req("POST", "/bookings", {
     token: customerToken,
     body: {
       pickupLocation: { lat: 10.77, lng: 106.7 },
@@ -12,13 +12,13 @@ async function createTripAndPayment(customerToken) {
       vehicleType: "4-seat",
     },
   });
-  const tripId = tripRes.json.data.id;
+  const bookingId = tripRes.json.data.bookingId;
 
   await req("POST", "/payments/events/fare-calculated", {
-    body: { event: "FareCalculated", payload: { tripId, amount: 50000 } },
+    body: { event: "FareCalculated", payload: { bookingId, amount: 50000 } },
   });
-  await req("POST", "/payments", { token: customerToken, body: { tripId, method: "cash" } });
-  return tripId;
+  await req("POST", "/payments", { token: customerToken, body: { bookingId, method: "cash" } });
+  return bookingId;
 }
 
 test("TC-PAY-08 | Positive | Khách hàng chỉ xem được thanh toán của chính mình", async () => {
@@ -31,7 +31,7 @@ test("TC-PAY-08 | Positive | Khách hàng chỉ xem được thanh toán của c
   const { status, json } = await req("GET", "/customers/me/payments", { token: tokenA });
 
   expect(status).toBe(200);
-  const tripIds = json.data.map((p) => p.tripId);
+  const tripIds = json.data.map((p) => p.bookingId);
   expect(tripIds).toContain(tripIdA);
   expect(tripIds.length).toBe(1); // không lẫn giao dịch của khách hàng B
 });

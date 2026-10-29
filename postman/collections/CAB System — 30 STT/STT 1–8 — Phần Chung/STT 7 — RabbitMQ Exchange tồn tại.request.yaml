@@ -1,0 +1,19 @@
+$kind: http-request
+description: Gọi RabbitMQ Management API — verify exchange cab_events tồn tại
+url: http://localhost:15672/api/exchanges/%2F/cab_events
+method: GET
+auth:
+  type: basic
+  credentials:
+    username: guest
+    password: guest
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', () => pm.response.to.have.status(200));
+      const r = pm.response.json();
+      pm.test('Exchange name = cab_events', () => pm.expect(r.name).to.eql('cab_events'));
+      pm.test('Type = topic', () => pm.expect(r.type).to.eql('topic'));
+      pm.test('Durable = true', () => pm.expect(r.durable).to.be.true);
+    language: text/javascript
+order: 7000

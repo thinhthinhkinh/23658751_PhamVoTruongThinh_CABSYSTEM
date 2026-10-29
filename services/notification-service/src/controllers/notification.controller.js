@@ -23,8 +23,8 @@ module.exports = {
   addChannel,
   onDriverAssigned: onEvent("onDriverAssigned"),
   onNoDriverFound: onEvent("onNoDriverFound"),
-  onTripStatusChanged: onEvent("onTripStatusChanged"),
-  onTripCompleted: onEvent("onTripCompleted"),
+  onBookingStatusChanged: onEvent("onBookingStatusChanged"),
+  onBookingCompleted: onEvent("onBookingCompleted"),
   onPaymentCompleted: onEvent("onPaymentCompleted"),
   onPaymentFailed: onEvent("onPaymentFailed"),
 };

@@ -3,23 +3,23 @@ const { ok, okList } = require("../utils/response.util");
 const asyncHandler = require("../utils/asyncHandler");
 
 const listCustomers = asyncHandler(async (req, res) => {
-  return okList(res, await repo.listCustomers(req.headers.authorization));
+  return okList(res, await repo.listCustomers(req.user.id, req.user.role));
 });
 
 const listDrivers = asyncHandler(async (req, res) => {
-  return okList(res, await repo.listDrivers(req.headers.authorization));
+  return okList(res, await repo.listDrivers(req.user.id, req.user.role));
 });
 
 const listVehicles = asyncHandler(async (req, res) => {
-  return okList(res, await repo.listVehicles(req.headers.authorization));
+  return okList(res, await repo.listVehicles(req.user.id, req.user.role));
 });
 
 const disableCustomer = asyncHandler(async (req, res) => {
-  return ok(res, await repo.disableCustomer(req.headers.authorization, req.params.id));
+  return ok(res, await repo.disableCustomer(req.user.id, req.user.role, req.params.id));
 });
 
-const listTrips = asyncHandler(async (req, res) => {
-  return okList(res, await repo.listTrips(req.headers.authorization, req.query.status));
+const listBookings = asyncHandler(async (req, res) => {
+  return okList(res, await repo.listBookings(req.user.id, req.user.role, req.query.status));
 });
 
 const getDriverStatus = asyncHandler(async (req, res) => {
@@ -28,32 +28,32 @@ const getDriverStatus = asyncHandler(async (req, res) => {
 });
 
 const listTransactions = asyncHandler(async (req, res) => {
-  return okList(res, await repo.listTransactions(req.headers.authorization));
+  return okList(res, await repo.listTransactions(req.user.id, req.user.role));
 });
 
-const resolveTrip = asyncHandler(async (req, res) => {
-  const record = await repo.resolveTripIssue(req.params.id, req.body.resolutionNote, req.user.id);
+const resolveBooking = asyncHandler(async (req, res) => {
+  const record = await repo.resolveBookingIssue(req.params.id, req.body.resolutionNote, req.user.id);
   return ok(res, record, 201);
 });
 
-const reportTrips = asyncHandler(async (req, res) => {
-  return ok(res, await repo.reportTripCount(req.headers.authorization, req.query.from, req.query.to));
+const reportBookings = asyncHandler(async (req, res) => {
+  return ok(res, await repo.reportBookingCount(req.user.id, req.user.role, req.query.from, req.query.to));
 });
 
 const reportRevenue = asyncHandler(async (req, res) => {
-  return ok(res, await repo.reportRevenue(req.headers.authorization, req.query.from, req.query.to));
+  return ok(res, await repo.reportRevenue(req.user.id, req.user.role, req.query.from, req.query.to));
 });
 
 const reportCompletionRate = asyncHandler(async (req, res) => {
-  return ok(res, await repo.reportCompletionRate(req.headers.authorization, req.query.from, req.query.to));
+  return ok(res, await repo.reportCompletionRate(req.user.id, req.user.role, req.query.from, req.query.to));
 });
 
 const reportCancellationRate = asyncHandler(async (req, res) => {
-  return ok(res, await repo.reportCancellationRate(req.headers.authorization, req.query.from, req.query.to));
+  return ok(res, await repo.reportCancellationRate(req.user.id, req.user.role, req.query.from, req.query.to));
 });
 
 const reportDriverPerformance = asyncHandler(async (req, res) => {
-  return okList(res, await repo.reportDriverPerformance(req.headers.authorization, req.query.from, req.query.to));
+  return okList(res, await repo.reportDriverPerformance(req.user.id, req.user.role, req.query.from, req.query.to));
 });
 
 module.exports = {
@@ -61,11 +61,11 @@ module.exports = {
   listDrivers,
   listVehicles,
   disableCustomer,
-  listTrips,
+  listBookings,
   getDriverStatus,
   listTransactions,
-  resolveTrip,
-  reportTrips,
+  resolveBooking,
+  reportBookings,
   reportRevenue,
   reportCompletionRate,
   reportCancellationRate,

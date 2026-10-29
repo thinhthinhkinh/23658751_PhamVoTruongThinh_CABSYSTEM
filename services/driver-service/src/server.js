@@ -18,7 +18,7 @@ function startGrpcServer() {
   const pkg = grpc.loadPackageDefinition(pkgDef);
   const handler = require("./grpc/driver.handler");
   const server = new grpc.Server();
-  server.addService(pkg["cab.driver"].DriverService.service, handler);
+  server.addService(pkg.cab.driver.DriverService.service, handler);
   server.bindAsync(`0.0.0.0:${GRPC_PORT}`, grpc.ServerCredentials.createInsecure(), (err, port) => {
     if (err) { console.error("[driver-service] gRPC bind error:", err.message); return; }
     console.log(`[driver-service] gRPC đang lắng nghe tại port ${port}`);

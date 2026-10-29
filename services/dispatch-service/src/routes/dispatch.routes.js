@@ -5,13 +5,13 @@ const { requireRole } = require("../middlewares/rbac.middleware");
 
 const router = express.Router();
 
-router.post("/:tripId/accept", authRequired, requireRole("driver"), ctrl.accept);
-router.post("/:tripId/decline", authRequired, requireRole("driver"), ctrl.decline);
-router.get("/:tripId/candidates", authRequired, requireRole("ops_staff", "ops_admin"), ctrl.getCandidates);
+router.post("/:bookingId/accept", authRequired, requireRole("driver"), ctrl.accept);
+router.post("/:bookingId/decline", authRequired, requireRole("driver"), ctrl.decline);
+router.get("/:bookingId/candidates", authRequired, requireRole("ops_staff", "ops_admin"), ctrl.getCandidates);
 
 router.get("/drivers/me/pending", authRequired, requireRole("driver"), ctrl.getMyPendingOffer);
 
-// webhook nội bộ nhận event từ event bus (Trip Service)
-router.post("/events/trip-requested", ctrl.onTripRequested);
+// webhook nội bộ nhận event từ event bus (Booking Service)
+router.post("/events/booking-requested", ctrl.onBookingRequested);
 
 module.exports = router;

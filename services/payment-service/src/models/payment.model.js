@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const paymentSchema = new mongoose.Schema(
   {
     _id: { type: String },
-    tripId: { type: String, required: true, unique: true },
+    bookingId: { type: String, required: true, unique: true },
     method: { type: String, enum: ["cash", "e-wallet", "card"], required: true },
     amount: { type: Number, required: true },
     status: { type: String, enum: ["pending", "success", "failed"], default: "pending" },
@@ -17,8 +17,7 @@ const paymentSchema = new mongoose.Schema(
   }
 );
 
-// FareCache dùng chính tripId làm _id, không dùng timestamps tự động
-// vì cachedAt cần được ghi đè mỗi lần cache lại (kể cả khi update, không chỉ lúc tạo mới).
+// FareCache dùng chính bookingId làm _id
 const fareCacheSchema = new mongoose.Schema(
   {
     _id: { type: String },
@@ -26,8 +25,8 @@ const fareCacheSchema = new mongoose.Schema(
     cachedAt: { type: Date, required: true },
   },
   {
-    toObject: { transform: (doc, ret) => { ret.tripId = ret._id; delete ret._id; delete ret.__v; } },
-    toJSON: { transform: (doc, ret) => { ret.tripId = ret._id; delete ret._id; delete ret.__v; } },
+    toObject: { transform: (doc, ret) => { ret.bookingId = ret._id; delete ret._id; delete ret.__v; } },
+    toJSON: { transform: (doc, ret) => { ret.bookingId = ret._id; delete ret._id; delete ret.__v; } },
   }
 );
 

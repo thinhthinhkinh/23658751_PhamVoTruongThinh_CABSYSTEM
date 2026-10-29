@@ -2,24 +2,27 @@ syntax = "proto3";
 package cab.admin;
 
 service AdminService {
-  rpc ListCustomers         (AuthCtxRequest)     returns (GrpcResponse);
-  rpc ListDrivers           (AuthCtxRequest)     returns (GrpcResponse);
-  rpc ListVehicles          (AuthCtxRequest)     returns (GrpcResponse);
-  rpc DisableCustomer       (IdRequest)          returns (GrpcResponse);
-  rpc ListTrips             (AuthCtxRequest)     returns (GrpcResponse);
-  rpc GetDriverStatus       (IdRequest)          returns (GrpcResponse);
-  rpc ListTransactions      (AuthCtxRequest)     returns (GrpcResponse);
-  rpc ResolveTrip           (ResolveTripRequest) returns (GrpcResponse);
-  rpc ReportTrips           (AuthCtxRequest)     returns (GrpcResponse);
-  rpc ReportRevenue         (AuthCtxRequest)     returns (GrpcResponse);
-  rpc ReportCompletionRate  (AuthCtxRequest)     returns (GrpcResponse);
-  rpc ReportCancellationRate(AuthCtxRequest)     returns (GrpcResponse);
-  rpc ReportDriverPerf      (AuthCtxRequest)     returns (GrpcResponse);
+  rpc ListCustomers          (AuthCtxRequest)        returns (GrpcResponse);
+  rpc ListDrivers            (AuthCtxRequest)        returns (GrpcResponse);
+  rpc ListVehicles           (AuthCtxRequest)        returns (GrpcResponse);
+  rpc DisableCustomer        (IdRequest)             returns (GrpcResponse);
+  rpc ListBookings           (AuthCtxRequest)        returns (GrpcResponse);
+  rpc GetDriverStatus        (IdRequest)             returns (GrpcResponse);
+  rpc ListTransactions       (AuthCtxRequest)        returns (GrpcResponse);
+  rpc ResolveBooking         (ResolveBookingRequest) returns (GrpcResponse);
+  rpc ReportBookings         (AuthCtxRequest)        returns (GrpcResponse);
+  rpc ReportRevenue          (AuthCtxRequest)        returns (GrpcResponse);
+  rpc ReportCompletionRate   (AuthCtxRequest)        returns (GrpcResponse);
+  rpc ReportCancellationRate (AuthCtxRequest)        returns (GrpcResponse);
+  rpc ReportDriverPerf       (AuthCtxRequest)        returns (GrpcResponse);
 }
 
 message AuthCtxRequest {
   string callerId   = 1;
   string callerRole = 2;
+  string from       = 3;
+  string to         = 4;
+  string status     = 5;
 }
 
 message IdRequest {
@@ -28,8 +31,8 @@ message IdRequest {
   string callerRole = 3;
 }
 
-message ResolveTripRequest {
-  string tripId         = 1;
+message ResolveBookingRequest {
+  string bookingId      = 1;
   string resolutionNote = 2;
   string callerId       = 3;
   string callerRole     = 4;

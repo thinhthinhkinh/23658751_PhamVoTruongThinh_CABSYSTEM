@@ -23,7 +23,7 @@ async function req(method, path, { token, body } = {}) {
   return { status: res.status, json };
 }
 
-// Sinh email ngẫu nhiên để mỗi lần chạy test không bị đụng dữ liệu cũ (data.json không tự reset).
+// Sinh email ngẫu nhiên để mỗi lần chạy test không bị đụng dữ liệu cũ trong MongoDB.
 function randEmail(prefix = "test") {
   return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}@test.com`;
 }

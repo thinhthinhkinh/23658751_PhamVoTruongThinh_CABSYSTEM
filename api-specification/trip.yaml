@@ -1,20 +1,21 @@
-# File TỰ CHỨA hoàn chỉnh cho trip-service.yaml — không phụ thuộc file nào khác.
-# Sinh tự động từ nguồn hợp nhất, mọi $ref trong file này chỉ trỏ nội bộ (#/components/...).
 openapi: 3.0.3
 info:
   title: Trip Service API
   version: 1.0.0
-  description: Vòng đời chuyến đi và đánh giá tài xế (FR-03,04,05,13)
+  description: >
+    Vòng đời chuyến đi từ phía tài xế (FR-13), đánh giá tài xế (FR-05),
+    lịch sử chuyến (FR-24/FR-25). Trip được tạo tự động khi tài xế nhận
+    booking; khách hàng không tạo Trip trực tiếp.
 servers:
-  - url: http://localhost:4003
+  - url: http://localhost:4011
     description: Gọi trực tiếp service (bỏ qua Gateway)
   - url: http://localhost:3000/api/v1
     description: Qua API Gateway (local dev)
 tags:
   - name: Trip
-    description: Trip Service — FR-03, FR-04, FR-05, FR-13
+    description: Trip Service — FR-13, FR-24, FR-25
   - name: Rating
-    description: Đánh giá tài xế — phần cuối FR-05
+    description: Đánh giá tài xế — FR-05
 security:
   - bearerAuth: []
 paths:
@@ -33,32 +34,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RatingListEnvelope'
-  /trips:
-    post:
-      tags:
-        - Trip
-      summary: Tạo yêu cầu đặt xe
-      x-fr: FR-03
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TripCreateRequest'
-      responses:
-        '201':
-          description: Đã tạo yêu cầu, đang tìm tài xế
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TripEnvelope'
-        '400':
-          $ref: '#/components/responses/ValidationError'
   /trips/{id}:
     get:
       tags:
         - Trip
-      summary: Xem chi tiết & trạng thái hiện tại của 1 chuyến
+      summary: Xem chi tiết & trạng thái hiện tại của 1 chuyến (tra cứu theo bookingId)
+      description: >
+        `{id}` là `bookingId` (1 booking ↔ 1 trip, dùng chung ID).
+        Endpoint trả về sau khi tài xế nhận chuyến (status = driver_assigned).
       x-fr: FR-04
       parameters:
         - $ref: '#/components/parameters/IdParam'
@@ -72,27 +55,14 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundError'
   /trips/{id}/status:
-    get:
-      tags:
-        - Trip
-      summary: Poll trạng thái chuyến (khuyến nghị WebSocket cho real-time)
-      x-fr: FR-04
-      parameters:
-        - $ref: '#/components/parameters/IdParam'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    $ref: '#/components/schemas/TripStatus'
     patch:
       tags:
         - Trip
       summary: Tài xế cập nhật trạng thái chuyến
+      description: >
+        Trình tự hợp lệ: driver_assigned → arrived → picked_up → in_progress → completed.
+        Khi chuyển sang `completed` phải gửi kèm `distanceKm` và `durationMin`
+        để tính cước thực tế (`actualFare`).
       x-fr: FR-13
       parameters:
         - $ref: '#/components/parameters/IdParam'
@@ -101,12 +71,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - status
-              properties:
-                status:
-                  $ref: '#/components/schemas/TripStatus'
+              $ref: '#/components/schemas/TripStatusUpdateRequest'
       responses:
         '200':
           description: OK
@@ -116,28 +81,21 @@ paths:
                 $ref: '#/components/schemas/TripEnvelope'
         '400':
           $ref: '#/components/responses/ValidationError'
-  /trips/{id}/cancel:
-    post:
-      tags:
-        - Trip
-      summary: Hủy chuyến
-      x-fr: chưa chốt chính sách — xem Mục 9 tài liệu BA
-      parameters:
-        - $ref: '#/components/parameters/IdParam'
-      responses:
-        '200':
-          description: OK
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '409':
+          description: Chuyển trạng thái không hợp lệ theo state machine
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TripEnvelope'
-        '409':
-          description: Chuyến không ở trạng thái có thể hủy
+                $ref: '#/components/schemas/Error'
   /trips/{id}/rating:
     post:
       tags:
         - Rating
-      summary: Khách hàng đánh giá tài xế sau chuyến
+      summary: Khách hàng đánh giá tài xế sau chuyến hoàn thành
       x-fr: FR-05
       parameters:
         - $ref: '#/components/parameters/IdParam'
@@ -156,12 +114,27 @@ paths:
                 $ref: '#/components/schemas/RatingEnvelope'
         '409':
           description: Chuyến chưa hoàn thành hoặc đã được đánh giá
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /customers/me/trips:
     get:
       tags:
         - Trip
       summary: Lịch sử chuyến của khách hàng
-      x-fr: FR-05
+      x-fr: FR-24
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
       responses:
         '200':
           description: OK
@@ -174,7 +147,18 @@ paths:
       tags:
         - Trip
       summary: Lịch sử chuyến của tài xế
-      x-fr: FR-13
+      x-fr: FR-25
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
       responses:
         '200':
           description: OK
@@ -197,7 +181,7 @@ components:
           properties:
             code:
               type: string
-              example: VALIDATION_ERROR
+              example: INVALID_TRANSITION
             message:
               type: string
     GeoPoint:
@@ -219,6 +203,9 @@ components:
     Rating:
       type: object
       properties:
+        ratingId:
+          type: string
+          format: uuid
         tripId:
           type: string
           format: uuid
@@ -227,6 +214,8 @@ components:
           format: uuid
         score:
           type: integer
+          minimum: 1
+          maximum: 5
         comment:
           type: string
           nullable: true
@@ -257,6 +246,7 @@ components:
           properties:
             averageScore:
               type: number
+              example: 4.5
             ratings:
               type: array
               items:
@@ -264,40 +254,19 @@ components:
     Trip:
       type: object
       properties:
-        id:
+        tripId:
           type: string
           format: uuid
-        customerId:
+          description: Cùng giá trị với bookingId (1 booking ↔ 1 trip)
+        bookingId:
           type: string
           format: uuid
         driverId:
           type: string
           format: uuid
-          nullable: true
-        pickupLocation:
-          $ref: '#/components/schemas/GeoPoint'
-        dropoffLocation:
-          $ref: '#/components/schemas/GeoPoint'
-        vehicleType:
+        customerId:
           type: string
-        status:
-          $ref: '#/components/schemas/TripStatus'
-        fareAmount:
-          type: number
-          nullable: true
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-    TripCreateRequest:
-      type: object
-      required:
-        - pickupLocation
-        - dropoffLocation
-        - vehicleType
-      properties:
+          format: uuid
         pickupLocation:
           $ref: '#/components/schemas/GeoPoint'
         dropoffLocation:
@@ -308,6 +277,55 @@ components:
             - 4-seat
             - 7-seat
             - motorbike
+        status:
+          $ref: '#/components/schemas/TripStatus'
+        estimatedFare:
+          type: number
+          nullable: true
+          description: Cước ước tính từ booking-service (tính theo đường thẳng)
+        actualFare:
+          type: number
+          nullable: true
+          description: >
+            Cước thực tế sau khi hoàn thành. BR-10: actualFare = max(estimatedFare, fare tính theo
+            distanceKm & durationMin thực tế). Null cho đến khi status = completed.
+        distanceKm:
+          type: number
+          nullable: true
+          description: Khoảng cách thực tế (km), điền khi completed
+        durationMin:
+          type: number
+          nullable: true
+          description: Thời gian thực tế (phút), điền khi completed
+        startedAt:
+          type: string
+          format: date-time
+          nullable: true
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    TripStatusUpdateRequest:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          $ref: '#/components/schemas/TripStatus'
+        distanceKm:
+          type: number
+          description: Bắt buộc khi status = completed
+          example: 5.2
+        durationMin:
+          type: number
+          description: Bắt buộc khi status = completed
+          example: 18
     TripEnvelope:
       type: object
       properties:
@@ -322,16 +340,15 @@ components:
             $ref: '#/components/schemas/Trip'
     TripStatus:
       type: string
+      description: >
+        Trạng thái chuyến đi. Trip bắt đầu ở driver_assigned (không có requested/finding_driver
+        — những trạng thái đó thuộc Booking Service).
       enum:
-        - requested
-        - finding_driver
-        - no_driver_found
         - driver_assigned
         - arrived
         - picked_up
         - in_progress
         - completed
-        - cancelled
   responses:
     NotFoundError:
       description: Không tìm thấy tài nguyên
@@ -345,11 +362,24 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+    UnauthorizedError:
+      description: Chưa đăng nhập hoặc token không hợp lệ
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ForbiddenError:
+      description: Không có quyền thực hiện thao tác này
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   parameters:
     IdParam:
       name: id
       in: path
       required: true
+      description: bookingId (dùng làm định danh chung cho cả booking lẫn trip)
       schema:
         type: string
         format: uuid

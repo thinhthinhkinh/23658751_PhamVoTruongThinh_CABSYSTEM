@@ -1,0 +1,29 @@
+$kind: http-request
+url: "{{BASE}}/drivers/register"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "fullName": "Tran Van Driver",
+      "email": "driver_{{$timestamp}}@cabtest.com",
+      "password": "matkhau123",
+      "vehicle": {
+        "plate": "51H-{{$randomInt}}.99",
+        "model": "Toyota Vios",
+        "type": "4-seat"
+      }
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      const r = pm.response.json();
+      pm.test('Status 201', () => pm.response.to.have.status(201));
+      pm.test('approvalStatus = pending_approval', () => pm.expect(r.data.driver.approvalStatus).to.eql('pending_approval'));
+      pm.environment.set('DRIVER_TOKEN', r.data.token);
+      pm.environment.set('DRIVER_ID', r.data.driver.id);
+      console.log('DRIVER_ID:', r.data.driver.id);
+    language: text/javascript
+order: 4000

@@ -11,7 +11,7 @@ service PaymentService {
 
 message CreatePaymentRequest {
   string customerId = 1;
-  string tripId     = 2;
+  string bookingId  = 2;
   string method     = 3;
 }
 

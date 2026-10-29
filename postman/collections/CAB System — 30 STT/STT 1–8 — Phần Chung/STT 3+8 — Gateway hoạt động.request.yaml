@@ -1,0 +1,14 @@
+$kind: http-request
+description: Request đi qua Gateway → nhận validation error từ customer-service (không phải timeout/ECONNREFUSED)
+url: "{{BASE}}/customers/register"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: "{}"
+scripts:
+  - type: afterResponse
+    code: pm.test('Gateway phản hồi (không phải connection refused)', () => pm.response.to.have.status(400));
+    language: text/javascript
+order: 2000

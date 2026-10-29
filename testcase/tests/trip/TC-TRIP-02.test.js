@@ -1,9 +1,9 @@
-// TC-TRIP-02 | Negative | Tạo chuyến thiếu dropoffLocation
+﻿// TC-TRIP-02 | Negative | Tạo chuyến thiếu dropoffLocation
 const { req, signCustomerToken, uuid } = require("../helpers");
 
 test("TC-TRIP-02 | Negative | Tạo chuyến thiếu dropoffLocation", async () => {
   const customerToken = signCustomerToken(uuid());
-  const { status, json } = await req("POST", "/trips", {
+  const { status, json } = await req("POST", "/bookings", {
     token: customerToken,
     body: { pickupLocation: { lat: 10.77, lng: 106.7 }, vehicleType: "4-seat" }, // thiếu dropoffLocation
   });

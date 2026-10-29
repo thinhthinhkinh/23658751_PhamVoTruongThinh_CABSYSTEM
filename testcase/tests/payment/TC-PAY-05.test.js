@@ -1,10 +1,10 @@
-// TC-PAY-05 | Negative | Thử lại giao dịch đã thành công
+﻿// TC-PAY-05 | Negative | Thử lại giao dịch đã thành công
 const { req, signCustomerToken, uuid } = require("../helpers");
 const { seedFare } = require("./_setup");
 
 test("TC-PAY-05 | Negative | Thử lại giao dịch đã thành công (cash luôn success)", async () => {
-  const tripId = await seedFare(70000);
-  const payRes = await req("POST", "/payments", { token: signCustomerToken(uuid()), body: { tripId, method: "cash" } });
+  const bookingId = await seedFare(70000);
+  const payRes = await req("POST", "/payments", { token: signCustomerToken(uuid()), body: { bookingId, method: "cash" } });
   const paymentId = payRes.json.data.id;
 
   const { status, json } = await req("POST", `/payments/${paymentId}/retry`, { token: signCustomerToken(uuid()) });

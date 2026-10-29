@@ -2,17 +2,19 @@
   "name": "trip-service",
   "version": "1.0.0",
   "private": true,
-  "description": "Vòng đời chuyến đi — service trung tâm, điều phối bằng event (FR-03, FR-04, FR-05, FR-13)",
+  "description": "Thực hiện chuyến đi — driver_assigned→arrived→picked_up→in_progress→completed, đánh giá tài xế (FR-11, FR-12, FR-13, FR-14, FR-05b)",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
     "dev": "node --watch src/server.js"
   },
   "dependencies": {
+    "@grpc/grpc-js": "^1.14.5",
+    "@grpc/proto-loader": "^0.8.1",
     "amqplib": "^0.10.4",
-    "express": "^4.19.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.0",
     "uuid": "^9.0.1"

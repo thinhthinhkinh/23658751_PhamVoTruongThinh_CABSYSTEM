@@ -11,17 +11,17 @@ test("TC-TRIP-16 | Negative | Tài xế nhảy cóc trạng thái ở nhiều đ
   ];
 
   for (const { from, jumpTo } of cases) {
-    const { tripId, driverToken, customerToken } = await createAssignedTrip();
-    await advanceTripTo(tripId, driverToken, from);
+    const { bookingId, driverToken, customerToken } = await createAssignedTrip();
+    await advanceTripTo(bookingId, driverToken, from);
 
     const body = jumpTo === "completed" ? { status: jumpTo, distanceKm: 5, durationMin: 15 } : { status: jumpTo };
-    const { status, json } = await req("PATCH", `/trips/${tripId}/status`, { token: driverToken, body });
+    const { status, json } = await req("PATCH", `/trips/${bookingId}/status`, { token: driverToken, body });
 
     expect(status).toBe(409);
     expect(json.error.code).toBe("INVALID_TRANSITION");
 
     // trạng thái chuyến không đổi sau cú nhảy cóc bị từ chối
-    const check = await req("GET", `/trips/${tripId}`, { token: customerToken });
+    const check = await req("GET", `/trips/${bookingId}`, { token: customerToken });
     expect(check.json.data.status).toBe(from);
   }
 });

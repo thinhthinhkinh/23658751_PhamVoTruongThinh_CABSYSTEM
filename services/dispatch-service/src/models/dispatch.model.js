@@ -17,7 +17,7 @@ const geoPointSchema = new mongoose.Schema(
 
 const dispatchSchema = new mongoose.Schema(
   {
-    _id: { type: String }, // tripId là khóa chính
+    _id: { type: String }, // bookingId là khóa chính
     pickupLocation: { type: geoPointSchema, required: true },
     vehicleType: { type: String, required: true },
     candidates: { type: [candidateSchema], default: [] },
@@ -28,14 +28,14 @@ const dispatchSchema = new mongoose.Schema(
     timestamps: true,
     toObject: {
       transform: (doc, ret) => {
-        ret.tripId = ret._id;
+        ret.bookingId = ret._id;
         delete ret._id;
         delete ret.__v;
       },
     },
     toJSON: {
       transform: (doc, ret) => {
-        ret.tripId = ret._id;
+        ret.bookingId = ret._id;
         delete ret._id;
         delete ret.__v;
       },

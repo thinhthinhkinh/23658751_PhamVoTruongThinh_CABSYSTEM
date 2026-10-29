@@ -1,9 +1,9 @@
-// TC-TRIP-01 | Positive | Khách hàng tạo yêu cầu đặt xe hợp lệ
+﻿// TC-TRIP-01 | Positive | Khách hàng tạo yêu cầu đặt xe hợp lệ
 const { req, signCustomerToken, uuid } = require("../helpers");
 
 test("TC-TRIP-01 | Positive | Khách hàng tạo yêu cầu đặt xe hợp lệ", async () => {
   const customerToken = signCustomerToken(uuid());
-  const { status, json } = await req("POST", "/trips", {
+  const { status, json } = await req("POST", "/bookings", {
     token: customerToken,
     body: {
       pickupLocation: { lat: 10.7769, lng: 106.7009 },
@@ -14,5 +14,5 @@ test("TC-TRIP-01 | Positive | Khách hàng tạo yêu cầu đặt xe hợp lệ
 
   expect(status).toBe(201);
   expect(json.data.status).toBe("finding_driver");
-  expect(json.data.id).toBeDefined();
+  expect(json.data.bookingId).toBeDefined();
 });

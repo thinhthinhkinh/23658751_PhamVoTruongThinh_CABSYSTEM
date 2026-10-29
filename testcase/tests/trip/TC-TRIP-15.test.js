@@ -20,7 +20,7 @@
 // WebSocket/push, thay pollForOffer() trong _setup.js bằng cách lắng nghe tương ứng.
 
 const { req, signCustomerToken, uuid } = require("../helpers");
-const { PICKUP, DROPOFF, registerAvailableDriver, pollForOffer } = require("./_setup");
+const { PICKUP, DROPOFF, registerAvailableDriver, pollForOffer, sleep } = require("./_setup");
 
 test(
   "TC-TRIP-15 | Positive | Luồng hoàn chỉnh tiền mặt từ đặt xe đến đánh giá",
@@ -42,6 +42,7 @@ test(
     expect(offer.bookingId ?? offer.id).toBe(bookingId);
     const acceptRes = await req("POST", `/dispatch/${bookingId}/accept`, { token: driverToken });
     expect(acceptRes.status).toBe(200);
+    await sleep(1000); // chờ DriverAssigned event lan từ dispatch → RabbitMQ → trip-service
 
     // 3. Tài xế cập nhật đủ 4 mốc trạng thái
     for (const status of ["arrived", "picked_up", "in_progress"]) {

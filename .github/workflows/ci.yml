@@ -28,6 +28,7 @@ jobs:
       - name: Build và khởi động toàn bộ cụm (đợi tất cả healthy)
         env:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          DISPATCH_OFFER_TIMEOUT_SEC: "3"
         run: docker compose up --build -d --wait --wait-timeout 180
 
       - name: Xác nhận trạng thái container (debug)
@@ -40,6 +41,8 @@ jobs:
 
       - name: Chạy 68 test case tích hợp
         working-directory: ./testcase
+        env:
+          DISPATCH_OFFER_TIMEOUT_SEC: "3"
         run: npm test
 
       - name: In log của các service nếu có lỗi

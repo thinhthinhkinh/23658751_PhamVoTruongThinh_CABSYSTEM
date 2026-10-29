@@ -106,6 +106,8 @@ async function pollForOffer(driverToken, { intervalMs = 300, timeoutMs = 10000 }
   throw new Error("pollForOffer: không nhận được offer trong thời gian chờ — kiểm tra Dispatch/Event Bus có đang chạy không");
 }
 
+function sleep(ms) { return new Promise((r) => setTimeout(r, ms)); }
+
 module.exports = {
   createAssignedTrip,
   createCompletedTrip,
@@ -114,4 +116,5 @@ module.exports = {
   DROPOFF,
   registerAvailableDriver,
   pollForOffer,
+  sleep,
 };

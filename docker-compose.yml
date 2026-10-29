@@ -220,7 +220,7 @@ services:
       - ./proto:/proto
     environment:
       JWT_SECRET: ${JWT_SECRET}
-      DISPATCH_OFFER_TIMEOUT_SEC: "300"
+      DISPATCH_OFFER_TIMEOUT_SEC: "${DISPATCH_OFFER_TIMEOUT_SEC:-300}"
       DISPATCH_SERVICE_URL: http://dispatch-service:4004
       RABBITMQ_URL: amqp://rabbitmq:5672
       SERVICE_NAME: dispatch-service

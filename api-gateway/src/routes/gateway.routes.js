@@ -199,22 +199,22 @@ function registerRoutes(app) {
     return grpcRequest(res, driverClient, "UpdateStatus", { userId: callerId, status: req.body.status });
   });
 
-  app.get("/api/v1/drivers/all", (req, res) => {
+  app.get("/api/v1/drivers/all", requireStaff, (req, res) => {
     const ctx = authCtx(req);
     return grpcRequest(res, driverClient, "ListAll", { callerId: ctx.callerId, callerRole: ctx.callerRole });
   });
 
-  app.patch("/api/v1/drivers/:id/approve", (req, res) => {
+  app.patch("/api/v1/drivers/:id/approve", requireStaff, (req, res) => {
     const ctx = authCtx(req);
     return grpcRequest(res, driverClient, "ApproveDriver", { id: req.params.id, ...ctx });
   });
 
-  app.patch("/api/v1/drivers/:id/reject", (req, res) => {
+  app.patch("/api/v1/drivers/:id/reject", requireStaff, (req, res) => {
     const ctx = authCtx(req);
     return grpcRequest(res, driverClient, "RejectDriver", { id: req.params.id, ...ctx });
   });
 
-  app.patch("/api/v1/drivers/:id/disable", (req, res) => {
+  app.patch("/api/v1/drivers/:id/disable", requireStaff, (req, res) => {
     const ctx = authCtx(req);
     return grpcRequest(res, driverClient, "Disable", { id: req.params.id, ...ctx });
   });
